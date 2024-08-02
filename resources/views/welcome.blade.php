@@ -10,8 +10,8 @@
     <meta name="keywords"
         content="admin template, Riho admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="../assets/images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/logo/logo2.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo/logo2.png') }}" type="image/x-icon">
     <title>PAROISSE SMART</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,10 +47,10 @@
             <div class="col-xl-7 p-0">
                 <div class="login-card login-dark">
                     <div>
-                        <div><a class="logo text-start" href="index.html"> <img class="img-fluid for-dark"
+                        <div><a class="logo text-start" href="#"> <img class="img-fluid for-dark"
                                     src="{{ asset('assets/images/logo/logo.png') }}" alt="looginpage"><img
-                                    class="img-fluid for-light" src="{{ asset('assets/images/logo/logo_dark.png') }}"
-                                    alt="looginpage"></a></div>
+                                    class="img-fluid for-light" src="{{ asset('assets/images/logo/logo2.png') }}"
+                                    alt="looginpage" style="max-width: 80%; max-height: 100px; "></a></div>
                         <div class="login-main">
                             <x-auth-session-status class="mb-4" :status="session('status')" />
                             <form class="theme-form" method="POST" action="{{ route('login') }}">
