@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TypeUserController;
@@ -41,6 +42,8 @@ Route::get('/Espaces', function () {
 
 Route::middleware('auth')->group(function () {
     Route::view('Espaces/Admin/listeUser', 'Espaces.Admin.listeUser')->name('listeUser');
+    Route::view('Espaces/Admin/listeMouvement', 'Espaces.Admin.listeMouvement')->name('listeMouvement');
+    Route::view('Espaces/Admin/listeMembreMouv', 'Espaces.Admin.listeMembreMouv')->name('listeMembreMouv');
 
     // routes utilisateurs
     Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
@@ -56,6 +59,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('Espaces/Admin/formAddUser', [TypeUserController::class, 'create'])->name('formAddUser');
 
+    //  Routes mouvements
+    // Affichage du formulaire
+    Route::view('formAddMouvement', 'Espaces.Admin.formAddMouvement')->name('formAddMouvement');
+    // Route pour le stockage des mouvements
+    Route::post('/store', [MouvementController::class, 'store'])->name('store');
+    Route::get('/liste_des_rencontres_mouvement', [MouvementController::class, 'liste_des_rencontres_mouvement'])->name('liste_des_rencontres_mouvement');
+    Route::get('/edit_rencontre_mouv/{id}', [MouvementController::class, 'edit_rencontre_mouv'])->name('edit_rencontre_mouv');
+    Route::post('/update_rencontre', [MouvementController::class, 'update_rencontre'])->name('update_rencontre');
+    Route::get('Espaces/Admin/formAddMembreMouvement', [MouvementController::class, 'create'])->name('formAddMembreMouvement');
+    Route::get('/list_membre_mouv', [MouvementController::class, 'list_membre_mouv'])->name('list_membre_mouv');
+    Route::post('/create_membre_mouv', [MouvementController::class, 'create_membre_mouv'])->name('create_membre_mouv');
+    Route::post('/update_membre_mouv', [MouvementController::class, 'update_membre_mouv'])->name('update_membre_mouv');
+    Route::get('/supp_membre/{id}', [MouvementController::class, 'supp_membre'])->name('supp_membre');
+    Route::get('Espaces/Admin/listeMembreMouv', [MouvementController::class, 'showEditMembreModal'])->name('listeMembreMouv');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

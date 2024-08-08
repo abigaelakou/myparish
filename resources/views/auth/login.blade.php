@@ -10,8 +10,8 @@
     <meta name="keywords"
         content="admin template, Riho admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="../assets/images/favicon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/logo/logo2.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo/logo2.png') }}" type="image/x-icon">
     <title>PAROISSE SMART</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,15 +42,17 @@
     <!-- login page start-->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ asset('assets/images/login/3.jpg') }}"
-                    alt="looginpage"></div>
+            <div class="col-xl-5"><img class="bg-img-cover bg-center"
+                    src="{{ asset('assets/images/login/eglise.jpg') }}" alt="looginpage"></div>
             <div class="col-xl-7 p-0">
                 <div class="login-card login-dark">
                     <div>
-                        <div><a class="logo text-start" href="index.html"> <img class="img-fluid for-dark"
+                        <div><a class="logo text-start" href="#"> <img class="img-fluid for-dark"
                                     src="{{ asset('assets/images/logo/logo.png') }}" alt="looginpage"><img
-                                    class="img-fluid for-light" src="{{ asset('assets/images/logo/logo_dark.png') }}"
-                                    alt="looginpage"></a></div>
+                                    class="img-fluid for-light" src="{{ asset('assets/images/logo/logo4.png') }}"
+                                    alt="looginpage"
+                                    style="max-width: 60%; max-height: 80px; margin-right:auto; margin-left:auto; margin-top:8%;display:block;"></a>
+                        </div>
                         <div class="login-main">
                             <x-auth-session-status class="mb-4" :status="session('status')" />
                             <form class="theme-form" method="POST" action="{{ route('login') }}">
@@ -72,7 +74,7 @@
                                         <input class="form-control" id="password" type="password" name="password"
                                             value="{{ old('password') }}" placeholder="*********" required
                                             autocomplete="current-password">
-                                        <div class="show-hide"><span class="show"> </span></div>
+                                        {{-- <div class="show-hide"><span class="show"> </span></div> --}}
                                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                     </div>
                                 </div>

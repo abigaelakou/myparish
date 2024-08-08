@@ -9,7 +9,7 @@ class MembreMouvement extends Model
 {
     use HasFactory;
 
-    protected $table = 'membreMouvements';
+    protected $table = 'membre_mouvements';
 
     protected $fillable = [
         'name_membre',

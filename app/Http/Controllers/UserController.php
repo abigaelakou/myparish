@@ -97,9 +97,9 @@ class UserController extends Controller
             'modif_id_type_utilisateur' => 'required|integer|exists:type_utilisateurs,id',
         ]);
 
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator)->withInput();
-        // }
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $modif_users = User::find($request->id_user);
         $modif_users->name = $request->modif_name;

@@ -171,8 +171,8 @@
             <!-- Page Sidebar Start-->
             <div class="sidebar-wrapper" data-layout="stroke-svg">
                 <div class="logo-wrapper"><a href="index.html"><img class="img-fluid"
-                            src="{{ asset('assets/images/logo/logo3.png')}}" alt=""
-                            Style="max-width: 40%; max-height: 50px; ">></a>
+                            src="{{ asset('assets/images/logo/logo5.png')}}" alt=""
+                            Style="max-width: 60%; max-height: 70px; ">></a>
                     <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
                     <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i>
                     </div>
@@ -213,11 +213,13 @@
                                 </ul>
                             </li>
                             {{-- ******************* FIN BOX UTILISATEUR *********************** --}}
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
                             <li class="sidebar-main-title">
                                 <div>
                                     <h6 class="lan-">Mouvements</h6>
                                 </div>
                             </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
@@ -225,10 +227,12 @@
                                     </svg>
                                     <svg class="fill-icon">
                                         <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
-                                    </svg><span>Project </span></a>
+                                    </svg><span>Groupes </span></a>
                                 <ul class="sidebar-submenu">
-                                    <li><a href="projects.html">Project List</a></li>
-                                    <li><a href="projectcreate.html">Create new</a></li>
+                                    <li><a href="{{ route('formAddMouvement') }}">Créer Mouvement</a></li>
+                                    <li><a href="{{ route('listeMouvement') }}">Liste</a></li>
+                                    <li><a href="{{ route('formAddMembreMouvement') }}">Ajout Membre</a></li>
+                                    <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
                                 </ul>
                             </li>
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
