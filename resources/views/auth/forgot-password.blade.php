@@ -56,9 +56,11 @@
                     <div class="login-card login-dark">
                         <div>
                             <div><a class="logo" href="index.html"> <img class="img-fluid for-dark"
-                                        src="../assets/images/logo/logo.png" alt="looginpage"><img
-                                        class="img-fluid for-light" src="../assets/images/logo/logo_dark.png"
-                                        alt="looginpage"></a></div>
+                                        src="{{ asset('assets/images/logo/logo.png') }}" alt="looginpage"><img
+                                        class="img-fluid for-light" src="{{ asset('assets/images/logo/logo4.png') }}"
+                                        style="max-width: 60%; max-height: 80px; margin-right:auto; margin-left:auto; margin-top:8%;display:block;"
+                                        alt="looginpage"></a>
+                            </div>
                             <div class="login-main">
                                 <!-- Session Status -->
                                 <x-auth-session-status class="mb-4" :status="session('status')" />
