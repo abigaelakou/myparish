@@ -13,29 +13,86 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     // Ajout utilisateur
+    // public function create_user(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'password' => 'required|string|min:8|confirmed',
+    //         'contact' => 'required|string|max:15|unique:users',
+    //         'id_type_utilisateur' => 'required|integer|exists:type_utilisateurs,id',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->withErrors($validator)->withInput();
+    //     }
+
+    //     $utilisateur = new User();
+    //     $utilisateur->name = $request->name;
+    //     $utilisateur->email = $request->email;
+    //     $utilisateur->contact = $request->contact;
+    //     $utilisateur->password = Hash::make($request->password);
+    //     $utilisateur->id_type_utilisateur = $request->id_type_utilisateur;
+    //     // dd($utilisateur);
+    //     $utilisateur->save();
+
+    //     return redirect()->route('formAddUser')->with('success', 'Utilisateur créé avec succès.');
+    // }
     public function create_user(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Validation des données de base
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
             'contact' => 'required|string|max:15|unique:users',
-            'id_type_utilisateur' => 'required|integer|exists:type_utilisateurs,id',
+            'password' => 'required|string|min:8|confirmed',
+            'id_type_utilisateur' => 'required|exists:type_utilisateurs,id',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        // Création de l'utilisateur
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'contact' => $validatedData['contact'],
+            'password' => Hash::make($validatedData['password']),
+            'id_type_utilisateur' => $validatedData['id_type_utilisateur']
+        ]);
+
+        // Si le type d'utilisateur est PAROISSIEN, enregistrer les informations dans la table paroissiens
+        if ($validatedData['id_type_utilisateur'] == '5') {
+            $paroissienData = $request->validate([
+                'sexe_p' => 'required|string',
+                'situation_matrimoniale' => 'required|string',
+                'date_naiss' => 'required|date',
+                'sacrement_recu.*' => 'required|string',
+            ]);
+
+            $user->paroissien()->create([
+                'user_id' => $user->id,
+                'name' => $user->name, // Récupération du nom de la table users
+                'contact' => $user->contact, // Récupération du contact de la table users
+                'email' => $user->email, // Récupération de l'email de la table users
+                'sexe' => $paroissienData['sexe_p'],
+                'situation_matrimoniale' => $paroissienData['situation_matrimoniale'],
+                'date_naiss' => $paroissienData['date_naiss'],
+                'sacrement_recu' => implode(',', $paroissienData['sacrement_recu']),
+                'date_inscription' => now(),
+            ]);
+            // Sinon si le type d'utilisateur est NON PAROISSIEN, enregistrer les informations dans la table paroissiens
+        } elseif ($validatedData['id_type_utilisateur'] == '7') {
+            $non_paroissienData = $request->validate([
+                'sexe_np' => 'required|string',
+            ]);
+
+            $user->non_paroissien()->create([
+                'user_id' => $user->id,
+                'name' => $user->name, // Récupération du nom de la table users
+                'contact' => $user->contact, // Récupération du contact de la table users
+                'email' => $user->email, // Récupération de l'email de la table users
+                'sexe' => $non_paroissienData['sexe_np']
+            ]);
         }
-
-        $utilisateur = new User();
-        $utilisateur->name = $request->name;
-        $utilisateur->email = $request->email;
-        $utilisateur->contact = $request->contact;
-        $utilisateur->password = Hash::make($request->password);
-        $utilisateur->id_type_utilisateur = $request->id_type_utilisateur;
-        // dd($utilisateur);
-        $utilisateur->save();
-
+        // Redirection
         return redirect()->route('formAddUser')->with('success', 'Utilisateur créé avec succès.');
     }
 

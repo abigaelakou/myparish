@@ -75,11 +75,10 @@
                                 <input class="form-control" name="email" id="email" type="email"
                                     placeholder="pesamof475@gmail.com" required="">
                             </div>
-
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="validationTooltip04">Profil</label>
-                                <select class="form-select" id="id_type_utilisateur validationTooltip04"
-                                    name="id_type_utilisateur" required="">
+                                <select class="form-select" id="id_type_utilisateur" name="id_type_utilisateur"
+                                    required="">
                                     <option selected="" disabled="" value="">choisir...</option>
                                     @foreach ($type_utilisateurs as $type_utilisateur)
                                     <option id="select_profil{{ $type_utilisateur->id }}"
@@ -92,6 +91,65 @@
 
                                 <div class="invalid-tooltip">Faites un choix svp.</div>
                             </div>
+                            {{-- BOX TYPE TYPE_USER==PAROISSIEN --}}
+                            <div id="paroissien_fields" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-4 position-relative">
+                                        <label class="form-label" for="sexe">Sexe</label>
+                                        <select id="sexe_paroissien" name="sexe_p" class="form-select">
+                                            <option value="...">Choisir</option>
+                                            <option value="Homme">Homme</option>
+                                            <option value="Femme">Femme</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 position-relative">
+                                        <label class="form-label" for="situation_matrimoniale">Situation
+                                            matrimoniale</label>
+                                        <select id="situation_matrimoniale" name="situation_matrimoniale"
+                                            class="form-select">
+                                            <option value="...">Choisir</option>
+                                            <option value="MARIE(E)">MARIE(E)</option>
+                                            <option value="CELIBATAIRE">CELIBATAIRE</option>
+                                            <option value="CONCUBINAGE">CONCUBINAGE</option>
+                                            <option value="DIVORCE">DIVORCE</option>
+                                        </select>
+
+                                    </div>
+
+                                    <div class="col-md-4 position-relative">
+                                        <label class="form-label" for="date_naiss">Date de naissance</label>
+                                        <input type="date" id="date_naiss" name="date_naiss" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 position-relative">
+                                        <label class="form-label" for="sacrement_recu">Sacrement(s) reçu(s)</label>
+                                        <select id="sacrement_recu" name="sacrement_recu[]" multiple
+                                            class="form-control">
+                                            <option value="BAPTEME">AUCUN</option>
+                                            <option value="BAPTEME">BAPTEME</option>
+                                            <option value="CONFIRMATION">CONFIRMATION</option>
+                                            <option value="MARIAGE">MARIAGE</option>
+                                            <option value="EUCHARISTIE">EUCHARISTIE</option>
+                                            <option value="ONCTION DES MALADE">ONCTION DES MALADE</option>
+                                            <option value="RECONCILIATION">RECONCILIATION</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- FIN BOX TYPE_USER==PAROISSIEN --}}
+                            {{-- BOX TYPE TYPE_USER==NON_PAROISIEN --}}
+                            <div id="non_paroissien_fields" style="display: none;">
+                                <div class="col-md-4 position-relative">
+                                    <label class="form-label" for="sexe">Sexe</label>
+                                    <select id="sexe_non_paroissien" name="sexe_np" class="form-select">
+                                        <option value="...">Choisir</option>
+                                        <option value="Homme">Homme</option>
+                                        <option value="Femme">Femme</option>
+                                    </select>
+                                </div>
+                            </div>
+                            {{-- FIN BOX TYPE_USER== NON_PAROISSIEN --}}
                             <div class="col-12">
                                 <button class="btn btn-primary" type="submit">Valider</button>
                             </div>
@@ -108,10 +166,39 @@
     setTimeout(function() {
         $('.alert').fadeOut('slow');
     }, 3000); 
+// TRAITEMENT BOX
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Script chargé"); // Teste si le script est chargé
+    var select = document.getElementById('id_type_utilisateur');
+    var paroissienFields = document.getElementById('paroissien_fields');
+    var nonParoissienFields = document.getElementById('non_paroissien_fields');
+
+    if (select) {
+        // Affiche toutes les valeurs du select pour déboguer
+        Array.from(select.options).forEach(option => console.log("Option Value:", option.value));
+
+        select.addEventListener('change', function() {
+            // console.log("Valeur du select : ", this.value);
+
+            paroissienFields.style.display = 'none';
+            nonParoissienFields.style.display = 'none';
+
+            if (this.value === '5') { 
+                paroissienFields.style.display = 'block';
+                // console.log("Affichage des champs paroissien");
+            } else if (this.value === '7') { 
+                nonParoissienFields.style.display = 'block';
+                // console.log("Affichage des champs non paroissien");
+            }
+        });
+    }
+});
+
 </script>
+
 @endsection
 
 @section('page-js')
 
-<script src="{{asset('js/pages_js/users.js')}}"></script>
 @endsection
