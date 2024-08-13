@@ -57,6 +57,15 @@ class User extends Authenticatable
         return $this->hasMany(Messe::class, 'id_user');
     }
 
+    public function paroissien()
+    {
+        return $this->hasOne(Paroissien::class);
+    }
+
+    public function non_paroissien()
+    {
+        return $this->hasOne(NonParoissien::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

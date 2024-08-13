@@ -12,6 +12,7 @@ class Paroissien extends Model
     protected $table = 'paroissiens';
 
     protected $fillable = [
+        'user_id',
         'name',
         'contact',
         'email',
@@ -30,5 +31,10 @@ class Paroissien extends Model
     public function Dons()
     {
         return $this->hasMany(Don::class, 'id_paroissien');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
