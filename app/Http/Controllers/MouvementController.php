@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class MouvementController extends Controller
 {
     //
-    public function store(Request $request)
+    public function create_mouvement(Request $request)
     {
         $data = $request->validate([
             'lib_mouvement' => 'required|string|max:255',

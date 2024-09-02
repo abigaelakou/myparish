@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('situation_matrimoniale');
             $table->date('date_naiss');
             $table->date('date_inscription');
-            $table->enum('sacrement_recu', ['AUCUN', 'BAPTEME', 'EUCHARISTIE', 'CONFIRMATION', 'ONCTION DES MALADE', 'MARIAGE', 'RECONCILIATION',]);
             $table->timestamps();
         });
     }

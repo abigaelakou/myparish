@@ -19,4 +19,9 @@ class TypeUtilisateur extends Model
     {
         return $this->hasMany(user::class, 'id_type_utilisateur');
     }
+
+    public function messe()
+    {
+        return $this->hasMany(messe::class, 'id_type_utilisateur');
+    }
 }

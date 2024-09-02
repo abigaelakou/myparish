@@ -56,6 +56,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Messe::class, 'id_user');
     }
+    public function DemandeMesse()
+    {
+        return $this->hasMany(DemandeMesse::class, 'id_user');
+    }
 
     public function paroissien()
     {

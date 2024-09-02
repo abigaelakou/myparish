@@ -46,7 +46,7 @@
                             {{ session('success') }}
                         </div>
                         @endif
-                        <form class="row g-3" action="{{ route('store') }}" method="POST" id="">
+                        <form class="row g-3" action="{{ route('create_mouvement') }}" method="POST" id="">
                             @csrf
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="validationTooltip01">Nom Mouvement</label>
