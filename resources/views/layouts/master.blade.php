@@ -263,7 +263,7 @@
                             {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>
-                                    <h6 class="lan-">Archivage</h6>
+                                    <h6 class="lan-">AUTRES</h6>
                                 </div>
                             </li>
                             {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
