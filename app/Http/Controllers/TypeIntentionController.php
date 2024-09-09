@@ -54,7 +54,7 @@ class TypeIntentionController extends Controller
         return $liste_type_intention;
     }
     // Suppression de messe
-    public function supp_type_messe($id)
+    public function supp_type_intention($id)
     {
         DB::table("type_intentions")->where("id", $id)->delete();
         return true;

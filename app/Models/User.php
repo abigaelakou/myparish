@@ -70,6 +70,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(NonParoissien::class);
     }
+
+    public function don()
+    {
+        return $this->hasMany(Don::class, 'donateur_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

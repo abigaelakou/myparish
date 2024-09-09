@@ -17,7 +17,7 @@ class TypeDon extends Model
     ];
 
     //Relation entre les tables
-    public function Dons()
+    public function don()
     {
         return $this->hasMany(Don::class, 'id_type_don');
     }

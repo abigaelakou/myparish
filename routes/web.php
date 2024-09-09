@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DemandeMesseController;
+use App\Http\Controllers\DonController;
 use App\Http\Controllers\MesseController;
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TypeDonController;
 use App\Http\Controllers\TypeIntentionController;
 use App\Http\Controllers\TypeMesseController;
 use App\Http\Controllers\UserController;
@@ -57,7 +59,9 @@ Route::middleware('auth')->group(function () {
     // Affichage du formulaire 
     Route::view('formPaiement', 'Espaces.Messe.formPaiement')->name('formPaiement');
     Route::view('Espaces/Messe/listeDemandeMesse', 'Espaces.Messe.listeDemandeMesse')->name('listeDemandeMesse');
-
+    Route::view('formTypeDon', 'Espaces.Don.formTypeDon')->name('formTypeDon');
+    Route::view('listeDon', 'Espaces.Don.listeDon')->name('listeDon');
+    Route::view('listeDonUtilisateur', 'Espaces.Don.listeDonUtilisateur')->name('listeDonUtilisateur');
 
     // routes utilisateurs
     Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
@@ -106,18 +110,34 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/processPaiement', [PaiementController::class, 'processPaiement'])->name('processPaiement');
     Route::get('/confirmation', [PaiementController::class, 'confirmationPage'])->name('confirmation');
-    Route::get('paiement/{id_demande}', [PaiementController::class, 'showPaiementForm'])->name('formPaiement');
+    Route::get('paiement/{id_demande}', [PaiementController::class, 'showPaiementForm'])->name('paiement');
 
 
     Route::post('/create_type_intention', [TypeIntentionController::class, 'create_type_intention'])->name('create_type_intention');
     Route::post('/update_type_intention', [TypeIntentionController::class, 'update_type_intention'])->name('update_type_intention');
-    Route::get('/supp_type_intention/{id}', [TypeIntentionController::class, 'supp_type_messe'])->name('supp_type_messe');
+    Route::get('/supp_type_intention/{id}', [TypeIntentionController::class, 'supp_type_intention'])->name('supp_type_intention');
     Route::get('/list_type_intention', [TypeIntentionController::class, 'list_type_intention'])->name('list_type_intention');
 
     Route::post('/create_type_messe', [TypeMesseController::class, 'create_type_messe'])->name('create_type_messe');
     Route::post('/update_type_messe', [TypeMesseController::class, 'update_type_messe'])->name('update_type_messe');
     Route::get('/list_type_messe', [TypeMesseController::class, 'list_type_messe'])->name('list_type_messe');
     Route::get('/supp_type_messe/{id}', [TypeMesseController::class, 'supp_type_messe'])->name('supp_type_messe');
+
+    Route::post('/create_type_don', [TypeDonController::class, 'create_type_don'])->name('create_type_don');
+    Route::post('/update_type_don', [TypeDonController::class, 'update_type_don'])->name('update_type_don');
+    Route::get('/list_type_don', [TypeDonController::class, 'list_type_don'])->name('list_type_don');
+    Route::get('/supp_type_don/{id}', [TypeDonController::class, 'supp_type_don'])->name('supp_type_don');
+
+
+
+
+    Route::get('/failed', [DonController::class, 'failedPaymentPage'])->name('failed');
+    Route::post('/process', [DonController::class, 'processDonation'])->name('process');
+    Route::get('/confirmation', [DonController::class, 'confirmationPage'])->name('confirmation');
+    Route::get('/formDon', [DonController::class, 'showDonationForm'])->name('formDon');
+    Route::get('Espaces/Don/formDon', [DonController::class, 'show_type_don'])->name('formDon');
+    Route::get('/liste_don', [DonController::class, 'liste_don'])->name('liste_don');
+    Route::get('/listUserDons', [DonController::class, 'listUserDons'])->name('listUserDons');
 
 
 

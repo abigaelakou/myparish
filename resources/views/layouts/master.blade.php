@@ -256,8 +256,23 @@
                             </li>
                             <li class="sidebar-main-title">
                                 <div>
-                                    <h6 class="lan-">Dons et offrandes</h6>
+                                    <h6 class="lan-">Dons </h6>
                                 </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeDon') }}">Créa Type Don</a></li>
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDon') }}">Liste des dons</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Dons utilisateur</a></li>
+                                </ul>
                             </li>
                             {{-- ******************* FIN BOX DON *********************** --}}
                             {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}

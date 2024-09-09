@@ -13,20 +13,27 @@ class Don extends Model
 
     protected $fillable = [
         'description',
-        'valeur',
         'date_don',
+        'mode_paiement',
+        'transaction_id',
+        'payment_status',
+        'contact',
+        'montant',
+        'type_donateur',
+        'donateur_id',
         'id_type_don',
-        'id_paroissien',
-        'id_non_paroissien'
 
     ];
 
     // Relation avec les tables
-    public function TypeDon()
+    public function typeDon()
     {
         return $this->belongsTo(TypeDon::class, 'id_type_don');
     }
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'donateur_id');
+    }
     public function Paroissien()
     {
         return $this->belongsTo(Paroissien::class, 'id_paroissien');
