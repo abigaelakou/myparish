@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ArchivageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DemandeMesseController;
 use App\Http\Controllers\DonController;
+use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\MesseController;
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\PaiementController;
@@ -12,7 +14,6 @@ use App\Http\Controllers\TypeIntentionController;
 use App\Http\Controllers\TypeMesseController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TypeUserController;
-use App\Models\DemandeMesse;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\Comparator\TypeComparator;
@@ -62,6 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::view('formTypeDon', 'Espaces.Don.formTypeDon')->name('formTypeDon');
     Route::view('listeDon', 'Espaces.Don.listeDon')->name('listeDon');
     Route::view('listeDonUtilisateur', 'Espaces.Don.listeDonUtilisateur')->name('listeDonUtilisateur');
+    Route::view('formEvenement', 'Espaces.Autres.formEvenement')->name('formEvenement');
+    Route::view('listEvenement', 'Espaces.Autres.listEvenement')->name('listEvenement');
+    Route::view('formArchivage', 'Espaces.Autres.formArchivage')->name('formArchivage');
+    Route::view('listDocArchive', 'Espaces.Autres.listDocArchive')->name('listDocArchive');
 
     // routes utilisateurs
     Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
@@ -128,9 +133,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/list_type_don', [TypeDonController::class, 'list_type_don'])->name('list_type_don');
     Route::get('/supp_type_don/{id}', [TypeDonController::class, 'supp_type_don'])->name('supp_type_don');
 
-
-
-
     Route::get('/failed', [DonController::class, 'failedPaymentPage'])->name('failed');
     Route::post('/process', [DonController::class, 'processDonation'])->name('process');
     Route::get('/confirmation', [DonController::class, 'confirmationPage'])->name('confirmation');
@@ -139,6 +141,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/liste_don', [DonController::class, 'liste_don'])->name('liste_don');
     Route::get('/listUserDons', [DonController::class, 'listUserDons'])->name('listUserDons');
 
+    Route::post('/store_evenement', [EvenementController::class, 'store_evenement'])->name('store_evenement');
+    Route::post('/update_evenement', [EvenementController::class, 'update_evenement'])->name('update_evenement');
+    Route::get('/liste_des_evements', [EvenementController::class, 'liste_des_evements'])->name('liste_des_evements');
+    Route::get('/liste_des_evenements_non_realises', [EvenementController::class, 'liste_des_evenements_non_realises'])->name('liste_des_evenements_non_realises');
+    Route::get('/supp_evenement/{id}', [EvenementController::class, 'supp_evenement'])->name('supp_evenement');
+
+    Route::post('/store_archivage', [ArchivageController::class, 'store_archivage'])->name('store_archivage');
+    Route::get('/listDocuments', [ArchivageController::class, 'listDocuments'])->name('listDocuments');
 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

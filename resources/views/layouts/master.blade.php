@@ -280,8 +280,25 @@
                                 <div>
                                     <h6 class="lan-">AUTRES</h6>
                                 </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Archivages/Evenements</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
+                                    <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
+                                    <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
+                                    <li><a href="{{ route('listDocArchive') }}">List Doc Archivés</a></li>
+
+                                </ul>
+                            </li>
                             </li>
                             {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
+
                             {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>

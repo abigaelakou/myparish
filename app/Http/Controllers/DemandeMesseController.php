@@ -89,7 +89,7 @@ class DemandeMesseController extends Controller
     // Suppression de messe
     public function supp_demande_messe($id)
     {
-        DB::table("demande_mese")->where("id", $id)->delete();
+        DB::table("demande_messes")->where("id", $id)->delete();
         return true;
     }
 
