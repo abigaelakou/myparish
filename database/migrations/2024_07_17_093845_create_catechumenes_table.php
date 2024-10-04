@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('catechumenes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('contact');
-            $table->string('email');
+            $table->string('contact')->nullable();
+            $table->string('email')->nullable();
             $table->string('nom_prenom_pere');
-            $table->string('contact_pere');
+            $table->string('contact_pere')->nullable();
             $table->string('nom_prenom_mere');
-            $table->string('contact_mere');
-            $table->string('nom_prenom_parain');
-            $table->string('contact_parain');
-            $table->enum('sacrement_recu', ['AUCUN', 'BAPTEME', 'EUCHARISTIE', 'CONFIRMATION', 'ONCTION DES MALADE', 'MARIAGE', 'RECONCILIATION',]);
+            $table->string('contact_mere')->nullable();
+            $table->string('nom_prenom_parain')->nullable();
+            $table->string('contact_parain')->nullable();
+            $table->string('sacrement_recu');
             $table->timestamps();
         });
     }

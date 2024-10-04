@@ -25,7 +25,7 @@ class Catechumene extends Model
     ];
 
     //Relation entre les tables
-    public function Attestations()
+    public function attestations()
     {
         return $this->hasMany(Attestation::class, 'id_catechumene');
     }
@@ -34,8 +34,20 @@ class Catechumene extends Model
     {
         return $this->hasMany(Evaluation::class, 'id_catechumene');
     }
-    public function Inscriptions()
+    public function inscription()
     {
         return $this->hasMany(Inscription::class, 'id_catechumene');
+    }
+
+
+
+    public function decisions()
+    {
+        return $this->hasMany(DecisionCatechese::class, 'id_catechumene');
+    }
+
+    public function presences()
+    {
+        return $this->hasMany(PresenceCatechese::class, 'id_catechumene');
     }
 }

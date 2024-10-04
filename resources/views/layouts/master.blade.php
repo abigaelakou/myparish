@@ -304,7 +304,23 @@
                                 <div>
                                     <h6 class="lan-">Catechèse</h6>
                                 </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
                             </li>
+                            </li>
+
                             {{-- ******************* FIN BOX CATECHESE *********************** --}}
                         </ul>
                         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

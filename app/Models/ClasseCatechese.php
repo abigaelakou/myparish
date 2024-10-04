@@ -13,13 +13,21 @@ class ClasseCatechese extends Model
     protected $fillable = [
         'lib_classe_cate',
         'id_niveau',
+        'id_session',
         'id_user'
     ];
 
     // Relation avec les tables
-    public function NiveauCatechetique()
+
+
+    public function niveau()
     {
         return $this->belongsTo(NiveauCatechetique::class, 'id_niveau');
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(SessionCatechese::class, 'id_session');
     }
 
     public function User()

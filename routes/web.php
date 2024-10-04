@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchivageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\CatecheseController;
 use App\Http\Controllers\DemandeMesseController;
 use App\Http\Controllers\DonController;
 use App\Http\Controllers\EvenementController;
@@ -67,6 +68,20 @@ Route::middleware('auth')->group(function () {
     Route::view('listEvenement', 'Espaces.Autres.listEvenement')->name('listEvenement');
     Route::view('formArchivage', 'Espaces.Autres.formArchivage')->name('formArchivage');
     Route::view('listDocArchive', 'Espaces.Autres.listDocArchive')->name('listDocArchive');
+    Route::view('formCatechumene', 'Espaces.Catechese.formCatechumene')->name('formCatechumene');
+    Route::view('listeCatechumene', 'Espaces.Catechese.listeCatechumene')->name('listeCatechumene');
+    Route::view('espaceKT', 'Espaces.Catechese.espaceKT')->name('espaceKT');
+    Route::view('showAttentePaiement', 'Espaces.Catechese.showAttentePaiement')->name('showAttentePaiement');
+    Route::view('formInscriptionKT', 'Espaces.Catechese.formInscriptionKT')->name('formInscriptionKT');
+    Route::view('inscriptionAttente', 'Espaces.Catechese.inscriptionAttente')->name('inscriptionAttente');
+    Route::view('paiementCompleter', 'Espaces.Catechese.paiementCompleter')->name('paiementCompleter');
+    Route::view('recu_paiement', 'Espaces.Catechese.recu_paiement')->name('recu_paiement');
+    Route::view('partials_paiement_form', 'Espaces.Catechese.partials_paiement_form')->name('partials_paiement_form');
+    Route::view('formClasse', 'Espaces.Catechese.formClasse')->name('formClasse');
+    Route::get('Espaces/Catechese/formClasse', [CatecheseController::class, 'show_niv_session'])->name('formClasse');
+    Route::get('Espaces/Catechese/affectation_catechumene', [CatecheseController::class, 'showForm'])->name('affectation_catechumene');
+
+
 
     // routes utilisateurs
     Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
@@ -114,7 +129,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/processPaiement', [PaiementController::class, 'processPaiement'])->name('processPaiement');
-    Route::get('/confirmation', [PaiementController::class, 'confirmationPage'])->name('confirmation');
+    Route::get('/confirmationPage', [PaiementController::class, 'confirmationPage'])->name('confirmationPage');
     Route::get('paiement/{id_demande}', [PaiementController::class, 'showPaiementForm'])->name('paiement');
 
 
@@ -136,7 +151,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/failed', [DonController::class, 'failedPaymentPage'])->name('failed');
     Route::post('/process', [DonController::class, 'processDonation'])->name('process');
     Route::get('/confirmation', [DonController::class, 'confirmationPage'])->name('confirmation');
-    Route::get('/formDon', [DonController::class, 'showDonationForm'])->name('formDon');
+    Route::get('/showDonationForm', [DonController::class, 'showDonationForm'])->name('showDonationForm');
     Route::get('Espaces/Don/formDon', [DonController::class, 'show_type_don'])->name('formDon');
     Route::get('/liste_don', [DonController::class, 'liste_don'])->name('liste_don');
     Route::get('/listUserDons', [DonController::class, 'listUserDons'])->name('listUserDons');
@@ -149,6 +164,41 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/store_archivage', [ArchivageController::class, 'store_archivage'])->name('store_archivage');
     Route::get('/listDocuments', [ArchivageController::class, 'listDocuments'])->name('listDocuments');
+
+    Route::post('/store_catechumene', [CatecheseController::class, 'store_catechumene'])->name('store_catechumene');
+    Route::post('/update_catechumene', [CatecheseController::class, 'update_catechumene'])->name('update_catechumene');
+    Route::get('/liste_catechumene', [CatecheseController::class, 'liste_catechumene'])->name('liste_catechumene');
+    Route::get('/supp_catechumene/{id}', [CatecheseController::class, 'supp_catechumene'])->name('supp_catechumene');
+    Route::POST('/partials_paiement_form', [CatecheseController::class, 'completePaymentForm'])->name('partials_paiement_form');
+    Route::post('/store_inscription', [CatecheseController::class, 'store_inscription'])->name('store_inscription');
+    Route::post('/validation_paiementCatechese', [CatecheseController::class, 'validation_paiementCatechese'])->name('validation_paiementCatechese');
+    Route::get('Espaces/Catechese/formInscriptionKT', [CatecheseController::class, 'info_catechese'])->name('formInscriptionKT');
+    Route::get('inscriptionAttente/{id_inscription}', [CatecheseController::class, 'showAttentePaiement'])->name('inscriptionAttente');
+    Route::get('/failedKTPaymentPage', [CatecheseController::class, 'failedKTPaymentPage'])->name('failedKTPaymentPage');
+    Route::post('/paiementCompleter', [CatecheseController::class, 'completePaymentForm'])->name('paiementCompleter');
+    Route::get('/getForm/{id_inscription}', [CatecheseController::class, 'getForm'])->name('getForm');
+
+    Route::get('/download/recu/{id_paiement}', [CatecheseController::class, 'downloadRecu'])->name('download.recu');
+    Route::get('/listeInscritsAttente', [CatecheseController::class, 'listeInscritsAttente'])->name('listeInscritsAttente');
+    Route::get('/listeInscritsPayer', [CatecheseController::class, 'listeInscritsPayer'])->name('listeInscritsPayer');
+
+    // Routes de classe catechèse
+    Route::post('/store_classe_catechese', [CatecheseController::class, 'store_classe_catechese'])->name('store_classe_catechese');
+    Route::get('/listeClasseCatechese', [CatecheseController::class, 'listeClasseCatechese'])->name('listeClasseCatechese');
+    Route::post('/update_classe', [CatecheseController::class, 'update_classe'])->name('update_classe');
+    Route::get('/supp_classe_catechese/{id}', [CatecheseController::class, 'supp_classe_catechese'])->name('supp_classe_catechese');
+    Route::get('/liste-catechumenes', [CatecheseController::class, 'listeCatechumenesParClasse']);
+
+
+    // ROUTES D'AFFECTATIONS
+    Route::get('/affectation-catechumene', [CatecheseController::class, 'showForm'])->name('affectation.form');
+    Route::post('/affecter-catechumene', [CatecheseController::class, 'affecterCatechumene'])->name('affecter.catechumene');
+    // decision de fin d'années
+    Route::post('/enregistrerDecision', [CatecheseController::class, 'enregistrerDecision'])->name('enregistrerDecision');
+    Route::get('/getListeCatechumenesAvecDecisions', [CatecheseController::class, 'getListeCatechumenesAvecDecisions'])->name('getListeCatechumenesAvecDecisions');
+    Route::get('Espaces/Catechese/formDecisionCatechumene', [CatecheseController::class, 'info_catechese_deux'])->name('formDecisionCatechumene');
+    Route::post('/update_decision', [CatecheseController::class, 'update_decision'])->name('update_decision');
+    Route::get('/getliste_catechumene_fini', [CatecheseController::class, 'getliste_catechumene_fini'])->name('getliste_catechumene_fini');
 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
