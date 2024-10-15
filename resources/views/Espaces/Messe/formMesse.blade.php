@@ -7,7 +7,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Formualaire d'ajout</h4>
+                    <h4>Formulaire d'ajout</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
@@ -73,7 +73,7 @@
                                 <input class="form-control" name="heure_messe" id="heure_messe" type="time" required="">
                             </div>
                             <div class="col-md-4 position-relative">
-                                <label class="form-label" for="validationTooltip04">Celebrant</label>
+                                <label class="form-label" for="validationTooltip04">Célébrant</label>
                                 <select class="form-select" id="id_celebrant" name="id_celebrant" required="">
                                     <option selected="" disabled="" value="">choisir...</option>
                                     @foreach ($celebrants as $celebrant)
@@ -93,7 +93,21 @@
             </div>
 
         </div>
+        <h4>La liste de mes messes programmées</h4>
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive custom-scrollbar" id="liste_messe_user">
 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4>Liste de toutes les Messes programmées</h4>
+        <hr>
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -105,7 +119,6 @@
                 </div>
             </div>
         </div>
-
         {{-- MODAL MODIFICATION --}}
         <div class="modal fade" id="editMesseModal" tabindex="-1" role="dialog" aria-labelledby="editMesseModal"
             aria-hidden="true">

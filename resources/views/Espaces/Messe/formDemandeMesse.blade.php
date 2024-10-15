@@ -7,7 +7,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Formualaire demande messe</h4>
+                    <h4>Formulaire demande messe</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">

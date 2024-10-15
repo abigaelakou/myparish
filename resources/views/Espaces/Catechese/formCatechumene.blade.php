@@ -7,7 +7,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Formualaire des catechumenes</h4>
+                    <h4>Enregistrement de catechumène</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
@@ -15,8 +15,8 @@
                                 <svg class="stroke-icon">
                                     <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
                                 </svg></a></li>
-                        <li class="breadcrumb-item"> Enregistrement de catechumène</li>
-                        <li class="breadcrumb-item active"> Formulaire d'ajout</li>
+                        <li class="breadcrumb-item"> Ajout de catechumène</li>
+                        <li class="breadcrumb-item active">Enregistrement de catechumène</li>
                     </ol>
                 </div>
             </div>

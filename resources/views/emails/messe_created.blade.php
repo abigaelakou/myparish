@@ -7,7 +7,7 @@
 
 <body>
     <h1>Détails de la Messe</h1>
-    <p>Bonjour {{ $celebrant->name }},</p>
+    <p>Bonjour {{ $celebrant }},</p>
     <p>Une nouvelle messe a été programmée avec les détails suivants :</p>
     <ul>
         <li><strong>Date :</strong> {{ $date_messe }}</li>

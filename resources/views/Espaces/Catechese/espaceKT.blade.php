@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('main-content')
-
+@if(Auth::check())
+@if(Auth::user()->id_type_utilisateur == 1)
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -23,7 +24,6 @@
         </div>
     </div>
     <!-- Container-fluid starts-->
-
     <hr>
     <div class="container-fluid">
         <div class="row">
@@ -64,7 +64,389 @@
         </div>
     </div>
 </div>
+@elseif(Auth::user()->id_type_utilisateur == 2)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+                <a href="{{ route('affectation_catechumene') }}" class="btn btn-secondary">Affectation</a>
+                <a href="{{ route('formDecisionCatechumene') }}" class="btn btn-primary">Décision de fin d'année</a>
+                <a href="{{ route('formClasse') }}" class="btn btn-secondary">Espace classe</a>
+                <a href="{{ route('formCatechumene') }}" class="btn btn-primary">Attestation </a>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes inscris pour l'année catéchétique en cours</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris">
 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes en retard de paiement d'inscription</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris_attente">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@elseif(Auth::user()->id_type_utilisateur == 3)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{{-- PRETRE --}}
+@elseif(Auth::user()->id_type_utilisateur == 4)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+                <a href="{{ route('affectation_catechumene') }}" class="btn btn-secondary">Affectation</a>
+                <a href="{{ route('formDecisionCatechumene') }}" class="btn btn-primary">Décision de fin d'année</a>
+                <a href="{{ route('formClasse') }}" class="btn btn-secondary">Espace classe</a>
+                <a href="{{ route('formCatechumene') }}" class="btn btn-primary">Attestation </a>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes inscris pour l'année catéchétique en cours</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes en retard de paiement d'inscription</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris_attente">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- PAROISSIEN --}}
+@elseif(Auth::user()->id_type_utilisateur == 5)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{{-- SECRETAIRE --}}
+@elseif(Auth::user()->id_type_utilisateur == 6)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+                <a href="{{ route('affectation_catechumene') }}" class="btn btn-secondary">Affectation</a>
+                <a href="{{ route('formDecisionCatechumene') }}" class="btn btn-primary">Décision de fin d'année</a>
+                <a href="{{ route('formClasse') }}" class="btn btn-secondary">Espace classe</a>
+                <a href="{{ route('formCatechumene') }}" class="btn btn-primary">Attestation </a>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes inscris pour l'année catéchétique en cours</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes en retard de paiement d'inscription</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris_attente">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- RESPO KT --}}
+@elseif(Auth::user()->id_type_utilisateur == 8)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+                <a href="{{ route('affectation_catechumene') }}" class="btn btn-secondary">Affectation</a>
+                <a href="{{ route('formDecisionCatechumene') }}" class="btn btn-primary">Décision de fin d'année</a>
+                <a href="{{ route('formClasse') }}" class="btn btn-secondary">Espace classe</a>
+                <a href="{{ route('formCatechumene') }}" class="btn btn-primary">Attestation </a>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes inscris pour l'année catéchétique en cours</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes en retard de paiement d'inscription</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris_attente">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- RESPO CONSEIL PAROISSIAL --}}
+@elseif(Auth::user()->id_type_utilisateur == 9)
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-6">
+                    <h4>ESPACE CATECHESE</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
+                                </svg></a></li>
+                        <li class="breadcrumb-item"> Espace catechèse</li>
+                        <li class="breadcrumb-item active">Infos catechèse</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <hr>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <a href="{{ route('formInscriptionKT') }}" class="btn btn-primary">Inscription</a>
+                <a href="{{ route('affectation_catechumene') }}" class="btn btn-secondary">Affectation</a>
+                <a href="{{ route('formDecisionCatechumene') }}" class="btn btn-primary">Décision de fin d'année</a>
+                <a href="{{ route('formClasse') }}" class="btn btn-secondary">Espace classe</a>
+                <a href="{{ route('formCatechumene') }}" class="btn btn-primary">Attestation </a>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes inscris pour l'année catéchétique en cours</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h3 class="text-center">Liste des catéchumènes en retard de paiement d'inscription</h3>
+    <div class="card-body">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive custom-scrollbar" id="catechumene_inscris_attente">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@else
+{{ redirect('/guest') }}
+@endif
+@endif
 <div class="modal fade modal-md" id="editPaiementModal" tabindex="-1" role="dialog" aria-labelledby="editPaiementModal"
     aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">

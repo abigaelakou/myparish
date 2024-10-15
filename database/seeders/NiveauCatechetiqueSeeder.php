@@ -17,22 +17,11 @@ class NiveauCatechetiqueSeeder extends Seeder
     {
         //
         DB::table('niveau_catechetiques')->insert([
-            ['lib_niveau' => '1ère Année', 'id_session' => '1'],
-            ['lib_niveau' => '2ème Année', 'id_session' => '1'],
-            ['lib_niveau' => '3ème Année', 'id_session' => '1'],
-            ['lib_niveau' => '4ème Année', 'id_session' => '1'],
-            ['lib_niveau' => '5ème Année', 'id_session' => '1'],
-
-            ['lib_niveau' => '1ère Année', 'id_session' => '2'],
-            ['lib_niveau' => '2ème Année', 'id_session' => '2'],
-            ['lib_niveau' => '3ème Année', 'id_session' => '2'],
-            ['lib_niveau' => '4ème Année', 'id_session' => '2'],
-            ['lib_niveau' => '5ème Année', 'id_session' => '2'],
-
-            ['lib_niveau' => '1ère Année', 'id_session' => '3'],
-            ['lib_niveau' => '2ème Année', 'id_session' => '3'],
-            ['lib_niveau' => '3ème Année', 'id_session' => '3'],
-            ['lib_niveau' => '4ème Année', 'id_session' => '3'],
+            ['lib_niveau' => '1ère Année'],
+            ['lib_niveau' => '2ème Année'],
+            ['lib_niveau' => '3ème Année'],
+            ['lib_niveau' => '4ème Année'],
+            ['lib_niveau' => '5ème Année'],
         ]);
     }
 }

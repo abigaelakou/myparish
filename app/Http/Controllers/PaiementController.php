@@ -80,7 +80,7 @@ class PaiementController extends Controller
             $transaction = new Transactions();
             $transaction->paiement_id = $paiement->id;
             $transaction->transaction_id = $response['transaction_id'];
-            $transaction->date = now();
+            $transaction->date = now()->format('Y-m-d H:i:s');
             $transaction->save();
 
             // Enregistrer les détails de la transaction dans la session pour la confirmation
@@ -88,21 +88,22 @@ class PaiementController extends Controller
                 'transaction_id' => $response['transaction_id'],
                 'amount' => $montant,
                 'moyen_paiement' => $moyenPaiement,
-                'date' => now(),
+                'date' => now()->format('Y-m-d H:i:s'),
             ]]);
 
+            // dd(session('transaction_details'));
             // Redirection vers une page de confirmation avec un message de succès
-            return redirect()->route('confirmation')->with('success', 'Paiement réussi, demande de messe enregistrée.');
+            return redirect()->route('formConfirmation')->with('success', 'Paiement réussi, demande de messe enregistrée.');
         } else {
             // En cas d'échec du paiement
             return redirect()->back()->with('error', 'Le paiement a échoué. Veuillez réessayer.');
         }
     }
 
-    public function confirmationPage(Request $request)
+    public function confirmationPageDemande(Request $request)
     {
         $transactionDetails = session('transaction_details');
-
+        // dd($transactionDetails);
         // Vérifier si les détails de la transaction existent dans la session
         if (!$transactionDetails) {
             return redirect()->back()->with('error', 'Aucune transaction trouvée.');

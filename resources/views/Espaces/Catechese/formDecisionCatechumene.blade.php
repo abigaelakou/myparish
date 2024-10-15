@@ -80,7 +80,7 @@
                             <div class="col-md-3 position-relative">
                                 <label for="total_presence_ceb">Total Présence CEB:</label>
                                 <input type="number" class="form-control" id="total_presence_ceb"
-                                    name="total_presence_ceb">
+                                    name="total_presence_ceb" required>
                             </div>
                             <div class="col-md-3 position-relative">
                                 <label for="moy_final">Moyenne Finale:</label>

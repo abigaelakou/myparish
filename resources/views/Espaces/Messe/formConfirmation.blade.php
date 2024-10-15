@@ -57,6 +57,8 @@
                                 <li>Méthode de paiement: {{ ucfirst($transactionDetails['moyen_paiement']) }}</li>
                                 <li>Date: {{ $transactionDetails['date'] }}</li>
                             </ul>
+                            <a href="{{ route('formDemandeMesse') }}" class="btn btn-primary">Faire une autre
+                                Demande? </a>
                             @else
                             <p>Aucun détail de transaction disponible.</p>
                             @endif

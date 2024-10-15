@@ -7,7 +7,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Formualire d'ajout</h4>
+                    <h4>Utilisateurs</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
@@ -56,7 +56,7 @@
                             </div>
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="validationTooltip02">Contact</label>
-                                <input class="form-control" name="contact" id="validationTooltip02" type="text"
+                                <input class="form-control" name="contact" id="validationTooltip02" type="number"
                                     placeholder="0700000000" required="">
                                 <div class="valid-tooltip">Bon!</div>
                             </div>
@@ -178,20 +178,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Affiche toutes les valeurs du select pour déboguer
         Array.from(select.options).forEach(option => console.log("Option Value:", option.value));
 
-        select.addEventListener('change', function() {
-            // console.log("Valeur du select : ", this.value);
-
-            paroissienFields.style.display = 'none';
-            nonParoissienFields.style.display = 'none';
-
-            if (this.value === '5') { 
-                paroissienFields.style.display = 'block';
-                // console.log("Affichage des champs paroissien");
-            } else if (this.value === '7') { 
-                nonParoissienFields.style.display = 'block';
-                // console.log("Affichage des champs non paroissien");
-            }
-        });
+     select.addEventListener('change', function() {
+    // console.log("Valeur du select : ", this.value);
+    
+    // Cacher les deux champs par défaut
+    paroissienFields.style.display = 'none';
+    nonParoissienFields.style.display = 'none';
+    
+    // Afficher les champs en fonction de la valeur sélectionnée
+    if (this.value === '3' || this.value === '5' || this.value === '6' || this.value === '8' || this.value === '9') {
+    paroissienFields.style.display = 'block';
+    // console.log("Affichage des champs paroissien");
+    } else if (this.value === '7') {
+    nonParoissienFields.style.display = 'block';
+    // console.log("Affichage des champs non paroissien");
+    }
+    });
     }
 });
 

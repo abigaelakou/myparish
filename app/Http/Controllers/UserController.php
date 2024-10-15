@@ -59,7 +59,7 @@ class UserController extends Controller
         ]);
 
         // Si le type d'utilisateur est PAROISSIEN, enregistrer les informations dans la table paroissiens
-        if ($validatedData['id_type_utilisateur'] == '5') {
+        if ($validatedData['id_type_utilisateur'] == '3' || $validatedData['id_type_utilisateur'] == '5' || $validatedData['id_type_utilisateur'] == '6' || $validatedData['id_type_utilisateur'] == '8' || $validatedData['id_type_utilisateur'] == '9') {
             $paroissienData = $request->validate([
                 'sexe_p' => 'required|string',
                 'situation_matrimoniale' => 'required|string',
@@ -119,7 +119,7 @@ class UserController extends Controller
                 "password" => Hash::make($request->password)
             ]);
 
-        return redirect()->route('profile.edit')->with('success', 'Mot de passe mis à jour avec succès.');
+        return redirect()->route('changerMotPasse')->with('success', 'Mot de passe mis à jour avec succès.');
     }
 
     // Liste des utilisateurs
@@ -193,5 +193,18 @@ class UserController extends Controller
         ];
 
         return view('Espaces.Admin.statistiques', compact('donnee'));
+    }
+    public function index()
+    {
+        // Log l'utilisateur connecté
+        Log::info('Utilisateur connecté', ['utilisateur' => auth()->user()]);
+
+        if (auth()->check() && auth()->user()->id_type_utilisateur == 1) {
+            return view('Espaces/template');
+        }
+
+
+
+        return redirect('/unauthorized');
     }
 }

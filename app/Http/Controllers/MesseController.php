@@ -40,11 +40,11 @@ class MesseController extends Controller
         // dd($request->all());
         $messe->save();
         // Envoi de la notification au célébrant
-        // $celebrant = User::find($request->id_celebrant);
-        // if ($celebrant) {
-        //     // Envoyer l'email
-        //     Mail::to($celebrant->email)->send(new MesseCreated($messe));
-        // }
+        $celebrant = User::find($request->id_celebrant);
+        if ($celebrant) {
+            // Envoyer l'email avec l'objet Messe et le célébrant
+            Mail::to($celebrant->email)->send(new MesseCreated($messe, $celebrant));
+        }
         return redirect()->route('formMesse')->with('success', 'Messe créé avec succès.');
     }
 
@@ -70,7 +70,7 @@ class MesseController extends Controller
     function liste_des_messes_du_celebrant()
     {
         $liste_toutes_messes_celebrant = DB::table('messes')
-            ->where('id_celebrant', Auth::id()) // Filter by the logged-in celebrant
+            ->where('id_celebrant', Auth::id())
             ->join('users as creator', 'messes.id_user', '=', 'creator.id') // Utilisateur qui a créé la messe
             ->join('users as celebrant', 'messes.id_celebrant', '=', 'celebrant.id') // Utilisateur assigné pour célébrer la messe
             ->join('type_messes', 'messes.id_type_messe', '=', 'type_messes.id')

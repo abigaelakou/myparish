@@ -7,11 +7,11 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-6">
-                    <h4>Formualire d'ajout</h4>
+                    <h4>Formulaire d'ajout</h4>
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">>
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
                                 <svg class="stroke-icon">
                                     <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
                                 </svg></a></li>

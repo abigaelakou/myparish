@@ -17,6 +17,7 @@ class DemandeMesse extends Model
         'id_type_intention',
         'date_messe',
         'heure_messe',
+        'lieu_messe',
         'intentions',
     ];
 

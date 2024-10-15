@@ -11,9 +11,54 @@
  * - Modification    : 
  **/
 $(document).ready(function() {
+    liste_messe_utilisateur();
     liste_toutes_les_messes();
 });
+// ********************** LISTE MESSE UTILISATEUR CONNECTE
+function liste_messe_utilisateur() {
+    $.ajax({
+        type: "GET",
+        url: "/liste_des_messes_du_celebrant",
+        dataType: "json",
+        success: function(response) {
+            table_toute_messe_utilisateur(response);
+        }
+    });
+}
 
+function table_toute_messe_utilisateur(response) {
+    toute_messe_celebrant = response
+    var tableau = '<table id="liste_tab_celebrant" class="display table table-striped table-bordered" style="width:100% !important">' +
+        '<thead class="bg-white text-black">' +
+        '<tr>' +
+        '<th>Date Messe</th>' +
+        '<th>Heure </th>' +
+        '<th>Lieu </th>' +
+        '<th>Programmée par </th>' +
+        '<th>Type Messe </th>' +
+        '<th>Assignée à </th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+    toute_messe_celebrant.forEach(function(toute_messe_celeb) {
+        tableau += '<tr>' +
+            '<td>' + date_format_fr(toute_messe_celeb.date_messe) + '</td>' +
+            '<td>' + toute_messe_celeb.heure_messe + '</td>' +
+            '<td>' + toute_messe_celeb.lieu_messe + '</td>' +
+            '<td>' + toute_messe_celeb.creator_name + '</td>' +
+            '<td>' + toute_messe_celeb.lib_type_messe + '</td>' +
+            '<td>' + toute_messe_celeb.celebrant_name + '</td>' +
+
+            '</tr>';
+    });
+
+    tableau += '</tbody></table>';
+    $("#liste_messe_user").html(tableau);
+    appel_data_table("liste_tab_celebrant");
+}
+
+// ******************************** TOUTES LES MESSES ***************************
 function liste_toutes_les_messes() {
     $.ajax({
         type: "GET",
@@ -33,7 +78,7 @@ function table_toute_messe(response) {
         '<th>Date Messe</th>' +
         '<th>Heure </th>' +
         '<th>Lieu </th>' +
-        '<th>Créée par </th>' +
+        '<th>Programmée par </th>' +
         '<th>Type Messe </th>' +
         '<th>Assignée à </th>' +
         '<th>Action</th>' +

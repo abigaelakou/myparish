@@ -4,12 +4,15 @@ use App\Http\Controllers\ArchivageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CatecheseController;
 use App\Http\Controllers\DemandeMesseController;
+use App\Http\Controllers\DepensesController;
 use App\Http\Controllers\DonController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\MesseController;
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StatistiqueController;
 use App\Http\Controllers\TypeDonController;
 use App\Http\Controllers\TypeIntentionController;
 use App\Http\Controllers\TypeMesseController;
@@ -31,7 +34,6 @@ use SebastianBergmann\Comparator\TypeComparator;
 */
 
 Route::get('amd-clear-cache', function () {
-
     Artisan::call('config:cache');
     return Artisan::output();
 });
@@ -40,17 +42,15 @@ Route::get('amd-migrate', function () {
     Artisan::call('migrate');
     return Artisan::output();
 });
-Route::get('/', function () {
+Route::get('welcome', function () {
     return view('welcome');
 });
-
+Route::get('/', [PresentationController::class, 'show'])->name('presentation');
 
 Route::get('/Espaces', function () {
     return view('Espaces.template');
 })->middleware(['auth', 'verified'])->name('accueil');
 
-// INSERT INTO type_messes (lib_type_messe) VALUES ('Messe de Réparation'), ('Messe de Repos'), ('Messe de Grâce');
-// INSERT INTO type_intentions (lib_type_intention) VALUES ('Pour les défunts'), ('Pour les malades'), ('Pour la paix');
 
 Route::middleware('auth')->group(function () {
     Route::view('Espaces/Admin/listeUser', 'Espaces.Admin.listeUser')->name('listeUser');
@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
     // Affichage du formulaire 
     Route::view('formPaiement', 'Espaces.Messe.formPaiement')->name('formPaiement');
     Route::view('Espaces/Messe/listeDemandeMesse', 'Espaces.Messe.listeDemandeMesse')->name('listeDemandeMesse');
+    Route::view('formConfirmation', 'Espaces.Messe.formConfirmation')->name('formConfirmation');
     Route::view('formTypeDon', 'Espaces.Don.formTypeDon')->name('formTypeDon');
     Route::view('listeDon', 'Espaces.Don.listeDon')->name('listeDon');
     Route::view('listeDonUtilisateur', 'Espaces.Don.listeDonUtilisateur')->name('listeDonUtilisateur');
@@ -80,10 +81,15 @@ Route::middleware('auth')->group(function () {
     Route::view('formClasse', 'Espaces.Catechese.formClasse')->name('formClasse');
     Route::get('Espaces/Catechese/formClasse', [CatecheseController::class, 'show_niv_session'])->name('formClasse');
     Route::get('Espaces/Catechese/affectation_catechumene', [CatecheseController::class, 'showForm'])->name('affectation_catechumene');
+    Route::view('formDepense', 'Espaces.Depenses.formDepense')->name('formDepense');
+    Route::view('listeDepense', 'Espaces.Depenses.listeDepense')->name('listeDepense');
+    Route::view('listeMesDemandes', 'Espaces.Messe.listeMesDemandes')->name('listeMesDemandes');
+    Route::view('changerMotPasse', 'Espaces.Admin.changerMotPasse')->name('changerMotPasse');
 
 
 
     // routes utilisateurs
+    Route::get('/Espaces/template', [UserController::class, 'index']);
     Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
     Route::post('/check-email', [UserController::class, 'checkEmail']);
     Route::post('/update_password', [UserController::class, 'update_password'])->name('update_password');
@@ -126,10 +132,13 @@ Route::middleware('auth')->group(function () {
     Route::get('Espaces/Messe/formDemandeMesse', [DemandeMesseController::class, 'info_type_messe'])->name('formDemandeMesse');
     Route::get('/formPaiement', [DemandeMesseController::class, 'formPaiement'])->name('formPaiement');
     Route::get('liste_demande_messe', [DemandeMesseController::class, 'liste_demande_messe'])->name('liste_demande_messe');
-
+    Route::get('/demandes-messes-jour-suivant', [DemandeMesseController::class, 'listeDemandesMessesJourSuivant'])->name('demandes.messes.jour.suivant');
+    Route::get('/generer-pdf-demandes-messes', [DemandeMesseController::class, 'genererPdfDemandesMessesJourSuivant'])->name('generer.pdf.demandes.messes');
+    Route::get('/generer-word-demandes-messes', [DemandeMesseController::class, 'genererWordDemandesMessesJourSuivant'])->name('generer.word.demandes.messes');
+    Route::get('/mesDemandesMesses', [DemandeMesseController::class, 'mesDemandesMesses'])->name('mesDemandesMesses');
 
     Route::post('/processPaiement', [PaiementController::class, 'processPaiement'])->name('processPaiement');
-    Route::get('/confirmationPage', [PaiementController::class, 'confirmationPage'])->name('confirmationPage');
+    Route::get('/formConfirmation', [PaiementController::class, 'confirmationPageDemande'])->name('formConfirmation');
     Route::get('paiement/{id_demande}', [PaiementController::class, 'showPaiementForm'])->name('paiement');
 
 
@@ -199,6 +208,21 @@ Route::middleware('auth')->group(function () {
     Route::get('Espaces/Catechese/formDecisionCatechumene', [CatecheseController::class, 'info_catechese_deux'])->name('formDecisionCatechumene');
     Route::post('/update_decision', [CatecheseController::class, 'update_decision'])->name('update_decision');
     Route::get('/getliste_catechumene_fini', [CatecheseController::class, 'getliste_catechumene_fini'])->name('getliste_catechumene_fini');
+
+    // ROUTE DEPENSES
+    Route::post('/storeDepense', [DepensesController::class, 'storeDepense'])->name('storeDepense');
+    Route::get('/depenses/annee-en-cours', [DepensesController::class, 'listeDepensesAnneeEnCours']);
+    Route::get('/depenses/toutes', [DepensesController::class, 'listeToutesDepenses']);
+    Route::get('/listeDepensesMensuelles/{mois?}/{annee?}', [DepensesController::class, 'listeDepensesMensuelles'])->name('listeDepensesMensuelles');
+    Route::get('/supp_depense/{id}', [DepensesController::class, 'supp_depense'])->name('supp_depense');
+    Route::post('/update_depense', [DepensesController::class, 'update_depense'])->name('update_depense');
+
+    // ROUTES STATISTIQUES
+    Route::get('/stat_glogale', [StatistiqueController::class, 'stat_glogale'])->name('stat_glogale');
+    Route::get('/stat_dons/{mois}/{annee}', [StatistiqueController::class, 'stat_dons'])->name('stat_dons');
+    Route::get('/start_catechese', [StatistiqueController::class, 'start_catechese'])->name('start_catechese');
+    Route::get('/start_montant_total_annee_encours', [StatistiqueController::class, 'start_montant_total_annee_encours'])->name('start_montant_total_annee_encours');
+
 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

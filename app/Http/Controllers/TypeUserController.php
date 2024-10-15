@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use PgSql\Lob;
 
 class TypeUserController extends Controller
 {
     //
+
     public function create()
     {
+        Log::info('Type utilisateur:', ['type_utilisateurs' => auth()->user()->type_utilisateur]);
 
         $type_utilisateurs = DB::table('type_utilisateurs')->orderBy('lib_type_utilisateur')->get();
         // dd($type_utilisateurs);
