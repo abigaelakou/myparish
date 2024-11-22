@@ -14,12 +14,17 @@ class Mouvement extends Model
     protected $fillable = [
         'lib_mouvement',
         'date_creation',
-        'jour_rencontre'
+        'description'
     ];
 
     //Relation entre les tables
     public function MembreMouvements()
     {
         return $this->hasMany(MembreMouvement::class, 'id_mouvement');
+    }
+
+    public function rencontres()
+    {
+        return $this->hasMany(Rencontre::class, 'id_mouvement');
     }
 }

@@ -12,6 +12,7 @@ class NonParoissien extends Model
     protected $table = 'non_paroissiens';
 
     protected $fillable = [
+        'user_id',
         'name',
         'contact',
         'email',
@@ -23,5 +24,11 @@ class NonParoissien extends Model
     public function Dons()
     {
         return $this->hasMany(Don::class, 'id_non_paroissien');
+    }
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
