@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">
+                        <li class="breadcrumb-item"><a href="{{ route('accueil') }}">
                                 <svg class="stroke-icon">
                                     <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-home')}}"></use>
                                 </svg></a></li>
@@ -46,7 +46,7 @@
                             {{ session('success') }}
                         </div>
                         @endif
-                        <form class="row g-3" action="{{ route('store') }}" method="POST" id="">
+                        <form class="row g-3" action="{{ route('create_mouvement') }}" method="POST" id="">
                             @csrf
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="validationTooltip01">Nom Mouvement</label>

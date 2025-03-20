@@ -12,12 +12,12 @@ class SessionCatechese extends Model
     protected $table = 'session_catecheses';
 
     protected $fillable = [
-        'lib_session_catechese'
+        'lib_session_catechese',
+        'paroisse_id',
     ];
 
-    // Relation entre les tables
-    public function NiveauCatechetique()
+    public function paroisse()
     {
-        return $this->hasMany(NiveauCatechetique::class, 'id_session');
+        return $this->belongsTo(Paroisse::class);
     }
 }

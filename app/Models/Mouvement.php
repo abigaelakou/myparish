@@ -14,7 +14,8 @@ class Mouvement extends Model
     protected $fillable = [
         'lib_mouvement',
         'date_creation',
-        'description'
+        'description',
+        'paroisse_id',
     ];
 
     //Relation entre les tables
@@ -26,5 +27,10 @@ class Mouvement extends Model
     public function rencontres()
     {
         return $this->hasMany(Rencontre::class, 'id_mouvement');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

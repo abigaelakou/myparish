@@ -14,12 +14,18 @@ class Archivage extends Model
         'lib_document',
         'date_archivage',
         'fichier',
-        'id_user'
+        'id_user',
+        'paroisse_id',
     ];
 
     // Relation avec la table users
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

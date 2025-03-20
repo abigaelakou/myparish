@@ -11,6 +11,7 @@
  * - Modification    : 
  **/
 $(document).ready(function() {
+
     // console.log('OKAY');
     $('#email').on('blur', function() {
         var email = $(this).val();
@@ -30,6 +31,7 @@ $(document).ready(function() {
     });
 
     listes_utilisateurs();
+    listes_super_utilisateurs();
 });
 
 function listes_utilisateurs() {
@@ -117,6 +119,7 @@ $('#editUserForm').submit(function(e) {
     $("#editUserModal").modal("hide")
     setTimeout(() => {
         listes_utilisateurs()
+        listes_super_utilisateurs()
     }, 200);
 });
 
@@ -150,12 +153,78 @@ function update(id_user, status_code) {
                     'success'
                 );
                 listes_utilisateurs();
+                listes_super_utilisateurs();
             },
             error: function() {
                 swal('error', 'Opération échouée :)', 'Echec');
             }
         });
     });
+}
+
+// ************************** TRAITEMENT SUPER ADMIN *****************************************
+
+function listes_super_utilisateurs() {
+    $.ajax({
+        type: "GET",
+        url: "/liste_des_super_admins",
+        dataType: "json",
+        success: function(response) {
+            table_sup_utilisateur(response);
+        }
+    });
+}
+
+function table_sup_utilisateur(response) {
+    sup_users = response
+        // console.log(sup_users);
+
+    var tableau = '<table id="liste_tableau_sup_admin" class="display table table-striped table-bordered" style="width:100% !important">' +
+        '<thead class="bg-white text-black">' +
+        '<tr>' +
+        '<th>Nom & Prénoms</th>' +
+        '<th>Email</th>' +
+        '<th>Contact</th>' +
+        '<th>Profil</th>' +
+        '<th>Date inscription</th>' +
+        '<th>Action</th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+    sup_users.forEach(function(user) {
+        switch (Number(user.status)) {
+            case 1:
+
+                btn = '<button type="button" onclick="update(' + user.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="icon-unlock"></i>' +
+                    '</button>'
+                break;
+            case 0:
+
+                btn = '<button type="button" onclick="update(' + user.id + ',1);" class="btn btn-warning mr-3" title="Debloqué"> ' + '<i class="icon-lock"></i>' +
+                    '</button>'
+                break;
+            default:
+                break;
+        }
+        tableau += '<tr>' +
+            '<td>' + user.name + '</td>' +
+            '<td>' + user.email + '</td>' +
+            '<td>' + user.contact + '</td>' +
+            '<td>' + user.lib_type_utilisateur + '</td>' +
+            '<td>' + date_format_fr(user.created_at) + '</td>' +
+            '<td>' +
+            '<button type="button" onclick="modal_modif_utilisateur(' + user.id + ');" class="btn btn-success mr-1" title="Modifier">' +
+            '<i class="icon-pencil-alt2"></i>' +
+            '</button>' +
+            btn +
+            '</td>' +
+            '</tr>';
+    });
+
+    tableau += '</tbody></table>';
+    $("#liste_des_supers_admins").html(tableau);
+    appel_data_table("liste_tableau_sup_admin");
 }
 
 function appel_data_table(id_tableau) {

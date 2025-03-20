@@ -14,18 +14,20 @@ class NiveauCatechetique extends Model
 
     protected $fillable = [
         'lib_niveau',
-        'id_session'
+        'paroisse_id',
+
     ];
 
     //Relation entre les tables
 
-    public function SessionCatechetique()
-    {
-        return $this->belongsTo(SessionCatechese::class, 'id_session');
-    }
 
     public function classeCatecheses()
     {
         return $this->hasMany(ClasseCatechese::class, 'id_niveau');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

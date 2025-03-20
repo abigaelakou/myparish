@@ -16,8 +16,7 @@
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="{{ asset('css2?family=Montserrat:wght@200;300;400;500;600;700;800&amp;display=swap') }}"
-        rel="stylesheet">
+    <link href="../../css2?family=Montserrat:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/font-awesome.css') }}">
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/icofont.css') }}">
@@ -42,14 +41,14 @@
     <!-- login page start-->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xl-5"><img class="bg-img-cover bg-center"
-                    src="{{ asset('assets/images/login/eglise.jpg') }}" alt="looginpage"></div>
-            <div class="col-xl-7 p-0">
+            <div class="col-xl-7"><img class="bg-img-cover bg-center"
+                    src="{{ asset('assets/images/login/loginImage.png') }}" alt="looginpage"></div>
+            <div class="col-xl-5 p-0">
                 <div class="login-card login-dark">
                     <div>
-                        <div><a class="logo text-start" href="#"> <img class="img-fluid for-dark"
+                        <div><a class="logo text-start" href="index.html"><img class="img-fluid for-dark"
                                     src="{{ asset('assets/images/logo/logo.png') }}" alt="looginpage"><img
-                                    class="img-fluid for-light" src="{{ asset('assets/images/logo/logo4.png') }}"
+                                    class="img-fluid for-light" src="{{ asset('assets/images/logo/logo2.png') }}"
                                     alt="looginpage"
                                     style="max-width: 60%; max-height: 80px; margin-right:auto; margin-left:auto; margin-top:8%;display:block;"></a>
                         </div>

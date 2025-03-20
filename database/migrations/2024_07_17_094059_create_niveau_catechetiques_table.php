@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('niveau_catechetiques', function (Blueprint $table) {
             $table->id();
             $table->string('lib_niveau');
-            $table->foreignId('id_session')->constrained('session_catecheses')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

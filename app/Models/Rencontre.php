@@ -12,12 +12,18 @@ class Rencontre extends Model
         'jour',
         'heure_debut',
         'heure_fin',
-        'id_mouvement'
+        'id_mouvement',
+        'paroisse_id',
     ];
 
 
     public function mouvement()
     {
         return $this->belongsTo(Mouvement::class, 'id_mouvement');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

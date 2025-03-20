@@ -16,7 +16,8 @@ class NonParoissien extends Model
         'name',
         'contact',
         'email',
-        'sexe'
+        'sexe',
+        'paroisse_id',
     ];
 
 
@@ -30,5 +31,10 @@ class NonParoissien extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

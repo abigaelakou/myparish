@@ -176,7 +176,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        Barryvdh\DomPDF\ServiceProvider::class
     ],
 
     /*
@@ -192,6 +192,14 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // ...
-    ])->toArray(),
+        "FacadePdf" => Barryvdh\DomPDF\Facade\Pdf::class
+
+    ])->toArray()
+
+    // 'aliases' => [
+    //     // Autres alias Laravel
+    //     'PDF' => Barryvdh\DomPDF\Facade::class,
+    // ],
+
 
 ];

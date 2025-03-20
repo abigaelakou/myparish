@@ -11,8 +11,8 @@
         content="admin template, Riho admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('assets/images/logo/logo2.png" type="image/x-icon') }}">
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/logo2.png" type="image/x-icon') }}">
+    <link rel="icon" href="{{ asset('assets/images/logo/logo2.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo/logo2.png') }}" type="image/x-icon">
     <title>PAROISSE SMART</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,22 +69,9 @@
         <!-- Page Header Start-->
         <div class="page-header">
             <div class="header-wrapper row m-0">
-                <form class="form-inline search-full col" action="#" method="get">
-                    <div class="form-group w-100">
-                        <div class="Typeahead Typeahead--twitterUsers">
-                            <div class="u-posRelative">
-                                <input class="demo-input Typeahead-input form-control-plaintext w-100" type="text"
-                                    placeholder="Search Riho .." name="q" title="" autofocus="">
-                                <div class="spinner-border Typeahead-spinner" role="status"><span
-                                        class="sr-only">Loading... </span></div><i class="close-search"
-                                    data-feather="x"></i>
-                            </div>
-                            <div class="Typeahead-menu"> </div>
-                        </div>
-                    </div>
-                </form>
+
                 <div class="header-logo-wrapper col-auto p-0">
-                    <div class="logo-wrapper"> <a href="index.html"><img class="img-fluid for-light"
+                    <div class="logo-wrapper"> <a href="{{ route('accueil') }}"><img class="img-fluid for-light"
                                 src="{{ asset('assets/images/logo/logo_dark.png')}}" alt="logo-light"><img
                                 class="img-fluid for-dark" src="{{ asset('assets/images/logo/logo.png')}}"
                                 alt="logo-dark"></a>
@@ -104,46 +91,35 @@
                 </div>
                 <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
                     <ul class="nav-menus">
-                        <li class="d-md-none d-block">
-                            <div class="form search-form mb-0">
-                                <div class="input-group"> <span class="input-show">
-                                        <svg id="searchIcon">
-                                            <use href="{{ asset('assets/svg/icon-sprite.svg#search-header')}}"></use>
-                                        </svg>
-                                        <div id="searchInput">
-                                            <input type="search" placeholder="Search">
-                                        </div>
-                                    </span></div>
+                        <li class="profile-nav" onclick="toggleDropdown()">
+                            <div class="media profile-media">
+                                <img id="profileImagePreview" class="b-r-10"
+                                    src="{{ asset('storage/profile_images/' . ($user->profile_image ?? 'user.png')) }}?v={{ \Illuminate\Support\Str::random(10) }}"
+                                    alt="Profile Image">
                             </div>
-                        </li>
-
-                        <li>
-                            <div class="mode"><i class="moon" data-feather="moon"> </i></div>
-                        </li>
-
-                        <li class="profile-nav onhover-dropdown">
-                            <div class="media profile-media"><img class="b-r-10"
-                                    src="{{ asset('assets/images/dashboard/profile.png')}}" alt="">
-                                <div class="media-body d-xxl-block d-none box-col-none">
-                                    <div class="d-flex align-items-center gap-2"> <span>Alex Mora </span><i
-                                            class="middle fa fa-angle-down"> </i></div>
-                                    <p class="mb-0 font-roboto">Admin</p>
-                                </div>
-                            </div>
-                            <ul class="profile-dropdown onhover-show-div">
-                                <li><a href="user-profile.html"><i data-feather="user"></i><span>My Profile</span></a>
-                                </li>
-                                <li><a href="letter-box.html"><i data-feather="mail"></i><span>Inbox</span></a></li>
-                                <li> <a href="edit-profile.html"> <i
-                                            data-feather="settings"></i><span>Settings</span></a></li>
+                            <ul id="profileDropdown" class="profile-dropdown">
                                 <li>
-                                    <!-- Authentication -->
+                                    {{-- <form id="profileImageForm" action="{{ route('updateProfileImage') }}"
+                                        enctype="multipart/form-data" method="post">
+                                        @csrf
+                                        <div class="col-12">
+                                            <input class="form-control" type="file" name="profile_image"
+                                                accept="image/*" required onchange="previewImage(event)">
+                                            <button class="btn btn-pill btn-outline-secondary btn-sm mt-2"
+                                                type="submit">Changer sa photo</button>
+                                        </div>
+                                    </form> --}}
+                                </li>
+                                <li>
+                                    <a href="{{ route('changerMotPasse') }}">
+                                        <i data-feather="user"></i><span>Mon mot de passe</span>
+                                    </a>
+                                </li>
+                                <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-
                                         <a class="btn btn-pill btn-outline-primary btn-sm" href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
-                                                                    this.closest('form').submit();">
+                                            onclick="event.preventDefault(); this.closest('form').submit();">
                                             Déconnexion
                                         </a>
                                     </form>
@@ -160,9 +136,6 @@
             </div> 
             </div>
           </script>
-                <script class="empty-template" type="text/x-handlebars-template">
-                    <div class="EmptyMessage">Your search turned up 0 results. This most likely means the backend is down, yikes!</div>
-                </script>
             </div>
         </div>
         <!-- Page Header Ends                              -->
@@ -170,20 +143,21 @@
         <div class="page-body-wrapper">
             <!-- Page Sidebar Start-->
             <div class="sidebar-wrapper" data-layout="stroke-svg">
-                <div class="logo-wrapper"><a href="index.html"><img class="img-fluid"
+                <div class="logo-wrapper"><a href="{{ route('accueil') }}"><img class="img-fluid"
                             src="{{ asset('assets/images/logo/logo5.png')}}" alt=""
                             Style="max-width: 60%; max-height: 70px; ">></a>
                     <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
                     <div class="toggle-sidebar"><i class="status_toggle middle sidebar-toggle" data-feather="grid"> </i>
                     </div>
                 </div>
-                <div class="logo-icon-wrapper"><a href="index.html"><img class="img-fluid"
+                <div class="logo-icon-wrapper"><a href="{{ route('accueil') }}"><img class="img-fluid"
                             src="{{ asset('assets/images/logo/logo-icon.png')}}" alt=""></a></div>
                 <nav class="sidebar-main">
                     <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+
                     <div id="sidebar-menu">
                         <ul class="sidebar-links" id="simple-bar">
-                            <li class="back-btn"><a href="index.html"><img class="img-fluid"
+                            <li class="back-btn"><a href="{{ route('accueil') }}"><img class="img-fluid"
                                         src="{{ asset('assets/images/logo/logo-icon.png')}}" alt=""></a>
                                 <div class="mobile-back text-end"> <span>Back </span><i class="fa fa-angle-right ps-2"
                                         aria-hidden="true"></i></div>
@@ -193,12 +167,54 @@
                                     <h6>Epinglés</h6>
                                 </div>
                             </li>
-                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+                            @if(Auth::check())
+                            @if(Auth::user()->id_type_utilisateur == 1)
+                            <!-- *************************** ACCES SUPER ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX PAROISSE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>
-                                    <h6 class="lan-">Membres</h6>
+                                    <h6 class="lan-">AJOUT PAROISSE</h6>
                                 </div>
                             </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project')}}"></use>
+                                    </svg><span>Paroisse </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddParoisse') }}">Créer Paroisse</a></li>
+                                    <li><a href="#">Liste Paroisses</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX PAROISSE *********************** --}}
+                            {{-- **************************DEBUT BOX SUPER ADMIN********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">UTILISATEUR SUPER ADMIN</h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user') }}"></use>
+                                    </svg><span>SUP ADMIN </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('form_super_admin') }}">Créer sup admin</a></li>
+                                    <li><a href="{{ route('liste_sup_admin') }}">Liste sup admins</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+
+                            @elseif(Auth::user()->id_type_utilisateur == 2)
+                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
@@ -219,7 +235,6 @@
                                     <h6 class="lan-">Mouvements</h6>
                                 </div>
                             </li>
-                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
@@ -235,262 +250,1029 @@
                                     <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
                                 </ul>
                             </li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="file-manager.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-file') }}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-file') }}"></use>
-                                    </svg><span>File manager</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="kanban.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-board') }}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-board') }}"></use>
-                                    </svg><span>kanban Board</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title" href="#">
-                                    <svg class="stroke-icon">
-                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-ecommerce') }}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-ecommerce') }}"></use>
-                                    </svg><span>Ecommerce</span></a>
-                                <ul class="sidebar-submenu">
-                                    <li> <a href="add-products.html">Add Products</a></li>
-                                    <li><a href="product.html">Product</a></li>
-                                    <li><a href="category.html">Category page</a></li>
-                                    <li><a href="product-page.html">Product page</a></li>
-                                    <li><a href="list-products.html">Product list</a></li>
-                                    <li><a href="payment-details.html">Payment Details</a></li>
-                                    <li><a href="order-history.html">Order History</a></li>
-                                    <li><a class="submenu-title" href="#">Invoices<span class="sub-arrow"><i
-                                                    class="fa fa-angle-right"></i></span></a>
-                                        <ul class="nav-sub-childmenu submenu-content">
-                                            <li><a href="invoice-1.html">Invoice-1</a></li>
-                                            <li><a href="invoice-2.html">Invoice-2</a></li>
-                                            <li><a href="invoice-3.html">Invoice-3</a></li>
-                                            <li><a href="invoice-4.html">Invoice-4</a></li>
-                                            <li><a href="invoice-5.html">Invoice-5</a></li>
-                                            <li><a href="invoice-template.html">Invoice-6</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="cart.html">Cart</a></li>
-                                    <li><a href="list-wish.html">Wishlist</a></li>
-                                    <li><a href="checkout.html">Checkout</a></li>
-                                    <li><a href="pricing.html">Pricing </a></li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="letter-box.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-email') }}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-email') }}"></use>
-                                    </svg><span>Letter Box </span></a>
-                                <ul class="sidebar-submenu">
-                                    <li><a href="email-application.html">Email App</a></li>
-                                    <li><a href="email-compose.html">Email Compose</a></li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title" href="#">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-chat') }}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-chat') }}"></use>
-                                    </svg><span>Chat</span></a>
-                                <ul class="sidebar-submenu">
-                                    <li><a href="private-chat.html">Private Chat</a></li>
-                                    <li> <a href="group-chat.html">Group Chat</a></li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-list"> <i class="fa fa-thumb-tack"> </i><a
-                                    class="sidebar-link sidebar-title" href="#">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-user') }}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-user') }}"></use>
-                                    </svg><span>Users</span></a>
-                                <ul class="sidebar-submenu">
-                                    <li><a href="user-profile.html">Users Profile</a></li>
-                                    <li><a href="edit-profile.html">Users Edit</a></li>
-                                    <li><a href="user-cards.html">Users Cards</a></li>
-                                </ul>
-                            </li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="bookmark.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-bookmark')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-bookmark')}}"> </use>
-                                    </svg><span>Bookmarks</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="contacts.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-contact')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-contact')}}"> </use>
-                                    </svg><span>Contacts</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="task.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-task')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-task')}}"> </use>
-                                    </svg><span>Tasks</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="calendar-basic.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-calendar')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-calender')}}"></use>
-                                    </svg><span>Calendar</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="social-app.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-social')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-social')}}"> </use>
-                                    </svg><span>Social App</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="to-do.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-to-do')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-to-do')}}"> </use>
-                                    </svg><span>To-Do</span></a></li>
-                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
-                                    class="sidebar-link sidebar-title link-nav" href="search.html">
-                                    <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-search')}}"></use>
-                                    </svg>
-                                    <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-search')}}"> </use>
-                                    </svg><span>Search Result</span></a></li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>
-                                    <h6>Forms & Table</h6>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeMesseIntention') }}">Type Messe/intention</a></li>
+                                    <li><a href="{{ route('formMesse') }}">Programmat° / Listes</a></li>
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeDemandeMesse') }}">Liste des demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
                                 </div>
                             </li>
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-form')}}"></use>
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
                                     </svg>
                                     <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-form')}}"> </use>
-                                    </svg><span>Forms</span></a>
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
                                 <ul class="sidebar-submenu">
-                                    <li> <a class="submenu-title" href="#">Form Controls <span class="sub-arrow"> <i
-                                                    class="fa fa-angle-right"></i></span></a>
-                                        <ul class="nav-sub-childmenu submenu-content">
-                                            <li><a href="form-validation.html">Form Validation</a></li>
-                                            <li><a href="base-input.html">Base Inputs</a></li>
-                                            <li><a href="radio-checkbox-control.html">Checkbox & Radio</a></li>
-                                            <li><a href="input-group.html">Input Groups</a></li>
-                                            <li> <a href="input-mask.html">Input Mask</a></li>
-                                            <li><a href="megaoptions.html">Mega Options</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="submenu-title" href="#">
-                                            Form Widgets<span class="sub-arrow"><i
-                                                    class="fa fa-angle-right"></i></span></a>
-                                        <ul class="nav-sub-childmenu submenu-content">
-                                            <li><a href="datepicker.html">Datepicker</a></li>
-                                            <li><a href="touchspin.html">Touchspin</a></li>
-                                            <li><a href="select2.html">Select2</a></li>
-                                            <li><a href="switch.html">Switch</a></li>
-                                            <li><a href="typeahead.html">Typeahead</a></li>
-                                            <li><a href="clipboard.html">Clipboard</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="submenu-title" href="#">Form layout<span class="sub-arrow"><i
-                                                    class="fa fa-angle-right"></i></span></a>
-                                        <ul class="nav-sub-childmenu submenu-content">
-                                            <li><a href="form-wizard.html">Form Wizard 1</a></li>
-                                            <li><a href="form-wizard-two.html">Form Wizard 2</a></li>
-                                            <li><a href="two-factor.html">Two Factor</a></li>
-                                        </ul>
-                                    </li>
+                                    <li> <a href="{{ route('formTypeDon') }}">Créa Type Don</a></li>
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDon') }}">Liste des dons</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Dons utilisateur</a></li>
                                 </ul>
                             </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-table')}}"></use>
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
                                     </svg>
                                     <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-table')}}"></use>
-                                    </svg><span>Tables</span></a>
-                                {{-- <ul class="sidebar-submenu">
-                                    <li><a class="submenu-title" href="#">Bootstrap Tables<span class="sub-arrow"><i
-                                                    class="fa fa-angle-right"></i></span></a>
-                                        <ul class="nav-sub-childmenu submenu-content">
-                                            <li><a href="bootstrap-basic-table.html">Basic Tables</a></li>
-                                            <li><a href="table-components.html">Table components</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="submenu-title" href="#">Data Tables<span class="sub-arrow"><i
-                                                    class="fa fa-angle-right"></i></span></a>
-                                        <ul class="nav-sub-childmenu submenu-content">
-                                            <li><a href="datatable-basic-init.html">Basic Init</a></li>
-                                            <li> <a href="datatable-advance.html">Advance Init </a></li>
-                                            <li> <a href="datatable-API.html">API </a></li>
-                                            <li><a href="datatable-data-source.html">Data Sources</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="datatable-ext-autofill.html">Ex. Data Tables</a></li>
-                                    <li><a href="jsgrid-table.html">Js Grid Table </a></li>
-                                </ul> --}}
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
                             </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+
+                            {{-- ******************* DEBUT BOX DEPENSE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>
-                                    <h6>Components</h6>
+                                    <h6 class="lan-">DEPENSES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Espaces des dépenses</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDepense') }}">Ajout dépense</a></li>
+                                    <li><a href="{{ route('listeDepense') }}">Lites dépense</a></li>
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX DEPENSE *********************** --}}
+                            {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">AUTRES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Archivages/Evenements</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
+                                    <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
+                                    <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
+                                    <li><a href="{{ route('listDocArchive') }}">Liste Doc Archivés</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
+                            @elseif(Auth::user()->id_type_utilisateur == 3)
+                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>Utilisateurs </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddUser') }}">Créer Nouvel</a></li>
+                                    <li><a href="{{ route('listeUser') }}">Liste</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX UTILISATEUR *********************** --}}
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Mouvements</h6>
                                 </div>
                             </li>
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#stroke-ui-kits')}}"></use>
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
                                     </svg>
                                     <svg class="fill-icon">
-                                        <use href="{{asset('assets/svg/icon-sprite.svg#fill-ui-kits')}}"></use>
-                                    </svg><span>Ui Kits</span></a>
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Groupes </span></a>
                                 <ul class="sidebar-submenu">
-                                    <li><a href="typography.html">Typography</a></li>
-                                    <li><a href="avatars.html">Avatars</a></li>
-                                    <li><a href="helper-classes.html">helper classes</a></li>
-                                    <li><a href="grid.html">Grid</a></li>
-                                    <li><a href="tag-pills.html">Tag & pills</a></li>
-                                    <li><a href="progress-bar.html">Progress</a></li>
-                                    <li><a href="modal.html">Modal</a></li>
-                                    <li><a href="alert.html">Alert</a></li>
-                                    <li><a href="popover.html">Popover</a></li>
-                                    <li><a href="tooltip.html">Tooltip</a></li>
-                                    <li><a href="dropdown.html">Dropdown</a></li>
-                                    <li><a href="according.html">Accordion</a></li>
-                                    <li><a href="tab-bootstrap.html">Tabs</a></li>
-                                    <li><a href="list.html">Lists</a></li>
+                                    <li><a href="{{ route('formAddMouvement') }}">Créer Mouvement</a></li>
+                                    <li><a href="{{ route('listeMouvement') }}">Liste</a></li>
+                                    <li><a href="{{ route('formAddMembreMouvement') }}">Ajout Membre</a></li>
+                                    <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
                                 </ul>
                             </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeMesseIntention') }}">Type Messe/intention</a></li>
+                                    <li><a href="{{ route('formMesse') }}">Programmat° / Listes</a></li>
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeDemandeMesse') }}">Liste des demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeDon') }}">Créa Type Don</a></li>
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDon') }}">Liste des dons</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Dons utilisateur</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+
+                            {{-- ******************* DEBUT BOX DEPENSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">DEPENSES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Espaces des dépenses</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDepense') }}">Ajout dépense</a></li>
+                                    <li><a href="{{ route('listeDepense') }}">Lites dépense</a></li>
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX DEPENSE *********************** --}}
+                            {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">AUTRES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Archivages/Evenements</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
+                                    <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
+                                    <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
+                                    <li><a href="{{ route('listDocArchive') }}">Liste Doc Archivés</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
+                            <!-- *************************** LES ACCES RESPONSABLE MVT ******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 4)
+                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>Utilisateurs </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddUser') }}">Créer Nouvel</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX UTILISATEUR *********************** --}}
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Mouvements</h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Groupes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddMembreMouvement') }}">Ajout Membre</a></li>
+                                    <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Mes utilisateur</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+                            <!-- *************************** LES ACCES PRETRE******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 5)
+                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>Utilisateurs </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddUser') }}">Créer Nouvel</a></li>
+                                    <li><a href="{{ route('listeUser') }}">Liste</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX UTILISATEUR *********************** --}}
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Mouvements</h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Groupes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddMouvement') }}">Créer Mouvement</a></li>
+                                    <li><a href="{{ route('listeMouvement') }}">Liste</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeMesseIntention') }}">Type Messe/intention</a></li>
+                                    <li><a href="{{ route('formMesse') }}">Programmat° / Listes</a></li>
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeDemandeMesse') }}">Liste des demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="#">Mes Dons </a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+
+                            {{-- ******************* DEBUT BOX DEPENSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">DEPENSES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Espaces des dépenses</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDepense') }}">Ajout dépense</a></li>
+                                    <li><a href="{{ route('listeDepense') }}">Lites dépense</a></li>
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX DEPENSE *********************** --}}
+                            {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">AUTRES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Archivages/Evenements</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
+                                    <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
+                                    <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
+                                    <li><a href="{{ route('listDocArchive') }}">Liste Doc Archivés</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
+                            <!-- *************************** LES ACCES PAROISSIEN******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 5)
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Mes Dons</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+
+                            <!-- *************************** LES ACCES SECRETAIRE******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 7)
+                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>Utilisateurs </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddUser') }}">Créer Nouvel</a></li>
+                                    <li><a href="{{ route('listeUser') }}">Liste</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX UTILISATEUR *********************** --}}
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Mouvements</h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Groupes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddMouvement') }}">Créer Mouvement</a></li>
+                                    <li><a href="{{ route('listeMouvement') }}">Liste</a></li>
+                                    <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeDemandeMesse') }}">Liste des demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeDon') }}">Créa Type Don</a></li>
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDon') }}">Liste des dons</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Mes Dons</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+
+                            {{-- ******************* DEBUT BOX DEPENSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">DEPENSES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Espaces des dépenses</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDepense') }}">Ajout dépense</a></li>
+                                    <li><a href="{{ route('listeDepense') }}">Lites dépense</a></li>
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX DEPENSE *********************** --}}
+                            {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">AUTRES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Archivages/Evenements</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
+                                    <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
+                                    <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
+                                    <li><a href="{{ route('listDocArchive') }}">Liste Doc Archivés</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
+                            <!-- *************************** NON PAROISSIEN ******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 8)
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Mes Dons</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            <!-- *************************** RESPONSABLE CATECHESE ******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 9)
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Mouvements</h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Groupes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddMembreMouvement') }}">Ajout Membre</a></li>
+                                    <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Mes Dons</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+                            <!-- *************************** VICE RESPO CONSEIL PAROISSIAL ******************************-->
+                            @elseif(Auth::user()->id_type_utilisateur == 10)
+                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>Utilisateurs </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddUser') }}">Créer Nouvel</a></li>
+                                    <li><a href="{{ route('listeUser') }}">Liste</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX UTILISATEUR *********************** --}}
+                            {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Mouvements</h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Groupes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAddMouvement') }}">Créer Mouvement</a></li>
+                                    <li><a href="{{ route('listeMouvement') }}">Liste</a></li>
+                                    <li><a href="{{ route('formAddMembreMouvement') }}">Ajout Membre</a></li>
+                                    <li><a href="{{ route('listeMembreMouv') }}">Liste Membre</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX MOUVEMENT *********************** --}}
+                            {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Messe</h6>
+                                </div>
+                            </li>
+                            {{-- ******************* FIN BOX MESSE *********************** --}}
+                            {{-- ******************* DEBUT BOX DONS *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Demande et intentions </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeMesseIntention') }}">Type Messe/intention</a></li>
+                                    <li><a href="{{ route('formMesse') }}">Programmat° / Listes</a></li>
+                                    <li><a href="{{ route('formDemandeMesse') }}">Demandes messes</a></li>
+                                    <li><a href="{{ route('listeDemandeMesse') }}">Liste des demandes messes</a></li>
+                                    <li><a href="{{ route('listeMesDemandes') }}">Mes demandes messes</a></li>
+                                </ul>
+                            </li>
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Dons </h6>
+                                </div>
+                            </li>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-bookmark') }}"></use>
+                                    </svg><span>Dons ou offrandes </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li> <a href="{{ route('formTypeDon') }}">Créa Type Don</a></li>
+                                    <li> <a href="{{ route('formDon') }}">Faire Don/offrande</a></li>
+                                    <li> <a href="{{ route('listeDon') }}">Liste des dons</a></li>
+                                    <li> <a href="{{ route('listeDonUtilisateur') }}">Dons utilisateur</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX DON *********************** --}}
+
+                            {{-- ******************* DEBUT BOX CATECHESE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">Catechèse</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Info Catechese</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('espaceKT') }}">Espace</a></li>
+                                    <li><a href="{{ route('formCatechumene') }}">Catechumene</a></li>
+                                    <li><a href="{{ route('listeCatechumene') }}">Liste Catechumène</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+
+                            {{-- ******************* FIN BOX CATECHESE *********************** --}}
+
+                            {{-- ******************* DEBUT BOX DEPENSE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">DEPENSES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Espaces des dépenses</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formDepense') }}">Ajout dépense</a></li>
+                                    <li><a href="{{ route('listeDepense') }}">Lites dépense</a></li>
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX DEPENSE *********************** --}}
+                            {{-- ******************* DEBUT BOX ARCHIVAGE *********************** --}}
+                            <li class="sidebar-main-title">
+                                <div>
+                                    <h6 class="lan-">AUTRES</h6>
+                                </div>
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-project') }}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
+                                    </svg><span>Archivages/Evenements</span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
+                                    <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
+                                    <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
+                                    <li><a href="{{ route('listDocArchive') }}">Liste Doc Archivés</a></li>
+
+                                </ul>
+                            </li>
+                            </li>
+                            {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
+                            @else
+                            {{ redirect('/guest') }}
+                            @endif
+                            @endif
                         </ul>
                         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
                     </div>
                 </nav>
             </div>
+
+
             @yield('main-content')
 
             <!-- footer start-->
@@ -507,7 +1289,9 @@
     </div>
     <!-- latest jquery-->
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{asset('js/pages_js/form.js')}}"></script>
 
@@ -552,10 +1336,131 @@
     <!-- Theme js-->
     <script src="{{asset('assets/js/script.js') }}"></script>
     <script src="{{asset('assets/js/theme-customizer/customizer.js')}}"></script>
+    <script src="{{asset('assets/js/general-widget.js')}}"></script>
+    <script src="{{asset('assets/js/dashboard/default.js')}}"></script>
     <script>
         new WOW().init();
     </script>
     @yield('scripts')
+
+    <style>
+        /* Cacher le dropdown par défaut */
+        #profileDropdown {
+            display: none;
+            position: absolute;
+            left: -150px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000;
+            list-style: none;
+            min-width: 200px;
+        }
+
+        /* Optionnel: ajouter un peu de style pour espacer les éléments */
+        #profileDropdown li {
+            margin-bottom: 10px;
+        }
+
+        #profileDropdown li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Ajuster le style des boutons */
+        .profile-dropdown a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .profile-dropdown a:hover {
+            color: #007bff;
+        }
+
+        /* Styliser l'image de profil */
+        .profile-media img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        function toggleDropdown() {
+        // Activer/désactiver l'affichage du dropdown au clic
+        var dropdown = document.getElementById("profileDropdown");
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Optionnel: Fermer le dropdown si l'utilisateur clique en dehors
+    window.onclick = function(event) {
+        var dropdown = document.getElementById("profileDropdown");
+        if (!event.target.closest('.profile-nav')) {
+            dropdown.style.display = "none";
+        }
+    }
+
+// POUR LE PROFIL
+//   function previewImage(event) {
+// const file = event.target.files[0];
+// const reader = new FileReader();
+
+// reader.onload = function(e) {
+// const imagePreview = document.getElementById('profileImagePreview');
+// if (imagePreview) {
+//     console.log(imagePreview)
+// imagePreview.src = e.target.result; // Met à jour l'image de prévisualisation
+// console.log(imagePreview.src)
+// } else {
+// console.error('Image preview element not found');
+// }
+// }
+
+// if (file) {
+// reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+// }
+// }
+
+function previewImage(event) {
+const file = event.target.files[0];
+const reader = new FileReader();
+
+reader.onload = function(e) {
+const imagePreview = document.getElementById('profileImagePreview');
+if (imagePreview) {
+imagePreview.src = e.target.result; // Met à jour l'image de prévisualisation
+}
+};
+
+if (file) {
+reader.readAsDataURL(file); // Lit le fichier comme une URL de données
+}
+}
+// mise à jour de l'image
+
+document.querySelector('form').addEventListener('submit', function(event) {
+event.preventDefault(); // Empêche la soumission classique du formulaire
+
+const formData = new FormData(this);
+fetch(this.action, {
+method: 'POST',
+body: formData,
+headers: {
+'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+}
+})
+.then(response => response.json())
+.then(data => {
+if (data.image) {
+// Met à jour l'image prévisualisée avec l'image retournée par le serveur
+document.getElementById('profileImagePreview').src = data.image + '?v=' + new Date().getTime();
+}
+})
+.catch(error => console.error('Error:', error));
+});
+    </script>
+
 </body>
 
 </html>
