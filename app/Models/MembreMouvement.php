@@ -17,11 +17,17 @@ class MembreMouvement extends Model
         'date_inscription',
         'role_membre',
         'id_mouvement',
+        'paroisse_id',
     ];
 
     // Relation avec les tables
     public function Mouvement()
     {
         return $this->belongsTo(Mouvement::class, 'id_mouvement');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

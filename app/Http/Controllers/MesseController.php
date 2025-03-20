@@ -18,11 +18,12 @@ class MesseController extends Controller
     public function create_messe(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'date_messe' => 'required|date',
+            'date_messe' => 'required|date|after_or_equal:today',
             'heure_messe' => 'required|date_format:H:i',
             'lieu_messe' => 'required|string',
             'id_type_messe' => 'required|integer|exists:type_messes,id',
             'id_celebrant' => 'required|integer|exists:users,id',
+            'paroisse_id' => 'required|exists:paroisses,id',
 
         ]);
 
@@ -34,18 +35,23 @@ class MesseController extends Controller
         $messe->date_messe = $request->date_messe;
         $messe->heure_messe = $request->heure_messe;
         $messe->lieu_messe = $request->lieu_messe;
-        $messe->id_user = Auth::id(); // Celui qui a crée la messe
+        $messe->id_user = auth()->id(); // Celui qui a crée la messe
         $messe->id_type_messe = $request->id_type_messe;
         $messe->id_celebrant = $request->id_celebrant; //le celebrant de la messe
+        $messe->paroisse_id = Auth::user()->paroisse_id; // Paroisse de l'utilisateur connecté
+
         // dd($request->all());
         $messe->save();
         // Envoi de la notification au célébrant
         $celebrant = User::find($request->id_celebrant);
         if ($celebrant) {
-            // Envoyer l'email avec l'objet Messe et le célébrant
-            Mail::to($celebrant->email)->send(new MesseCreated($messe, $celebrant));
+            try {
+                Mail::to($celebrant->email)->send(new MesseCreated($messe, $celebrant));
+            } catch (\Exception $e) {
+                return redirect()->route('formMesse')->with('error', 'Messe créée mais l\'envoi de l\'email a échoué.');
+            }
         }
-        return redirect()->route('formMesse')->with('success', 'Messe créé avec succès.');
+        return redirect()->route('formMesse')->with('success', 'Messe créée avec succès.');
     }
 
     // liste des messes
@@ -55,37 +61,40 @@ class MesseController extends Controller
             ->join('users as creator', 'messes.id_user', '=', 'creator.id') // Utilisateur qui a créé la messe
             ->join('users as celebrant', 'messes.id_celebrant', '=', 'celebrant.id') // Utilisateur assigné pour célébrer la messe
             ->join('type_messes', 'messes.id_type_messe', '=', 'type_messes.id')
+            ->join('paroisses', 'messes.paroisse_id', '=', 'paroisses.id')
             ->select(
                 'messes.*',
                 'creator.name as creator_name',
                 'celebrant.name as celebrant_name',
-                'type_messes.lib_type_messe'
+                'type_messes.lib_type_messe',
+                'paroisses.nom_paroisse'
             )
             ->get();
+
         return $liste_toutes_messes;
     }
 
-    //liste des messes du celebrant connecté (je vais afficher sur son tableau de bord)
-
-    function liste_des_messes_du_celebrant()
+    // Liste des messes pour le célébrant connecté
+    public function liste_des_messes_du_celebrant()
     {
         $liste_toutes_messes_celebrant = DB::table('messes')
-            ->where('id_celebrant', Auth::id())
+            ->where('id_celebrant', auth()->id())
             ->join('users as creator', 'messes.id_user', '=', 'creator.id') // Utilisateur qui a créé la messe
-            ->join('users as celebrant', 'messes.id_celebrant', '=', 'celebrant.id') // Utilisateur assigné pour célébrer la messe
             ->join('type_messes', 'messes.id_type_messe', '=', 'type_messes.id')
+            ->join('paroisses', 'messes.paroisse_id', '=', 'paroisses.id')
             ->select(
                 'messes.*',
                 'creator.name as creator_name',
                 'celebrant.name as celebrant_name',
-                'type_messes.lib_type_messe'
+                'type_messes.lib_type_messe',
+                'paroisses.nom_paroisse'
             )
             ->get();
 
         return $liste_toutes_messes_celebrant;
     }
 
-    // Modification des information 
+    // Modification des informations de messe
     public function update_messe(Request $request)
     {
         Log::info($request->all());
@@ -97,22 +106,37 @@ class MesseController extends Controller
             'modif_lieu_messe' => 'required|string',
             'modif_id_type_messe' => 'required|integer|exists:type_messes,id',
             'modif_id_celebrant' => 'required|integer|exists:users,id',
+            'modif_paroisse_id' => 'required|exists:paroisses,id',
         ]);
-        // Mise à jour de messe
-        $modif_messe = Messe::find($request->id_messe);
-        $modif_messe->date_messe = $request->modif_date_messe;
-        $modif_messe->heure_messe = $request->modif_heure_messe;
-        $modif_messe->lieu_messe = $request->modif_lieu_messe;
-        $modif_messe->id_type_messe = $request->modif_id_type_messe;
-        $modif_messe->id_celebrant = $request->modif_id_celebrant;
-        $modif_messe->save();
-        return true;
+
+        $modif_messe = Messe::where('id', $data['id_messe'])
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->firstOrFail();
+
+        $modif_messe->update([
+            'date_messe' => $data['modif_date_messe'],
+            'heure_messe' => $data['modif_heure_messe'],
+            'lieu_messe' => $data['modif_lieu_messe'],
+            'id_type_messe' => $data['modif_id_type_messe'],
+            'id_celebrant' => $data['modif_id_celebrant'],
+            'paroisse_id' => $data['modif_paroisse_id'],
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Messe mise à jour avec succès.']);
     }
+
 
     // Suppression de messe
     public function supp_messe($id)
     {
-        DB::table("messes")->where("id", $id)->delete();
-        return true;
+        $deleted = DB::table("messes")->where('id', $id)
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['success' => 'Type intention supprimé avec succès.']);
+        } else {
+            return response()->json(['error' => 'Suppression échouée ou non autorisée.'], 403);
+        }
     }
 }

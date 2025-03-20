@@ -14,6 +14,7 @@ class Affectation extends Model
         'date_affectation',
         'id_catechumene',
         'id_classe',
+        'paroisse_id',
     ];
 
 
@@ -24,5 +25,10 @@ class Affectation extends Model
     public function catechumene()
     {
         return $this->belongsTo(User::class, 'id_catechumene');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

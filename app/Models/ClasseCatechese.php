@@ -14,7 +14,8 @@ class ClasseCatechese extends Model
         'lib_classe_cate',
         'id_niveau',
         'id_session',
-        'id_user'
+        'id_user',
+        'paroisse_id',
     ];
 
     // Relation avec les tables
@@ -43,5 +44,10 @@ class ClasseCatechese extends Model
     public function Inscriptions()
     {
         return $this->hasMany(Inscription::class, 'id_classe');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

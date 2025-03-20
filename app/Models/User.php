@@ -24,6 +24,8 @@ class User extends Authenticatable
         'contact',
         'status',
         'id_type_utilisateur',
+        'profile_image',
+        'paroisse_id',
     ];
 
     //Relation entre les tables
@@ -76,6 +78,10 @@ class User extends Authenticatable
         return $this->hasMany(Don::class, 'donateur_id');
     }
 
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

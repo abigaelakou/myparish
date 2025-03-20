@@ -88,8 +88,8 @@ function rapport_stat_dons(mois, annee) {
                 tableau += '<tr>' +
                     '<td>' + donateur.nom_prenom + '</td>' +
                     '<td>' + donateur.type_don + '</td>' +
-                    '<td>' + date_format_fr(donateur.date_don) + '</td>' +
                     '<td>' + donateur.contact + '</td>' +
+                    '<td>' + date_format_fr(donateur.date_don) + '</td>' +
                     '<td>' + format_num(donateur.montant) + '</td>' +
                     '</tr>';
             });

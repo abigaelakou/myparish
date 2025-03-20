@@ -14,6 +14,8 @@ class NiveauCatechetique extends Model
 
     protected $fillable = [
         'lib_niveau',
+        'paroisse_id',
+
     ];
 
     //Relation entre les tables
@@ -22,5 +24,10 @@ class NiveauCatechetique extends Model
     public function classeCatecheses()
     {
         return $this->hasMany(ClasseCatechese::class, 'id_niveau');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

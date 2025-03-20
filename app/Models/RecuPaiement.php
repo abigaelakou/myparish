@@ -17,10 +17,16 @@ class RecuPaiement extends Model
         'montant',
         'contact',
         'date_paiement',
+        'paroisse_id',
     ];
 
     public function paiement()
     {
         return $this->belongsTo(PaiementCatechese::class, 'id_paiement');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

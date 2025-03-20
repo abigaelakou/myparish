@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TypeMesse;
+use App\Models\TypeUtilisateur;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -14,22 +17,25 @@ class TypeUserController extends Controller
 
     public function create()
     {
-        Log::info('Type utilisateur:', ['type_utilisateurs' => auth()->user()->type_utilisateur]);
+        Log::info('Type utilisateur:', [
+            'user_id' => auth()->id(),
+            'type_utilisateur' => auth()->user()->type_utilisateur
+        ]);
 
-        $type_utilisateurs = DB::table('type_utilisateurs')->orderBy('lib_type_utilisateur')->get();
-        // dd($type_utilisateurs);
+        $type_utilisateurs = TypeUtilisateur::orderBy('lib_type_utilisateur')->get();
         return view('Espaces.Admin.formAddUser', compact('type_utilisateurs'));
     }
 
     public function type_utilisateur_celebrant()
     {
-        $type_de_messes = DB::table('type_messes')->orderBy('lib_type_messe')->get();
+        $type_de_messes = TypeMesse::orderBy('lib_type_messe')->get();
 
-        // Récupère aussi les célébrants si nécessaire
-        $celebrants = DB::table('users')
-            ->join('type_utilisateurs', 'users.id_type_utilisateur', '=', 'type_utilisateurs.id')
-            ->whereIn('type_utilisateurs.lib_type_utilisateur', ['PRETRE', 'CURE'])
-            ->select('users.id', 'type_utilisateurs.lib_type_utilisateur', 'users.name')
+        // Récupère les célébrants associés à la paroisse de l'utilisateur connecté
+        $celebrants = User::whereHas('typeUtilisateur', function ($query) {
+            $query->whereIn('lib_type_utilisateur', ['PRETRE', 'CURE']);
+        })
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Filtrer par paroisse
+            ->select('id', 'name')
             ->get();
 
         return view('Espaces.Messe.formMesse', compact('type_de_messes', 'celebrants'));

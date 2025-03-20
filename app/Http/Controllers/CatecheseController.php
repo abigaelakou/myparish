@@ -39,6 +39,8 @@ class CatecheseController extends Controller
             'contact_parain' => 'nullable|numeric',
             'sacrement_recu' => 'required|array', // Validation pour un tableau
             'sacrement_recu.*' => 'string',
+            'paroisse_id' => 'required|exists:paroisses,id',
+
         ]);
 
         $sacrements = $request->sacrement_recu; // Récupérer les sacrements sélectionnés
@@ -55,6 +57,7 @@ class CatecheseController extends Controller
         $catechumene->nom_prenom_parain = $request->nom_prenom_parain ?? null; // Utiliser null si non fourni
         $catechumene->contact_parain = $request->contact_parain ?? null; // Utiliser null si non fourni
         $catechumene->sacrement_recu = json_encode($sacrements); // Convertir le tableau en JSON pour le stockage
+        $catechumene->paroisse_id = auth()->user()->paroisse_id;
         $catechumene->save();
         return redirect()->route('formCatechumene')->with('success', 'Catechumene ajouté avec succès.');
     }
@@ -62,7 +65,14 @@ class CatecheseController extends Controller
     public function liste_catechumene()
     {
         // Récupérer tous dons
-        $liste_cate = DB::table('catechumenes')->get();
+        $liste_cate = DB::table('catechumenes')
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->join('paroisses', 'catechumenes.paroisse_id', '=', 'paroisses.id')
+            ->select(
+                'catechumenes.*',
+                'paroisses.nom_paroisse'
+            )
+            ->get();
         return $liste_cate;
     }
 
@@ -86,6 +96,8 @@ class CatecheseController extends Controller
             'modif_contact_parain' => 'nullable|numeric',
             'modif_sacrement_recu' => 'required|array', // Validation pour un tableau
             'modif_sacrement_recu.*' => 'string',
+            'paroisse_id' => 'required|exists:paroisses,id',
+
         ]);
 
         if ($validator->fails()) {
@@ -93,9 +105,10 @@ class CatecheseController extends Controller
         }
 
         // Récupération des données à mettre à jour
+        $modif_info_cate = Catechumene::where('id', $request->id_catechumene)
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->first();
         $modif_sacrements = $request->input('modif_sacrement_recu') ?: [];
-        $modif_info_cate = Catechumene::find($request->input('id_catechumene'));
-
         if ($modif_info_cate) {
             $modif_info_cate->name = $request->input('modif_name');
             $modif_info_cate->contact = $request->input('modif_contact') ?: null;
@@ -107,6 +120,7 @@ class CatecheseController extends Controller
             $modif_info_cate->nom_prenom_parain = $request->input('modif_nom_prenom_parain') ?: null;
             $modif_info_cate->contact_parain = $request->input('modif_contact_parain') ?: null;
             $modif_info_cate->sacrement_recu = json_encode($modif_sacrements);
+
             // Log::info($request->input('modif_sacrement_recu'));
             $modif_info_cate->save();
             return true;
@@ -119,9 +133,17 @@ class CatecheseController extends Controller
 
     public function supp_catechumene($id)
     {
-        DB::table("catechumenes")->where("id", $id)->delete();
-        return true;
+        $deleted = DB::table("catechumenes")->where('id', $id) // Utilisez l'ID du catéchumène
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Ajoutez une condition pour vérifier la paroisse
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['success' => 'Catéchumène supprimé avec succès.']);
+        } else {
+            return response()->json(['error' => 'Suppression échouée ou non autorisée.'], 403);
+        }
     }
+
 
     //*************************GESTION DE CLASSE ET AFFECTIONS DANS LES CLASSES************************ */
     public function store_classe_catechese(Request $request)
@@ -129,25 +151,28 @@ class CatecheseController extends Controller
         $request->validate([
             'lib_classe_cate' => 'required|string',
             'id_niveau' => 'required|integer|exists:niveau_catechetiques,id',
-            'id_session' => 'required|integer|exists:session_catecheses,id'
+            'id_session' => 'required|integer|exists:session_catecheses,id',
         ]);
-        // Enregistrer les données d
+
+        // Enregistrer les données
         $classe_catechese = new ClasseCatechese();
         $classe_catechese->lib_classe_cate = $request->lib_classe_cate;
         $classe_catechese->id_niveau = $request->id_niveau;
         $classe_catechese->id_session = $request->id_session;
-        $classe_catechese->id_user = Auth::id(); // Celui qui a crée la classe
+        $classe_catechese->id_user = Auth::id(); // Celui qui a créé la classe
+        $classe_catechese->paroisse_id = auth()->user()->paroisse_id; // ID de la paroisse de l'utilisateur
+
         $classe_catechese->save();
-        return redirect()->route('formClasse')->with('success', 'Classe crée avec succès.');
+        return redirect()->route('formClasse')->with('success', 'Classe créée avec succès.');
     }
 
     public function listeClasseCatechese()
     {
-        // $list_classe_cate = ClasseCatechese::select('id', 'lib_classe_cate', 'id_niveau', 'id_session')->get();
-        // dd($list_classe_cate);
         $classe_catechese = DB::table('classe_catecheses')
             ->join('niveau_catechetiques', 'classe_catecheses.id_niveau', '=', 'niveau_catechetiques.id')
             ->join('session_catecheses', 'classe_catecheses.id_session', '=', 'session_catecheses.id')
+            ->join('paroisses', 'classe_catecheses.paroisse_id', '=', 'paroisses.id')
+            ->where('classe_catecheses.paroisse_id', auth()->user()->paroisse_id) // Filtrer par l'ID de la paroisse
             ->select(
                 'classe_catecheses.id',
                 'classe_catecheses.id_niveau',
@@ -155,13 +180,15 @@ class CatecheseController extends Controller
                 'classe_catecheses.lib_classe_cate',
                 'niveau_catechetiques.lib_niveau as niveau',
                 'session_catecheses.lib_session_catechese as session',
+                'paroisses.nom_paroisse as nom_paroisse'
             )
             ->orderBy('classe_catecheses.lib_classe_cate', 'desc')
             ->get();
-        // dd($classe_catechese);
+
         return $classe_catechese;
     }
-    // Modification des information 
+
+    // Modification des informations
     public function update_classe(Request $request)
     {
         Log::info($request->all());
@@ -172,30 +199,47 @@ class CatecheseController extends Controller
             'modif_id_session' => 'required|integer|exists:session_catecheses,id',
             'modif_id_niveau' => 'required|integer|exists:niveau_catechetiques,id',
         ]);
-        $modif_classe = ClasseCatechese::find($request->id_classe);
+
+        $modif_classe = ClasseCatechese::where('id', $request->id_classe)
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Vérifier que la classe appartient à la paroisse de l'utilisateur
+            ->first();
+
+        if (!$modif_classe) {
+            return response()->json(['error' => 'Classe non trouvée ou accès non autorisé.'], 403);
+        }
+
         $modif_classe->lib_classe_cate = $request->modif_lib_classe_cate;
         $modif_classe->id_session = $request->modif_id_session;
         $modif_classe->id_niveau = $request->modif_id_niveau;
-        // dd($request->all());
+
         $modif_classe->save();
-        return true;
+        return response()->json(['success' => 'Classe mise à jour avec succès.']);
     }
 
     public function supp_classe_catechese($id)
     {
-        DB::table("classe_catecheses")->where("id", $id)->delete();
-        return true;
+        $deleted = DB::table("classe_catecheses")
+            ->where('id', $id)
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Vérifier l'accès
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['success' => 'Classe supprimée avec succès.']);
+        } else {
+            return response()->json(['error' => 'Suppression échouée ou non autorisée.'], 403);
+        }
     }
 
     public function show_niv_session()
     {
         $list_niveaux = DB::table('niveau_catechetiques')->orderBy('lib_niveau')->get();
         $list_sessions = DB::table('session_catecheses')->orderBy('lib_session_catechese')->get();
-        $list_classe_cate = ClasseCatechese::select('id', 'lib_classe_cate', 'id_niveau', 'id_session')->get();
+        $list_classe_cate = ClasseCatechese::select('id', 'lib_classe_cate', 'id_niveau', 'id_session')
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Filtrer par l'ID de la paroisse
+            ->get();
 
         return view('Espaces.Catechese.formClasse', compact('list_niveaux', 'list_sessions', 'list_classe_cate'));
     }
-
 
     public function listeCatechumenesParClasse(Request $request)
     {
@@ -209,14 +253,16 @@ class CatecheseController extends Controller
                 $join->on('inscriptions.id_niveau', '=', 'classe_catecheses.id_niveau')
                     ->on('inscriptions.id_session', '=', 'classe_catecheses.id_session')
                     ->where('classe_catecheses.id_niveau', '=', $niveauId)
-                    ->where('classe_catecheses.id_session', '=', $sessionId);
+                    ->where('classe_catecheses.id_session', '=', $sessionId)
+                    ->where('classe_catecheses.paroisse_id', auth()->user()->paroisse_id); // Filtrer par l'ID de la paroisse
             })
-            ->select('catechumenes.*') // Vous pouvez ajouter plus de colonnes si nécessaire
+            ->select('catechumenes.*')
             ->get();
 
         // Retourner les catéchumènes au format JSON
         return response()->json($catechumenes);
     }
+
 
     // ************************GESTION PAIEMENT INSCRIPTION ET DECISIION FINALE***************
 
@@ -228,18 +274,27 @@ class CatecheseController extends Controller
 
         $anneeCatechetique = "{$startYear}-{$endYear}";
 
-        // dd($anneeCatechetique);
-        $catecheses = DB::table('catechumenes')->orderBy('name')->get();
+        // Récupérer uniquement les catéchumènes associés à la paroisse de l'utilisateur
+        $catecheses = DB::table('catechumenes')->where('paroisse_id', auth()->user()->paroisse_id)->orderBy('name')->get();
         $niveau_catecheses = DB::table('niveau_catechetiques')->orderBy('lib_niveau')->get();
         $session_catecheses = DB::table('session_catecheses')->orderBy('lib_session_catechese')->get();
+
         return view('Espaces.Catechese.formInscriptionKT', compact('catecheses', 'niveau_catecheses', 'session_catecheses', 'anneeCatechetique'));
     }
 
     public function showAttentePaiement($id_inscription)
     {
+        // Vérifier que l'inscription appartient à la paroisse de l'utilisateur
+        $inscription = Inscription::where('id', $id_inscription)
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->first();
+
+        if (!$inscription) {
+            abort(403, 'Accès non autorisé à cette inscription.');
+        }
+
         return view('Espaces.Catechese.inscriptionAttente', compact('id_inscription'));
     }
-
 
     public function store_inscription(Request $request)
     {
@@ -263,6 +318,7 @@ class CatecheseController extends Controller
             'id_user' => Auth::id(),
             'id_niveau' => $request->id_niveau,
             'id_session' => $request->id_session,
+            'paroisse_id' => auth()->user()->paroisse_id, // Ajouter l'ID de la paroisse
         ]);
 
         // Créer un paiement avec statut "En attente"
@@ -281,7 +337,6 @@ class CatecheseController extends Controller
 
     public function completePaymentForm(Request $request)
     {
-        // Log::info('completePaymentForm called', $request->all());
         $inscriptionId = $request->input('id_inscription');
         $paiement = PaiementCatechese::where('id_inscription', $inscriptionId)
             ->where('payment_status', 'En attente')
@@ -292,8 +347,6 @@ class CatecheseController extends Controller
         }
 
         if ($request->ajax()) {
-            Log::info('AJAX request received');
-
             // Vérification du token CSRF
             if ($request->session()->token() != $request->input('_token')) {
                 return response()->json(['error' => 'Invalid CSRF token'], 403);
@@ -323,7 +376,6 @@ class CatecheseController extends Controller
         return response()->json($paiement);
     }
 
-
     public function validation_paiementCatechese(Request $request)
     {
         // Validation du formulaire
@@ -351,10 +403,10 @@ class CatecheseController extends Controller
 
         // Appeler le service de paiement
         $response = $paymentService->processPayment($request->montant, $request->contact);
-        // dd($response);
         if (!$response || !isset($response['status'])) {
             return redirect()->back()->with('error', 'Erreur lors de la communication avec le service de paiement.');
         }
+
         // Mise à jour du paiement en fonction de la réponse
         $paiement->update([
             'montant' => $request->montant,
@@ -364,7 +416,7 @@ class CatecheseController extends Controller
             'payment_status' => $response['status'] === 'success' ? 'Payé' : 'Échec',
             'date_paiement' => now(),
         ]);
-        // dd($paiement->payment_status);
+
         if ($paiement->payment_status === 'Payé') {
             $inscription = Inscription::find($request->id_inscription);
 
@@ -385,7 +437,7 @@ class CatecheseController extends Controller
                 'date_paiement' => $paiement->date_paiement,
             ]);
             $recu = RecuPaiement::where('id_paiement', $paiement->id)->first();
-            // dd($recu);
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
@@ -396,6 +448,7 @@ class CatecheseController extends Controller
             return view('Espaces.Catechese.recu_paiement', compact('recu'))
                 ->with('success', 'Paiement effectué avec succès. Un reçu a été généré.');
         }
+
         if ($request->ajax()) {
             return response()->json([
                 'success' => false,
@@ -425,33 +478,37 @@ class CatecheseController extends Controller
     {
         return view('Espaces.Catechese.failedInscription');
     }
-    // Téléchargé le reçu
-
+    // Téléchargement du reçu
     public function downloadRecu($id_paiement)
     {
-        $recu = RecuPaiement::where('id_paiement', $id_paiement)->firstOrFail();
-        //dd($recu);
+        $recu = RecuPaiement::where('id_paiement', $id_paiement)
+            ->whereHas('paiement', function ($query) {
+                $query->where('paroisse_id', auth()->user()->paroisse_id);
+            })
+            ->firstOrFail();
+
         $pdf = FacadePdf::loadView('Espaces.Catechese.recu_paiement', ['recu' => $recu]);
         return $pdf->download('recu_paiement_' . $id_paiement . '.pdf');
     }
-    //liste des catecumènes 
+
+    // Liste des catéchumènes inscrits en attente
     public function listeInscritsAttente()
     {
         $inscriptions = Inscription::with(['paiements', 'catechumene', 'niveauCatechetique', 'sessionCatechese'])
-            ->whereHas('paiements', function ($query) { //permet de filtrer les inscriptions en attente
+            ->whereHas('paiements', function ($query) {
                 $query->where('payment_status', 'En attente');
             })
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Vérification de la paroisse
             ->get();
-        // dd($inscriptions);
+
         return response()->json($inscriptions);
     }
 
-    // liste des catechumènes inscris et ayant payé
-
+    // Liste des catéchumènes inscrits et ayant payé
     public function listeInscritsPayer()
     {
-        $currentYear = now()->year; // Année en cours
-        $startYear = (now()->month >= 9) ? $currentYear : $currentYear - 1; // Si on est après août, l'année commence
+        $currentYear = now()->year;
+        $startYear = (now()->month >= 9) ? $currentYear : $currentYear - 1;
         $endYear = $startYear + 1;
 
         $anneeEnCours = "{$startYear}-{$endYear}";
@@ -463,6 +520,7 @@ class CatecheseController extends Controller
             ->join('session_catecheses', 'inscriptions.id_session', '=', 'session_catecheses.id')
             ->where('inscriptions.annee_catechetique', '=', $anneeEnCours)
             ->where('paiements_catechese.payment_status', '=', 'Payé')
+            ->where('inscriptions.paroisse_id', auth()->user()->paroisse_id) // Vérification de la paroisse
             ->select(
                 'catechumenes.name as nom_prenom',
                 'niveau_catechetiques.lib_niveau as niveau',
@@ -471,10 +529,9 @@ class CatecheseController extends Controller
             )
             ->orderBy('paiements_catechese.date_paiement', 'desc')
             ->get();
-        // dd($catechumenes_inscris);
+
         return $catechumenes_inscris;
     }
-
 
     public function ajouterPresence(Request $request)
     {
@@ -493,20 +550,21 @@ class CatecheseController extends Controller
         return redirect()->back()->with('success', 'Présence ajoutée avec succès');
     }
 
-
     public function info_catechese_deux()
     {
-        $currentYear = now()->year; // Année en cours
-        $startYear = (now()->month >= 9) ? $currentYear : $currentYear - 1; // Si on est après août, l'année commence
+        $currentYear = now()->year;
+        $startYear = (now()->month >= 9) ? $currentYear : $currentYear - 1;
         $endYear = $startYear + 1;
 
         $anneeCatechetique_new = "{$startYear}-{$endYear}";
 
-        // dd($anneeCatechetique);
-        $catecheses_new = DB::table('catechumenes')->orderBy('name')->get();
+        // Récupérer uniquement les catéchumènes associés à la paroisse de l'utilisateur
+        $catecheses_new = DB::table('catechumenes')
+            ->where('paroisse_id', auth()->user()->paroisse_id) // Vérification de la paroisse
+            ->orderBy('name')->get();
+
         return view('Espaces.Catechese.formDecisionCatechumene', compact('catecheses_new', 'anneeCatechetique_new'));
     }
-
 
     public function enregistrerDecision(Request $request)
     {
@@ -528,16 +586,17 @@ class CatecheseController extends Controller
         $decision->total_presence_messes = $request->total_presence_messes;
         $decision->total_presence_ceb = $request->total_presence_ceb;
         $decision->decision_finale = $request->decision_finale;
+        $decision->paroisse_id = auth()->user()->paroisse_id;
         $decision->save();
 
         return redirect()->back()->with('success', 'Décision enregistrée avec succès');
     }
 
-    //liste des decisions
+    // Liste des décisions
     public function getListeCatechumenesAvecDecisions()
     {
-        $currentYear = now()->year; // Année en cours
-        $startYear = (now()->month >= 9) ? $currentYear : $currentYear - 1; // Si on est après août, l'année commence
+        $currentYear = now()->year;
+        $startYear = (now()->month >= 9) ? $currentYear : $currentYear - 1;
         $endYear = $startYear + 1;
 
         $anneeEnCours = "{$startYear}-{$endYear}";
@@ -545,15 +604,15 @@ class CatecheseController extends Controller
         // Récupérer les catéchumènes inscrits avec leur niveau, session et décision de fin d'année
         $catechumenes = DB::table('inscriptions')
             ->join('decisions_catechese', 'inscriptions.id_catechumene', '=', 'decisions_catechese.id_catechumene')
-            ->join('catechumenes', 'inscriptions.id_catechumene', '=', 'catechumenes.id') // Pour récupérer le nom du catéchumène
-            ->join('niveau_catechetiques', 'inscriptions.id_niveau', '=', 'niveau_catechetiques.id') // Pour récupérer le niveau
-            ->join('session_catecheses', 'inscriptions.id_session', '=', 'session_catecheses.id') // Pour récupérer la session
-            ->where('inscriptions.annee_catechetique', '=', $anneeEnCours) // Filtrer par année en cours
-            // ->groupBy('inscriptions.id_catechumene')
+            ->join('catechumenes', 'inscriptions.id_catechumene', '=', 'catechumenes.id')
+            ->join('niveau_catechetiques', 'inscriptions.id_niveau', '=', 'niveau_catechetiques.id')
+            ->join('session_catecheses', 'inscriptions.id_session', '=', 'session_catecheses.id')
+            ->where('inscriptions.annee_catechetique', '=', $anneeEnCours)
+            ->where('inscriptions.paroisse_id', auth()->user()->paroisse_id) // Vérification de la paroisse
             ->select(
-                'catechumenes.name as nom_prenom', // Nom du catéchumène
-                'niveau_catechetiques.lib_niveau as niveau', // Niveau
-                'session_catecheses.lib_session_catechese as session', // Session
+                'catechumenes.name as nom_prenom',
+                'niveau_catechetiques.lib_niveau as niveau',
+                'session_catecheses.lib_session_catechese as session',
                 'decisions_catechese.moy_final',
                 'decisions_catechese.total_presence_catechese',
                 'decisions_catechese.total_presence_messes',
@@ -562,17 +621,14 @@ class CatecheseController extends Controller
             )
             ->distinct()
             ->get();
-        // dd($catechumenes);
+
         return response()->json($catechumenes);
     }
 
-
     public function update_decision(Request $request)
     {
-        // Enregistrer les informations de la requête pour débogage
         Log::info($request->all());
 
-        // Validation des données de la requête
         $validator = Validator::make($request->all(), [
             'id_decisions_catechese' => 'required|integer|exists:decisions_catechese,id',
             'modif_moy_final' => 'required|string',
@@ -592,34 +648,33 @@ class CatecheseController extends Controller
         $modif_decision->total_presence_messes = $request->modif_total_presence_messes;
         $modif_decision->total_presence_ceb = $request->modif_total_presence_ceb;
         $modif_decision->id_catechumene = $request->modif_id_catechumene;
-        // dd($request->all());
         $modif_decision->save();
+
         return true;
     }
 
-
     public function getliste_catechumene_fini()
     {
-        // $anneeEnCours = '2024-2025'; 
         $catechumenes_fini = DB::table('decisions_catechese')
             ->join('inscriptions', 'decisions_catechese.id_catechumene', '=', 'inscriptions.id_catechumene')
             ->join('catechumenes', 'inscriptions.id_catechumene', '=', 'catechumenes.id')
             ->join('niveau_catechetiques', 'inscriptions.id_niveau', '=', 'niveau_catechetiques.id')
             ->join('session_catecheses', 'inscriptions.id_session', '=', 'session_catecheses.id')
             ->whereIn('decisions_catechese.decision_finale', ['Cloturé', 'Abandon'])
-            // ->where('inscriptions.annee_catechetique', '=', $annee_catechetique)
+            ->where('inscriptions.paroisse_id', auth()->user()->paroisse_id) // Vérification de la paroisse
             ->select(
                 'catechumenes.name as nom_prenom',
                 'niveau_catechetiques.lib_niveau as niveau',
                 'session_catecheses.lib_session_catechese as session',
                 'decisions_catechese.decision_finale',
-                'decisions_catechese.annee_catechetique',
-                // 'inscriptions.annee_catechetique'
+                'decisions_catechese.annee_catechetique'
             )
-            ->orderBy('inscriptions.date_inscription', 'desc') // Optionnel, pour trier par date d'inscription
+            ->orderBy('inscriptions.date_inscription', 'desc')
             ->get();
+
         return response()->json($catechumenes_fini);
     }
+
     // ************************************ GESTION DES AFFECTATIONS **************************************
 
     public function showForm()
@@ -630,12 +685,13 @@ class CatecheseController extends Controller
 
         $anneeEnCours = "{$startYear}-{$endYear}";
 
-        // Récupérer les catéchumènes inscrits pour l'année en cours avec un paiement effectué
+        // Récupérer les catéchumènes inscrits pour l'année en cours avec un paiement effectué et associés à la paroisse de l'utilisateur
         $catechumenes = DB::table('catechumenes')
             ->join('inscriptions', 'catechumenes.id', '=', 'inscriptions.id_catechumene')
             ->join('paiements_catechese', 'inscriptions.id', '=', 'paiements_catechese.id_inscription')
             ->where('inscriptions.annee_catechetique', '=', $anneeEnCours)
             ->where('paiements_catechese.payment_status', '=', 'Payé')
+            ->where('inscriptions.paroisse_id', auth()->user()->paroisse_id) // Vérification de la paroisse
             ->select('catechumenes.id', 'catechumenes.name', 'inscriptions.id as inscription_id')
             ->get();
 
@@ -646,7 +702,6 @@ class CatecheseController extends Controller
         return view('Espaces.Catechese.affectation_catechumene', compact('catechumenes', 'classes'));
     }
 
-
     public function affecterCatechumene(Request $request)
     {
         // Validation des données soumises
@@ -654,6 +709,11 @@ class CatecheseController extends Controller
             'id_catechumene' => 'required|exists:catechumenes,id',
             'id_classe' => 'required|exists:classe_catecheses,id',
         ]);
+
+        // Vérifier si le catéchumène appartient à la paroisse de l'utilisateur
+        $inscription = Inscription::where('id_catechumene', $data['id_catechumene'])
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->firstOrFail(); // Cela lancera une exception si le catéchumène n'appartient pas à la paroisse
 
         // Créer une nouvelle affectation
         $affectation = new Affectation();
@@ -667,6 +727,7 @@ class CatecheseController extends Controller
         // Redirection avec un message de succès
         return redirect()->back()->with('success', 'Catéchumène affecté à la classe avec succès !');
     }
+
 
     // ******************************** STATISTIQUES ************************************
     public function statsParDecision() //permet de savoir combien de catéchumènes ont été "Cloturé", combien ont abandonné

@@ -22,6 +22,7 @@ class Catechumene extends Model
         'nom_prenom_parain',
         'contact_parain',
         'sacrement_recu',
+        'paroisse_id',
     ];
 
     //Relation entre les tables
@@ -49,5 +50,10 @@ class Catechumene extends Model
     public function presences()
     {
         return $this->hasMany(PresenceCatechese::class, 'id_catechumene');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

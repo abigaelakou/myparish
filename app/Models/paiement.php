@@ -15,5 +15,11 @@ class paiement extends Model
         'montant',
         'contact',
         'id_demande',
+        'paroisse_id',
     ];
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
 }

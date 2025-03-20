@@ -22,6 +22,7 @@ class Don extends Model
         'type_donateur',
         'donateur_id',
         'id_type_don',
+        'paroisse_id',
 
     ];
 
@@ -42,5 +43,10 @@ class Don extends Model
     public function NonParoissien()
     {
         return $this->belongsTo(NonParoissien::class, 'id_non_paroissien');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

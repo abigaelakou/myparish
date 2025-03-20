@@ -13,11 +13,17 @@ class TypeIntention extends Model
 
     protected $fillable = [
         'lib_type_intention',
+        'paroisse_id',
     ];
 
 
     public function demandeMesse()
     {
         return $this->hasMany(DemandeMesse::class, 'id_type_intention');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

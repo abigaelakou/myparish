@@ -13,6 +13,7 @@ class TypeMesse extends Model
 
     protected $fillable = [
         'lib_type_messe',
+        'paroisse_id',
     ];
 
     public function messe()
@@ -23,5 +24,10 @@ class TypeMesse extends Model
     public function demandeMesses()
     {
         return $this->hasMany(DemandeMesse::class, 'id_type_messe');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

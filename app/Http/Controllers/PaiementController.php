@@ -22,7 +22,6 @@ class PaiementController extends Controller
         return view('Espaces.Messe.formPaiement', compact('demande'));
     }
 
-
     public function processPaiement(Request $request)
     {
         $request->validate([
@@ -32,83 +31,80 @@ class PaiementController extends Controller
             'moyen_paiement' => 'required|string',
         ]);
 
-        // Récupérer la demande
         $demande = DemandeMesse::find($request->id_demande);
 
-        // Variables de paiement
+        // Vérifier que la demande n'est pas déjà payée
+        if ($demande->statut === 'payée') {
+            return redirect()->back()->with('error', 'Cette demande a déjà été réglée.');
+        }
+
         $montant = $request->montant;
         $contact = $request->contact;
         $moyenPaiement = $request->moyen_paiement;
+        $paroisse_id = auth()->user()->paroisse_id; // Sécuriser le champ paroisse_id
 
-        // Déterminer le service de paiement à utiliser
-        $paymentService = null;
+        // Sélection du service de paiement
+        $paymentService = match ($moyenPaiement) {
+            'moov' => new MoovPaymentService(),
+            'orange' => new OrangePaymentService(),
+            'mtn' => new MtnPaymentService(),
+            'wave' => new WavePaymentService(),
+            default => null,
+        };
 
-        switch ($moyenPaiement) {
-            case 'moov':
-                $paymentService = new MoovPaymentService();
-                break;
-            case 'orange':
-                $paymentService = new OrangePaymentService();
-                break;
-            case 'mtn':
-                $paymentService = new MtnPaymentService();
-                break;
-            case 'wave':
-                $paymentService = new WavePaymentService();
-                break;
-            default:
-                return redirect()->back()->with('error', 'Moyen de paiement non reconnu.');
+        if (!$paymentService) {
+            return redirect()->route('showPaiementForm', ['id_demande' => $request->id_demande])
+                ->with('error', 'Moyen de paiement non reconnu.');
         }
 
-        // Appeler le service de paiement pour traiter la transaction
-        $response = $paymentService->processPayment($montant, $contact);
+        try {
+            $response = $paymentService->processPayment($montant, $contact);
 
-        if ($response['status'] === 'success') {
-            // Mise à jour du statut de la demande
-            $demande->statut = 'payée';
-            $demande->save();
+            if ($response['status'] === 'success') {
+                // Mise à jour du statut de la demande
+                $demande->statut = 'payée';
+                $demande->save();
 
-            // Enregistrement du paiement dans la table paiements
-            $paiement = new paiement();
-            $paiement->id_demande = $demande->id;
-            $paiement->montant = $montant;
-            $paiement->contact = $contact;
-            $paiement->moyen_paiement = $moyenPaiement;
-            $paiement->save();
+                $paiement = Paiement::create([
+                    'id_demande' => $demande->id,
+                    'montant' => $montant,
+                    'contact' => $contact,
+                    'moyen_paiement' => $moyenPaiement,
+                    'paroisse_id' => $paroisse_id,
+                ]);
 
-            // Enregistrement des détails de la transaction
-            $transaction = new Transactions();
-            $transaction->paiement_id = $paiement->id;
-            $transaction->transaction_id = $response['transaction_id'];
-            $transaction->date = now()->format('Y-m-d H:i:s');
-            $transaction->save();
+                Transactions::create([
+                    'paiement_id' => $paiement->id,
+                    'transaction_id' => $response['transaction_id'],
+                    'date' => now(),
+                    'paroisse_id' => $paroisse_id,
+                ]);
 
-            // Enregistrer les détails de la transaction dans la session pour la confirmation
-            session(['transaction_details' => [
-                'transaction_id' => $response['transaction_id'],
-                'amount' => $montant,
-                'moyen_paiement' => $moyenPaiement,
-                'date' => now()->format('Y-m-d H:i:s'),
-            ]]);
+                session(['transaction_details' => [
+                    'transaction_id' => $response['transaction_id'],
+                    'amount' => $montant,
+                    'moyen_paiement' => $moyenPaiement,
+                    'date' => now()->format('Y-m-d H:i:s'),
+                ]]);
 
-            // dd(session('transaction_details'));
-            // Redirection vers une page de confirmation avec un message de succès
-            return redirect()->route('formConfirmation')->with('success', 'Paiement réussi, demande de messe enregistrée.');
-        } else {
-            // En cas d'échec du paiement
-            return redirect()->back()->with('error', 'Le paiement a échoué. Veuillez réessayer.');
+                return redirect()->route('formConfirmation')->with('success', 'Paiement réussi, demande de messe enregistrée.');
+            } else {
+                return redirect()->back()->with('error', 'Le paiement a échoué. Veuillez réessayer.');
+            }
+        } catch (\Exception $e) {
+            Log::error("Erreur de paiement: {$e->getMessage()}");
+            return redirect()->back()->with('error', 'Une erreur est survenue lors du traitement du paiement.');
         }
     }
 
     public function confirmationPageDemande(Request $request)
     {
         $transactionDetails = session('transaction_details');
-        // dd($transactionDetails);
-        // Vérifier si les détails de la transaction existent dans la session
+
         if (!$transactionDetails) {
-            return redirect()->back()->with('error', 'Aucune transaction trouvée.');
+            return redirect()->route('demandeMesse')->with('error', 'Aucune transaction trouvée.');
         }
 
-        return view('Espaces.Messe.formConfirmation', compact('transactionDetails'));
+        return view('Espaces.Messe.confirmationPageDemande', compact('transactionDetails'));
     }
 }

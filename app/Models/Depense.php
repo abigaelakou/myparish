@@ -9,5 +9,10 @@ class Depense extends Model
 {
     use HasFactory;
     protected $table = 'depenses';
-    protected $fillable = ['description', 'montant', 'date_depense'];
+    protected $fillable = ['description', 'montant', 'date_depense', 'paroisse_id',];
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
 }

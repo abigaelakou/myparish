@@ -23,11 +23,17 @@ class PaiementCatechese extends Model
         'payment_status',
         'date_paiement',
         'contact',
+        'paroisse_id',
     ];
 
     // Relation entre les tables
     public function inscription()
     {
         return $this->belongsTo(Inscription::class, 'id_inscription');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

@@ -46,7 +46,7 @@
         </div>
     </div>
     {{-- MODAL DE MODIFICATION --}}
-    <div class="modal fade" id="modalModifMembre" tabindex="-1" role="dialog" aria-labelledby="modalModifMembre"
+    <div class="modal fade" id="modalModifParoisse" tabindex="-1" role="dialog" aria-labelledby="modalModifParoisse"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -54,7 +54,7 @@
                     <h3 class="modal-header justify-content-center border-0">Modification d'utilisateur</h3>
                     <div class="modal-body">
                         <form class="row g-3 needs-validation" novalidate="" method="POST"
-                            action="{{ route('update_membre_mouv') }}" id="formModifMembre">
+                            action="{{ route('update_membre_mouv') }}" id="formModifParoisse">
                             @csrf
                             <div class="col-md-4">
                                 <input type="hidden" name="id_membre_mouvement" id="id_membre_mouvement">

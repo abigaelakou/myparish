@@ -17,6 +17,8 @@ class ArchivageController extends Controller
             'lib_document' => 'required|string|max:255',
             'date_archivage' => 'required|date',
             'fichier' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg', // Accepter plusieurs types de fichiers
+            'paroisse_id' => 'required|exists:paroisses,id',
+
         ]);
 
         // Gestion du fichier uploadé
@@ -28,6 +30,7 @@ class ArchivageController extends Controller
             'date_archivage' => $request->date_archivage,
             'fichier' => $filePath,
             'id_user' => Auth::id(),
+            'paroisse_id' => auth()->user()->paroisse_id
         ]);
 
         return redirect()->back()->with('success', 'Document archivé avec succès!');
@@ -36,14 +39,17 @@ class ArchivageController extends Controller
     public function listDocuments()
     {
         // Récupération des documents archivés
-        $documents = Archivage::with('user')->get();
+        $documents = Archivage::with('user')
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->get();
         return $documents;
     }
 
     public function download($id)
     {
         // Récupérer le document
-        $document = Archivage::findOrFail($id);
+        $document = Archivage::findOrFail($id)
+            ->where('paroisse_id', auth()->user()->paroisse_id);
 
         // Télécharger le fichier
         return Storage::disk('public')->download($document->fichier);

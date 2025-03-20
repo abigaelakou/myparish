@@ -17,7 +17,8 @@ class Messe extends Model
         'lieu_messe',
         'id_user',
         'id_type_messe',
-        'id_celebrant'
+        'id_celebrant',
+        'paroisse_id',
     ];
 
     //Relation entre les tables
@@ -39,5 +40,10 @@ class Messe extends Model
     public function demandeMesses()
     {
         return $this->hasMany(DemandeMesse::class, 'id_messe');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

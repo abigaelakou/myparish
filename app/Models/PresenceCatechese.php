@@ -15,5 +15,11 @@ class PresenceCatechese extends Model
         'id_catechumene',
         'type_presence',
         'date_presence',
+        'paroisse_id',
     ];
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
 }

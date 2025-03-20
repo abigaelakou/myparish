@@ -78,18 +78,25 @@
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="validationTooltip04">Profil</label>
                                 <select class="form-select" id="id_type_utilisateur" name="id_type_utilisateur"
-                                    required="">
-                                    <option selected="" disabled="" value="">choisir...</option>
+                                    required>
+                                    <option selected="" disabled="" value="">Choisir un profil...</option>
                                     @foreach ($type_utilisateurs as $type_utilisateur)
-                                    <option id="select_profil{{ $type_utilisateur->id }}"
-                                        value="{{ $type_utilisateur->id }}">
-                                        {{ $type_utilisateur->lib_type_utilisateur }}
-                                    </option>
+                                    <option value="{{ $type_utilisateur->id }}">{{
+                                        $type_utilisateur->lib_type_utilisateur }}</option>
                                     @endforeach
                                 </select>
+                                <div class="invalid-tooltip">Veuillez sélectionner un profil.</div>
+                            </div>
 
-
-                                <div class="invalid-tooltip">Faites un choix svp.</div>
+                            <div class="col-md-4 position-relative">
+                                <label class="form-label" for="paroisse_id">Paroisse</label>
+                                <select class="form-select" id="paroisse_id" name="paroisse_id" required>
+                                    <option selected="" disabled="" value="">Choisir une paroisse...</option>
+                                    @foreach ($paroisses as $paroisse)
+                                    <option value="{{ $paroisse->id }}">{{ $paroisse->libelle_paroisse }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-tooltip">Veuillez sélectionner une paroisse.</div>
                             </div>
                             {{-- BOX TYPE TYPE_USER==PAROISSIEN --}}
                             <div id="paroissien_fields" style="display: none;">
@@ -119,20 +126,25 @@
 
                                     <div class="col-md-4 position-relative">
                                         <label class="form-label" for="date_naiss">Date de naissance</label>
-                                        <input type="date" id="date_naiss" name="date_naiss" class="form-control">
+                                        {{-- <input type="date" id="date_naiss" name="date_naiss" class="form-control">
+                                        --}}
+                                        <input type="text" id="date_naiss" name="date_naiss" class="form-control"
+                                            placeholder="JJ-MM-AAAA">
                                     </div>
 
                                     <div class="col-md-4 position-relative">
                                         <label class="form-label" for="sacrement_recu">Sacrement(s) reçu(s)</label>
                                         <select id="sacrement_recu" name="sacrement_recu[]" multiple
                                             class="form-control">
-                                            <option value="BAPTEME">AUCUN</option>
-                                            <option value="BAPTEME">BAPTEME</option>
-                                            <option value="CONFIRMATION">CONFIRMATION</option>
-                                            <option value="MARIAGE">MARIAGE</option>
-                                            <option value="EUCHARISTIE">EUCHARISTIE</option>
-                                            <option value="ONCTION DES MALADE">ONCTION DES MALADE</option>
-                                            <option value="RECONCILIATION">RECONCILIATION</option>
+                                            <option value="2">ADMIN</option>
+                                            <option value="3">CURE</option>
+                                            <option value="4">RESPONSABLE</option>
+                                            <option value="5">PRETRE</option>
+                                            <option value="6">PAROISSIEN</option>
+                                            <option value="7">SECRETAIRE</option>
+                                            <option value="8">NON PAROISSIEN</option>
+                                            <option value="9">RESPONSABLE CATECHESE</option>
+                                            <option value="10">VICE RESPO CONSEIL PAROISSIAL</option>
                                         </select>
                                     </div>
                                 </div>
@@ -166,41 +178,44 @@
     setTimeout(function() {
         $('.alert').fadeOut('slow');
     }, 3000); 
-// TRAITEMENT BOX
-
+    
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Script chargé"); // Teste si le script est chargé
-    var select = document.getElementById('id_type_utilisateur');
-    var paroissienFields = document.getElementById('paroissien_fields');
-    var nonParoissienFields = document.getElementById('non_paroissien_fields');
+console.log("Script chargé");
 
-    if (select) {
-        // Affiche toutes les valeurs du select pour déboguer
-        Array.from(select.options).forEach(option => console.log("Option Value:", option.value));
+// Appliquer Inputmask après le chargement du document
+$('#date_naiss').inputmask('99-99-9999', { placeholder: "JJ-MM-AAAA" });
 
-     select.addEventListener('change', function() {
-    // console.log("Valeur du select : ", this.value);
-    
-    // Cacher les deux champs par défaut
-    paroissienFields.style.display = 'none';
-    nonParoissienFields.style.display = 'none';
-    
-    // Afficher les champs en fonction de la valeur sélectionnée
-    if (this.value === '3' || this.value === '5' || this.value === '6' || this.value === '8' || this.value === '9') {
-    paroissienFields.style.display = 'block';
-    // console.log("Affichage des champs paroissien");
-    } else if (this.value === '7') {
-    nonParoissienFields.style.display = 'block';
-    // console.log("Affichage des champs non paroissien");
-    }
-    });
-    }
+// Gestion des sélections de type utilisateur
+var select = document.getElementById('id_type_utilisateur');
+var paroissienFields = document.getElementById('paroissien_fields');
+var nonParoissienFields = document.getElementById('non_paroissien_fields');
+
+if (select) {
+// Débogage : Afficher toutes les valeurs du select
+Array.from(select.options).forEach(option => console.log("Option Value:", option.value));
+
+// Ajouter un événement lorsque la sélection change
+select.addEventListener('change', function() {
+// Cacher les deux sections par défaut
+paroissienFields.style.display = 'none';
+nonParoissienFields.style.display = 'none';
+
+// Afficher les champs selon la valeur sélectionnée
+if (this.value === '3' || this.value === '5' || this.value === '6' || this.value === '8' || this.value === '9') {
+paroissienFields.style.display = 'block';
+} else if (this.value === '7') {
+nonParoissienFields.style.display = 'block';
+}
 });
-
+}
+});
 </script>
+
+
 
 @endsection
 
 @section('page-js')
-
+@section('scripts')
+<script src="{{asset('js/pages_js/users.js')}}"></script>
 @endsection

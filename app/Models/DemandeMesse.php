@@ -19,6 +19,7 @@ class DemandeMesse extends Model
         'heure_messe',
         'lieu_messe',
         'intentions',
+        'paroisse_id',
     ];
 
 
@@ -41,5 +42,10 @@ class DemandeMesse extends Model
     public function typeMesse()
     {
         return $this->belongsTo(TypeMesse::class, 'id_type_messe');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

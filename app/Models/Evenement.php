@@ -17,7 +17,8 @@ class Evenement extends Model
         'date_evement',
         'heure_evenement',
         'id_user',
-        'description'
+        'description',
+        'paroisse_id',
     ];
 
 
@@ -25,5 +26,10 @@ class Evenement extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

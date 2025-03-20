@@ -29,6 +29,8 @@ class DonController extends Controller
             'mode_paiement' => 'required|string',
             'description' => 'nullable|string',
             'id_type_don' => 'required|exists:type_dons,id',
+            'paroisse_id' => 'required|exists:paroisses,id',
+
         ]);
 
         $montant = $request->montant;
@@ -51,7 +53,7 @@ class DonController extends Controller
                 $paymentService = new WavePaymentService();
                 break;
             default:
-                return redirect()->back()->with('error', 'Mode de paiement non reconnu.');
+                return redirect()->back()->withErrors(['mode_paiement' => 'Mode de paiement non reconnu.']);
         }
 
         // Traitement du paiement
@@ -75,14 +77,16 @@ class DonController extends Controller
         $don->type_donateur = $request->has('anonymous_donation') && $request->anonymous_donation == 1 ? 'anonyme' : 'paroissien';
         $don->id_type_don = $request->id_type_don;
         $don->contact = $contact;
+        $don->paroisse_id = $request->paroisse_id;
         $don->save();
 
         session(['transaction_details' => [
-            'transaction_id' => $response['transaction_id'],
+            'transaction_id' => $response['transaction_id'] ?? null,
             'amount' => $montant,
             'moyen_paiement' => $modePaiement,
             'date' => now(),
         ]]);
+
 
         // Redirection en fonction du statut du paiement
         if ($paymentStatus === 'Payé') {
@@ -110,9 +114,18 @@ class DonController extends Controller
 
     public function show_type_don()
     {
+        $paroisseId = auth()->user()->paroisse_id;
 
-        $typesDons = DB::table('type_dons')->orderBy('lib_type_don')->get();
-        $userDons = DB::table('users')->orderBy('name')->get();
+        $typesDons = DB::table('type_dons')
+            ->where('paroisse_id', $paroisseId) // Filtre par paroisse
+            ->orderBy('lib_type_don')
+            ->get();
+
+        $userDons = DB::table('users')
+            ->where('paroisse_id', $paroisseId) // Filtre par paroisse
+            ->orderBy('name')
+            ->get();
+
         return view('Espaces.Don.formDon', compact('typesDons', 'userDons'));
     }
 
@@ -120,8 +133,9 @@ class DonController extends Controller
     public function liste_don()
     {
         // Récupérer tous dons
-        $dons = Don::with('typeDon', 'user')->get();
-        // dd($dons);
+        $dons = Don::with('typeDon', 'user')
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->get();
         return response()->json($dons);
     }
 
@@ -129,9 +143,11 @@ class DonController extends Controller
     // Liste des dons de l'utilisateur connecté
     public function listUserDons()
     {
-        $userId = Auth::id(); // Récupérer l'ID de l'utilisateur connecté
-        $dons_util = Don::where('donateur_id', $userId)->with('typeDon')->get(); // Récupérer les dons de l'utilisateur connecté
-        // dd($dons_util);
+        $userId = Auth::id();
+        $dons_util = Don::where('donateur_id', $userId)
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->with('typeDon')
+            ->get();
         return response()->json($dons_util);
     }
 }

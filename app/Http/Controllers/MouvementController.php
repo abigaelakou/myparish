@@ -23,15 +23,14 @@ class MouvementController extends Controller
             'rencontres.*.jour' => 'required|string',
             'rencontres.*.heure_debut' => 'required|date_format:H:i',
             'rencontres.*.heure_fin' => 'required|date_format:H:i|after:rencontres.*.heure_debut',
-
         ]);
 
         $mouvement = Mouvement::create([
             'lib_mouvement' => $data['lib_mouvement'],
             'description' => $data['description'],
             'date_creation' => $data['date_creation'],
+            'paroisse_id' => auth()->user()->paroisse_id
         ]);
-
 
         foreach ($data['rencontres'] as $rencontre) {
             $rencontre['id_mouvement'] = $mouvement->id;
@@ -41,23 +40,20 @@ class MouvementController extends Controller
         return redirect()->route('formAddMouvement')->with('success', 'Mouvement créé avec succès');
     }
 
-    // Liste des mouvements avec leur jours de renconcontres
+    // Liste des rencontres avec leurs mouvements associés, limitée à la paroisse de l'utilisateur
     public function liste_des_rencontres_mouvement()
     {
         $liste_rencontre_mouv = DB::table('rencontres')
             ->join('mouvements', 'rencontres.id_mouvement', '=', 'mouvements.id')
-            ->select('rencontres.*', 'mouvements.lib_mouvement', 'mouvements.date_creation', 'mouvements.description')
+            ->join('paroisses', 'mouvements.paroisse_id', '=', 'paroisses.id')
+            ->where('mouvements.paroisse_id', auth()->user()->paroisse_id)
+            ->select('rencontres.*', 'mouvements.lib_mouvement', 'mouvements.date_creation', 'mouvements.description', 'paroisses.nom_paroisse')
             ->get();
+
         return $liste_rencontre_mouv;
     }
 
-    public function edit_rencontre_mouv($id)
-    {
-        $mouvement = Mouvement::with('rencontres')->findOrFail($id);
-        return $mouvement;
-    }
-
-    // Modification des information 
+    // Modification des informations de rencontre
     public function update_rencontre(Request $request)
     {
         Log::info($request->all());
@@ -74,18 +70,22 @@ class MouvementController extends Controller
             'rencontres.*.heure_fin' => 'required|date_format:H:i|after:rencontres.*.heure_debut',
         ]);
 
-        // Mettre à jour les informations du mouvement
-        $mouvement = Mouvement::findOrFail($data['id_mouvement']);
+        // Vérification que le mouvement appartient bien à la paroisse de l'utilisateur connecté
+        $mouvement = Mouvement::where('id', $data['id_mouvement'])
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->firstOrFail();
+
+        // Mise à jour des informations du mouvement
         $mouvement->update([
             'lib_mouvement' => $data['lib_mouvement'],
             'description' => $data['description'],
             'date_creation' => $data['date_creation'],
         ]);
 
-        // Supprimer les anciennes rencontres
+        // Suppression des anciennes rencontres
         Rencontre::where('id_mouvement', $mouvement->id)->delete();
 
-        // Ajouter les nouvelles rencontres
+        // Ajout des nouvelles rencontres
         foreach ($data['rencontres'] as $rencontre) {
             $rencontre['id_mouvement'] = $mouvement->id;
             Rencontre::create($rencontre);
@@ -98,83 +98,99 @@ class MouvementController extends Controller
     //****************************PARTIR MEMBRE DES MOUVEMENTS*************************** */
     public function create()
     {
-        $mouvements = DB::table('mouvements')->orderBy('lib_mouvement')->get();
-        // dd($mouvements);
+        $mouvements = DB::table('mouvements')
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->orderBy('lib_mouvement')
+            ->get();
         return view('Espaces.Admin.formAddMembreMouvement', compact('mouvements'));
     }
 
     public function showEditMembreModal()
     {
-        $mouvements = DB::table('mouvements')->orderBy('lib_mouvement')->get();
+        $mouvements = DB::table('mouvements')
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->orderBy('lib_mouvement')
+            ->get();
         return view('Espaces.Admin.listeMembreMouv', compact('mouvements'));
     }
 
-    // creation de membre de mouvement
+    // Création de membre de mouvement
     public function create_membre_mouv(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'name_membre' => 'required|string|max:255',
             'contact' => 'required|string|max:15|unique:membre_mouvements',
-            'date_inscription' => 'required|string|',
+            'date_inscription' => 'required|string',
             'role_membre' => 'required|string|in:MEMBRE SIMPLE,RESPONSABLE,MEMBRE BUREAU',
             'id_mouvement' => 'required|integer|exists:mouvements,id',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $membre_mouvement = new MembreMouvement();
-        $membre_mouvement->name_membre = $request->name_membre;
-        $membre_mouvement->contact = $request->contact;
-        $membre_mouvement->date_inscription = $request->date_inscription;
-        $membre_mouvement->role_membre = $request->role_membre;
-        $membre_mouvement->id_mouvement = $request->id_mouvement;
-        $membre_mouvement->save();
+        $membre_mouvement = MembreMouvement::create([
+            'name_membre' => $data['name_membre'],
+            'contact' => $data['contact'],
+            'date_inscription' => $data['date_inscription'],
+            'role_membre' => $data['role_membre'],
+            'id_mouvement' => $data['id_mouvement'],
+            'paroisse_id' => auth()->user()->paroisse_id
+        ]);
 
         return redirect()->route('formAddMembreMouvement')->with('success', 'Nouveau membre ajouté au mouvement avec succès.');
     }
+
     // Liste des membres des mouvements
     public function list_membre_mouv()
     {
         $liste_membre_mouv = DB::table('membre_mouvements')
             ->join('mouvements', 'membre_mouvements.id_mouvement', '=', 'mouvements.id')
-            ->select('membre_mouvements.*', 'mouvements.lib_mouvement')
+            ->join('paroisses', 'membre_mouvements.paroisse_id', '=', 'paroisses.id')
+            ->where('membre_mouvements.paroisse_id', auth()->user()->paroisse_id)
+            ->select('membre_mouvements.*', 'mouvements.lib_mouvement', 'paroisses.nom_paroisse')
             ->get();
+
         return $liste_membre_mouv;
     }
 
-    // Modification des membres mouvement
+    // Modification des membres de mouvement
     public function update_membre_mouv(Request $request)
     {
         Log::info($request->all());
 
-        $validator = $request->validate([
+        $data = $request->validate([
             'id_membre_mouvement' => 'required|integer|exists:membre_mouvements,id',
             'modif_name_membre' => 'required|string|max:255',
-            'modif_contact' => 'required|string|max:255|unique:membre_mouvements,contact,' . $request->id_membre_mouvement,
-            'modif_date_inscription' => 'required|string|',
+            'modif_contact' => 'required|string|max:15|unique:membre_mouvements,contact,' . $request->id_membre_mouvement,
+            'modif_date_inscription' => 'required|string',
             'modif_role_membre' => 'required|string|in:MEMBRE SIMPLE,RESPONSABLE,MEMBRE BUREAU',
             'modif_id_mouvement' => 'required|integer|exists:mouvements,id',
         ]);
 
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors($validator)->withInput();
-        // }
+        $modif_membre = MembreMouvement::where('id', $data['id_membre_mouvement'])
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->firstOrFail();
 
-        $modif_membre = MembreMouvement::find($request->id_membre_mouvement);
-        $modif_membre->name_membre = $request->modif_name_membre;
-        $modif_membre->contact = $request->modif_contact;
-        $modif_membre->date_inscription = $request->modif_date_inscription;
-        $modif_membre->role_membre = $request->modif_role_membre;
-        $modif_membre->id_mouvement = $request->modif_id_mouvement;
-        $modif_membre->save();
-        return true;
+        // Mise à jour des informations du membre de mouvement
+        $modif_membre->update([
+            'name_membre' => $data['modif_name_membre'],
+            'contact' => $data['modif_contact'],
+            'date_inscription' => $data['modif_date_inscription'],
+            'role_membre' => $data['modif_role_membre'],
+            'id_mouvement' => $data['modif_id_mouvement'],
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Membre mis à jour avec succès.']);
     }
+
     // suppression de membre
     public function supp_membre($id)
     {
-        DB::table("membre_mouvements")->where("id", $id)->delete();
-        return true;
+        $deleted = DB::table("membre_mouvements")->where('id', $id)
+            ->where('paroisse_id', auth()->user()->paroisse_id)
+            ->delete();
+
+        if ($deleted) {
+            return response()->json(['success' => 'Un membre supprimé avec succès.']);
+        } else {
+            return response()->json(['error' => 'Suppression échouée ou non autorisée.'], 403);
+        }
     }
 }

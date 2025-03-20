@@ -12,6 +12,12 @@ class SessionCatechese extends Model
     protected $table = 'session_catecheses';
 
     protected $fillable = [
-        'lib_session_catechese'
+        'lib_session_catechese',
+        'paroisse_id',
     ];
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
 }

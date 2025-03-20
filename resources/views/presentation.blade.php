@@ -300,16 +300,18 @@
                                 <div class="col-md-12 text-center">
                                     <div class="loading">Chargement</div>
                                     <div class="error-message"></div>
-                                    <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                                    <button type="submit">Envoyez Message</button>
+                                    <Votre class="sent-message"> Votre message a été envoyé. Nous vous remercions de
+                                        votre attention!
                                 </div>
 
+                                <button type="submit">Envoyez Message</button>
                             </div>
-                        </form>
-                    </div><!-- End Contact Form -->
 
-                </div>
+                    </div>
+                    </form>
+                </div><!-- End Contact Form -->
+
+            </div>
 
             </div>
 

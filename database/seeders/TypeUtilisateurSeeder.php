@@ -17,6 +17,7 @@ class TypeUtilisateurSeeder extends Seeder
     {
         //
         DB::table('type_utilisateurs')->insert([
+            ['lib_type_utilisateur' => 'SUPER ADMIN'],
             ['lib_type_utilisateur' => 'ADMIN'],
             ['lib_type_utilisateur' => 'CURE'],
             ['lib_type_utilisateur' => 'RESPONSABLE MVT'],

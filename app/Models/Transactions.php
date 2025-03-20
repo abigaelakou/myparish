@@ -15,5 +15,11 @@ class Transactions extends Model
         'paiement_id',
         'transaction_id',
         'date',
+        'paroisse_id',
     ];
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
 }

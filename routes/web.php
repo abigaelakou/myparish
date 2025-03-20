@@ -10,6 +10,7 @@ use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\MesseController;
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\ParoisseController;
 use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistiqueController;
@@ -85,12 +86,28 @@ Route::middleware('auth')->group(function () {
     Route::view('listeDepense', 'Espaces.Depenses.listeDepense')->name('listeDepense');
     Route::view('listeMesDemandes', 'Espaces.Messe.listeMesDemandes')->name('listeMesDemandes');
     Route::view('changerMotPasse', 'Espaces.Admin.changerMotPasse')->name('changerMotPasse');
+    Route::view('form_super_admin', 'Espaces.SuperAdmin.form_super_admin')->name('form_super_admin');
+    Route::view('liste_sup_admin', 'Espaces.SuperAdmin.liste_sup_admin')->name('liste_sup_admin');
+    Route::view('formAddParoisse', 'Espaces.SuperAdmin.formAddParoisse')->name('formAddParoisse');
 
-
+    // ROUTES SUPER ADMINS
 
     // routes utilisateurs
     Route::get('/Espaces/template', [UserController::class, 'index']);
-    Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
+    //Interdiction de création de super admin aux admins des paroisses
+    Route::middleware(['auth', 'isSuperAdmin'])->group(function () {
+        Route::post('/create_user', [UserController::class, 'create_user'])->name('create_user');
+        Route::get('Espaces/Admin/formAddUser', [TypeUserController::class, 'showFormAddUser'])->name('formAddUser');
+        Route::post('/create_super_admin', [ParoisseController::class, 'createSuperAdmin'])->name('create_super_admin');
+        Route::post('/create_paroisse', [ParoisseController::class, 'createParoisse'])->name('create_paroisse');
+        Route::get('/liste_des_super_admins', [ParoisseController::class, 'liste_des_super_admins'])->name('liste_des_super_admins');
+        Route::get('/update_status_paroisse/{paroisse_id}/{status_code}', [ParoisseController::class, 'update_status_paroisse'])->name('update_status');
+        Route::post('/update_paroisse', [ParoisseController::class, 'update_paroisse'])->name('update_paroisse');
+        Route::get('/liste_des_paroisses', [ParoisseController::class, 'liste_des_paroisses'])->name('liste_des_paroisses');
+        Route::get('/paroisses/{id}/historique', [ParoisseController::class, 'showHistorique'])->name('paroisses.historique');
+        Route::get('/listUsersByParoisse', [ParoisseController::class, 'listUsersByParoisse'])->name('listUsersByParoisse');
+    });
+
     Route::post('/check-email', [UserController::class, 'checkEmail']);
     Route::post('/update_password', [UserController::class, 'update_password'])->name('update_password');
     Route::get('/list_users', [UserController::class, 'list_users'])->name('list_users');
@@ -98,10 +115,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/update_user', [UserController::class, 'update_user'])->name('update_user');
     Route::get('/update_status/{user_id}/{status_code}', [UserController::class, 'update_status'])->name('update_status');
     Route::post('/statistiques', [UserController::class, 'statistiques'])->name('statistiques');
+    Route::post('/updateProfileImage', [UserController::class, 'updateProfileImage'])->name('updateProfileImage');
+
+
 
     // Routes type utilisateurs
 
-    Route::get('Espaces/Admin/formAddUser', [TypeUserController::class, 'create'])->name('formAddUser');
+    // Route::get('Espaces/Admin/formAddUser', [TypeUserController::class, 'create'])->name('formAddUser');
     Route::get('Espaces/Admin/formMesse', [TypeUserController::class, 'type_utilisateur_celebrant'])->name('formMesse');
 
     //  Routes mouvements

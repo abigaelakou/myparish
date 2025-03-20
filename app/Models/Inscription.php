@@ -19,6 +19,7 @@ class Inscription extends Model
         'id_user',
         'id_niveau',
         'id_session',
+        'paroisse_id',
     ];
 
     // Relation avec les tables
@@ -45,5 +46,10 @@ class Inscription extends Model
     public function paiements()
     {
         return $this->hasMany(PaiementCatechese::class, 'id_inscription');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

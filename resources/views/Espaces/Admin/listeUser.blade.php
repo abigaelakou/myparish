@@ -74,19 +74,35 @@
                                     name="modif_contact">
                                 <div class="valid-feedback">Bon!</div>
                             </div>
+                            @if(Auth::check())
+                            @if(Auth::user()->id_type_utilisateur == 1)
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="validationTooltip06">Profil</label>
                                 <select class="form-select" id="modif_id_type_utilisateur"
                                     name="modif_id_type_utilisateur" value="" required="">
-                                    <option value="1">ADMIN</option>
-                                    <option value="2">CURE</option>
-                                    <option value="3">RESPONSABLE</option>
-                                    <option value="4">PRETRE</option>
-                                    <option value="5">PAROISSIEN</option>
-                                    <option value="6">SECRETAIRE</option>
+                                    <option value="1">SUPER ADMIN</option>
                                 </select>
                                 <div class="invalid-tooltip">Faites un choix svp.</div>
                             </div>
+                            @else
+                            <div class="col-md-4 position-relative">
+                                <label class="form-label" for="validationTooltip06">Profil</label>
+                                <select class="form-select" id="modif_id_type_utilisateur"
+                                    name="modif_id_type_utilisateur" value="" required="">
+                                    <option value="2">ADMIN</option>
+                                    <option value="3">CURE</option>
+                                    <option value="4">RESPONSABLE</option>
+                                    <option value="5">PRETRE</option>
+                                    <option value="6">PAROISSIEN</option>
+                                    <option value="7">SECRETAIRE</option>
+                                    <option value="8">NON PAROISSIEN</option>
+                                    <option value="9">RESPONSABLE CATECHESE</option>
+                                    <option value="10">VICE RESPO CONSEIL PAROISSIAL</option>
+                                </select>
+                                <div class="invalid-tooltip">Faites un choix svp.</div>
+                            </div>
+                            @endif
+                            @endif
                             <div class="col-md-12">
                                 <button class="btn btn-primary" type="submit">Valider</button>
                             </div>

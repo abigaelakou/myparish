@@ -19,10 +19,16 @@ class DecisionCatechese extends Model
         'total_presence_messes',
         'total_presence_ceb',
         'decision_finale',
+        'paroisse_id',
     ];
 
     public function Catechumene()
     {
         return $this->belongsTo(Catechumene::class, 'id_catechumene');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }
