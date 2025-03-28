@@ -14,11 +14,17 @@ class TypeDon extends Model
 
     protected $fillable = [
         'lib_type_don',
+        'paroisse_id',
     ];
 
     //Relation entre les tables
-    public function Dons()
+    public function don()
     {
         return $this->hasMany(Don::class, 'id_type_don');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }
