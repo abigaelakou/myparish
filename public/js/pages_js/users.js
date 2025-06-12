@@ -64,12 +64,12 @@ function table_utilisateur(response) {
         switch (Number(user.status)) {
             case 1:
 
-                btn = '<button type="button" onclick="update(' + user.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="icon-unlock"></i>' +
+                btn = '<button type="button" onclick="update(' + user.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="fas fa-unlock></i>' +
                     '</button>'
                 break;
             case 0:
 
-                btn = '<button type="button" onclick="update(' + user.id + ',1);" class="btn btn-warning mr-3" title="Debloqué"> ' + '<i class="icon-lock"></i>' +
+                btn = '<button type="button" onclick="update(' + user.id + ',1);" class="btn btn-warning mr-3" title="Debloqué"> ' + '<i class="fas fa-lock"></i>' +
                     '</button>'
                 break;
             default:
@@ -83,7 +83,7 @@ function table_utilisateur(response) {
             '<td>' + date_format_fr(user.created_at) + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_utilisateur(' + user.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             btn +
             '</td>' +
@@ -196,12 +196,12 @@ function table_sup_utilisateur(response) {
         switch (Number(user.status)) {
             case 1:
 
-                btn = '<button type="button" onclick="update(' + user.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="icon-unlock"></i>' +
+                btn = '<button type="button" onclick="update(' + user.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="fas fa-unlock"></i>' +
                     '</button>'
                 break;
             case 0:
 
-                btn = '<button type="button" onclick="update(' + user.id + ',1);" class="btn btn-warning mr-3" title="Debloqué"> ' + '<i class="icon-lock"></i>' +
+                btn = '<button type="button" onclick="update(' + user.id + ',1);" class="btn btn-warning mr-3" title="Debloqué"> ' + '<i class="fas fa-lock"></i>' +
                     '</button>'
                 break;
             default:
@@ -215,7 +215,7 @@ function table_sup_utilisateur(response) {
             '<td>' + date_format_fr(user.created_at) + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_utilisateur(' + user.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             btn +
             '</td>' +

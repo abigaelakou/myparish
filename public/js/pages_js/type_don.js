@@ -44,10 +44,10 @@ function table_type_don(response) {
             '<td>' + date_format_fr(type_don.created_at) + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_type_don(' + type_don.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             '<button type="button" onclick="supprimer_type_don(' + type_don.id + ');" class="btn btn-danger mr-1" title="Supprimer">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-trash"></i>' +
             '</button>' +
             '</td>' +
             '</tr>';

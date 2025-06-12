@@ -26,6 +26,7 @@ class User extends Authenticatable
         'id_type_utilisateur',
         'profile_image',
         'paroisse_id',
+        'expo_token'
     ];
 
     //Relation entre les tables

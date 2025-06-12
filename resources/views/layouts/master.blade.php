@@ -17,6 +17,7 @@
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/font-awesome.css') }}">
     <!-- ico-font-->
@@ -186,7 +187,7 @@
                                     </svg><span>Paroisse </span></a>
                                 <ul class="sidebar-submenu">
                                     <li><a href="{{ route('formAddParoisse') }}">Créer Paroisse</a></li>
-                                    <li><a href="#">Liste Paroisses</a></li>
+                                    <li><a href="{{ route('liste_paroisse') }}">Liste Paroisses</a></li>
                                 </ul>
                             </li>
                             {{-- ******************* FIN BOX PAROISSE *********************** --}}

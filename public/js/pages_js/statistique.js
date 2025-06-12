@@ -16,6 +16,7 @@ $(document).ready(function() {
     rapport_stat_catechese();
     rapport_start_montant_total_annee_encours();
     liste_evenement_venir();
+    rapport_stat_general_sup_admin();
 
     var annee = new Date().getFullYear()
     var mois = new Date().getMonth() + 1
@@ -49,6 +50,26 @@ function rapport_stat_general() {
             $("#nbre_mouvement").text(format_num(response["nbre_mouvement"]))
             $("#nbre_doc_archive").text(format_num(response["nbre_doc_archive"]))
 
+        }
+    });
+
+}
+
+function rapport_stat_general_sup_admin() {
+    $.ajax({
+        type: "get",
+        url: "/dashboardStats",
+        dataType: "json",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+
+        success: function(response) {
+            //console.log(response);
+            $("#nbre_paroisse_act").text(format_num(response["totalParoissesActives"]))
+            $("#nombre_paroisse_inactive").text(format_num(response["totalParoissesInactives"]))
+            $("#nombre_super_ad").text(format_num(response["nombre_super_admin"]))
+            $("#nbre_new_paroisse").text(format_num(response["totalParoissesSemaine"]))
         }
     });
 

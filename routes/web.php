@@ -11,6 +11,7 @@ use App\Http\Controllers\MesseController;
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ParoisseController;
+use App\Http\Controllers\PasswordChangeController;
 use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistiqueController;
@@ -89,6 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::view('form_super_admin', 'Espaces.SuperAdmin.form_super_admin')->name('form_super_admin');
     Route::view('liste_sup_admin', 'Espaces.SuperAdmin.liste_sup_admin')->name('liste_sup_admin');
     Route::view('formAddParoisse', 'Espaces.SuperAdmin.formAddParoisse')->name('formAddParoisse');
+    Route::view('liste_paroisse', 'Espaces.SuperAdmin.liste_paroisse')->name('liste_paroisse');
 
     // ROUTES SUPER ADMINS
 
@@ -106,7 +108,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/liste_des_paroisses', [ParoisseController::class, 'liste_des_paroisses'])->name('liste_des_paroisses');
         Route::get('/paroisses/{id}/historique', [ParoisseController::class, 'showHistorique'])->name('paroisses.historique');
         Route::get('/listUsersByParoisse', [ParoisseController::class, 'listUsersByParoisse'])->name('listUsersByParoisse');
+        Route::get('/dashboardStats', [ParoisseController::class, 'dashboardStats'])->name('dashboardStats');
     });
+    
+        Route::get('/password/change', [PasswordChangeController::class, 'showChangeForm'])->name('password.change');
+        Route::post('/password/change', [PasswordChangeController::class, 'update'])->name('password.update');
+
 
     Route::post('/check-email', [UserController::class, 'checkEmail']);
     Route::post('/update_password', [UserController::class, 'update_password'])->name('update_password');
