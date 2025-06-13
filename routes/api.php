@@ -2,14 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\AccueilController;
-use App\Http\Controllers\Api\EvenementController;
-use App\Http\Controllers\Api\DonController;
-use App\Http\Controllers\Api\MesseController;
-use App\Http\Controllers\Api\LectureController;
-use App\Http\Controllers\Api\PainJourController;
-use App\Http\Controllers\Api\InscriptionCatecheseController;
+use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\AccueilApiController;
+use App\Http\Controllers\Api\EvenementApiController;
+use App\Http\Controllers\Api\DonApiController;
+use App\Http\Controllers\Api\MesseApiController;
+use App\Http\Controllers\Api\LectureApiController;
+use App\Http\Controllers\Api\PainJourApiController;
+use App\Http\Controllers\Api\InscriptionCatecheseApiController;
 use App\Http\Controllers\NotificationController;
 /*
 |--------------------------------------------------------------------------
@@ -26,28 +26,30 @@ use App\Http\Controllers\NotificationController;
 
 
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthApiController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', [AuthController::class, 'user']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/changePassword', [AuthController::class, 'changePassword']);
-    Route::post('/updateExpoToken', [AuthController::class, 'updateExpoToken']);
+    Route::get('/user', [AuthApiController::class, 'user']);
+    Route::post('/logout', [AuthApiController::class, 'logout']);
+    Route::post('/changePassword', [AuthApiController::class, 'changePassword']);
+    Route::post('/updateExpoToken', [AuthApiController::class, 'updateExpoToken']);
     
 
-    Route::get('/accueil', [AccueilController::class, 'accueil']);
-    Route::get('/evenements', [EvenementController::class, 'evenementsAvenir']);
-    Route::get('/dons', [DonController::class, 'mesDons']);
-    Route::post('/dons', [DonController::class, 'faireUnDon']);
-    Route::get('/messes', [MesseController::class, 'mesDemandesDeMesse']);
-    Route::post('/messes', [MesseController::class, 'demanderMesse']);
-    Route::get('/lecture-du-jour', [LectureController::class, 'lectureDuJour']);
-    Route::get('/prochaines-lectures', [LectureController::class, 'prochainesLectures']);
-    Route::get('/pain-du-jour', [PainJourController::class, 'painDuJour']);
-    Route::get('/derniers-pains', [PainJourController::class, 'derniersPains']); 
-    Route::post('inscriptions', [InscriptionCatecheseController::class, 'store']);
-    Route::get('paiement-inscription/{id}', [InscriptionCatecheseController::class, 'getPaiementInfo']);
-    Route::post('paiement-inscription', [InscriptionCatecheseController::class, 'payerInscription']);
-    Route::get('paiements', [InscriptionCatecheseController::class, 'listePaiements']);
+    Route::get('/accueil', [AccueilApiController::class, 'accueil']);
+    Route::get('/evenements', [EvenementApiController::class, 'evenementsAvenir']);
+    Route::get('/dons', [DonApiController::class, 'mesDons']);
+    Route::post('/dons', [DonApiController::class, 'faireUnDon']);
+    Route::get('/messes', [MesseApiController::class, 'mesDemandesDeMesse']);
+    Route::post('/messes', [MesseApiController::class, 'demanderMesse']);
+    Route::get('/lecture-du-jour', [LectureApiController::class, 'lectureDuJour']);
+    Route::get('/prochaines-lectures', [LectureApiController::class, 'prochainesLectures']);
+    
+    Route::get('/pain-du-jour', [PainJourApiController::class, 'painDuJourUtilisateur']);
+    Route::get('/mes-pains', [PainJourApiController::class, 'historiqueUtilisateur']);
+
+    Route::post('inscriptions', [InscriptionCatecheseApiController::class, 'store']);
+    Route::get('paiement-inscription/{id}', [InscriptionCatecheseApiController::class, 'getPaiementInfo']);
+    Route::post('paiement-inscription', [InscriptionCatecheseApiController::class, 'payerInscription']);
+    Route::get('paiements', [InscriptionCatecheseApiController::class, 'listePaiements']);
 
 
     Route::post('/send-notification', [NotificationController::class, 'sendNotification']);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\LectureBiblique;
 use Illuminate\Support\Facades\Auth;
 
-class LectureController extends Controller
+class LectureApiController extends Controller
 {
     /**
      * Récupérer la lecture biblique du jour pour l'utilisateur connecté

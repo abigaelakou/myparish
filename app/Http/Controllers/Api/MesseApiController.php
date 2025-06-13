@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Messe;
 
-class MesseController extends Controller
+class MesseApiController extends Controller
 {
     /**
      * Récupérer les demandes de messe de l'utilisateur connecté

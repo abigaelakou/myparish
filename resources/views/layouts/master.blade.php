@@ -214,8 +214,21 @@
 
                             @elseif(Auth::user()->id_type_utilisateur == 2)
                             <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- *******************  BOX PAIN DE VIE *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>PAIN DE VIE </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('pain_du_jour') }}">Voir</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
-
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
@@ -366,7 +379,23 @@
                             </li>
                             {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
                             @elseif(Auth::user()->id_type_utilisateur == 3)
-                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            <!-- *************************** LES ACCES CURE ******************************-->
+                            {{-- ******************* DEBUT BOX PAIN DE VIE *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>PAIN DE VIE </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formPainJour') }}">Créer</a></li>
+                                    <li><a href="{{ route('remplacer') }}">Remplacer</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
 
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
@@ -521,6 +550,22 @@
                             <!-- *************************** LES ACCES RESPONSABLE MVT ******************************-->
                             @elseif(Auth::user()->id_type_utilisateur == 4)
                             {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
+                            {{-- ******************* DEBUT BOX PAIN DE VIE *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                    class="sidebar-link sidebar-title" href="#">
+                                    <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>PAIN DE VIE </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formPainJour') }}">Créer</a></li>
+                                    <li><a href="{{ route('remplacer') }}">Remplacer</a></li>
+                                </ul>
+                            </li>
+                            {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
                                     class="sidebar-link sidebar-title" href="#">
                                     <svg class="stroke-icon">
@@ -617,7 +662,22 @@
                             {{-- ******************* FIN BOX CATECHESE *********************** --}}
                             <!-- *************************** LES ACCES PRETRE******************************-->
                             @elseif(Auth::user()->id_type_utilisateur == 5)
-                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- ******************* DEBUT BOX PAIN DE VIE *********************** --}}
+
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                class="sidebar-link sidebar-title" href="#">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                </svg><span>PAIN DE VIE </span></a>
+                            <ul class="sidebar-submenu">
+                                <li><a href="{{ route('formPainJour') }}">Créer</a></li>
+                                <li><a href="{{ route('remplacer') }}">Remplacer</a></li>
+                            </ul>
+                        </li>
+                        {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
 
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
@@ -766,8 +826,22 @@
                             </li>
                             {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
                             <!-- *************************** LES ACCES PAROISSIEN******************************-->
-                            @elseif(Auth::user()->id_type_utilisateur == 5)
+                            @elseif(Auth::user()->id_type_utilisateur == 6)
                             {{-- ******************* DEBUT BOX MESSE *********************** --}}
+                            {{-- *******************  BOX PAIN DE VIE *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                class="sidebar-link sidebar-title" href="#">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                </svg><span>PAIN DE VIE </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('pain_du_jour') }}">Voir</a></li>
+                                </ul>
+                            </li>
+                        {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>
                                     <h6 class="lan-">Messe</h6>
@@ -832,6 +906,20 @@
                             <!-- *************************** LES ACCES SECRETAIRE******************************-->
                             @elseif(Auth::user()->id_type_utilisateur == 7)
                             <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- *******************  BOX PAIN DE VIE *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                class="sidebar-link sidebar-title" href="#">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                </svg><span>PAIN DE VIE </span></a>
+                            <ul class="sidebar-submenu">
+                                <li><a href="{{ route('pain_du_jour') }}">Voir</a></li>
+                            </ul>
+                        </li>
+                        {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
 
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
@@ -982,6 +1070,20 @@
                             {{-- ******************* FIN BOX ARCHIVAGE *********************** --}}
                             <!-- *************************** NON PAROISSIEN ******************************-->
                             @elseif(Auth::user()->id_type_utilisateur == 8)
+                            {{-- *******************  BOX PAIN DE VIE *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                class="sidebar-link sidebar-title" href="#">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                </svg><span>PAIN DE VIE </span></a>
+                            <ul class="sidebar-submenu">
+                                <li><a href="{{ route('pain_du_jour') }}">Voir</a></li>
+                            </ul>
+                        </li>
+                        {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- ******************* DEBUT BOX MESSE *********************** --}}
                             <li class="sidebar-main-title">
                                 <div>
@@ -1025,6 +1127,20 @@
 
                             <!-- *************************** RESPONSABLE CATECHESE ******************************-->
                             @elseif(Auth::user()->id_type_utilisateur == 9)
+                           {{-- *******************  BOX PAIN DE VIE *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                class="sidebar-link sidebar-title" href="#">
+                                <svg class="stroke-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                    </svg>
+                                    <svg class="fill-icon">
+                                        <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                    </svg><span>PAIN DE VIE </span></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('pain_du_jour') }}">Voir</a></li>
+                                </ul>
+                            </li>
+                        {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- **************************DEBUT BOX MOUVEMENT********************* --}}
                             <li class="sidebar-main-title">
                                 <div>
@@ -1111,7 +1227,20 @@
                             {{-- ******************* FIN BOX CATECHESE *********************** --}}
                             <!-- *************************** VICE RESPO CONSEIL PAROISSIAL ******************************-->
                             @elseif(Auth::user()->id_type_utilisateur == 10)
-                            <!-- *************************** LES ACCES ADMIN ******************************-->
+                            {{-- *******************  BOX PAIN DE VIE *********************** --}}
+                            <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a
+                                class="sidebar-link sidebar-title" href="#">
+                                <svg class="stroke-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#stroke-user')}}"></use>
+                                </svg>
+                                <svg class="fill-icon">
+                                    <use href="{{ asset('assets/svg/icon-sprite.svg#fill-user')}}"></use>
+                                </svg><span>PAIN DE VIE </span></a>
+                            <ul class="sidebar-submenu">
+                                <li><a href="{{ route('pain_du_jour') }}">Voir</a></li>
+                            </ul>
+                        </li>
+                        {{-- ******************* FIN BOX PAIN DE VIE *********************** --}}
                             {{-- ******************* DEBUT BOX UTILISATEUR *********************** --}}
 
                             <li class="sidebar-list"><i class="fa fa-thumb-tack"></i><a

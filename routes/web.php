@@ -10,6 +10,7 @@ use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\MesseController;
 use App\Http\Controllers\MouvementController;
 use App\Http\Controllers\PaiementController;
+use App\Http\Controllers\PainDuJourController;
 use App\Http\Controllers\ParoisseController;
 use App\Http\Controllers\PasswordChangeController;
 use App\Http\Controllers\PresentationController;
@@ -71,6 +72,11 @@ Route::middleware('auth')->group(function () {
     Route::view('listEvenement', 'Espaces.Autres.listEvenement')->name('listEvenement');
     Route::view('formArchivage', 'Espaces.Autres.formArchivage')->name('formArchivage');
     Route::view('listDocArchive', 'Espaces.Autres.listDocArchive')->name('listDocArchive');
+    
+    Route::view('formPainJour', 'Espaces.PainDuJour.formPainJour')->name('formPainJour');
+    Route::view('pain_du_jour', 'Espaces.PainDuJour.pain_du_jour')->name('pain_du_jour');
+    Route::view('remplacer', 'Espaces.PainDuJour.remplacer')->name('remplacer');
+
     Route::view('formCatechumene', 'Espaces.Catechese.formCatechumene')->name('formCatechumene');
     Route::view('listeCatechumene', 'Espaces.Catechese.listeCatechumene')->name('listeCatechumene');
     Route::view('espaceKT', 'Espaces.Catechese.espaceKT')->name('espaceKT');
@@ -250,7 +256,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/start_catechese', [StatistiqueController::class, 'start_catechese'])->name('start_catechese');
     Route::get('/start_montant_total_annee_encours', [StatistiqueController::class, 'start_montant_total_annee_encours'])->name('start_montant_total_annee_encours');
 
-
+    // PAIN DU JOUR
+    
+    Route::get('/pain/form', [PainDuJourController::class, 'formPainJour'])->name('formPainJour');
+    Route::post('/pain/store', [PainDuJourController::class, 'store_pain_jour'])->name('store_pain_jour');
+    Route::get('/pain/{id}/remplacer', [PainDuJourController::class, 'remplacer_pain_auto'])->name('remplacer_pain_auto');
+    Route::post('/pain/{id}/remplacer', [PainDuJourController::class, 'remplacer_pain_auto_action'])->name('remplacer_pain_auto_action');
+    Route::get('/utilisateur/pain-du-jour', [PainDuJourController::class, 'vueUtilisateurPainDuJour'])->name('utilisateur.pain_du_jour');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

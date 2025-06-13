@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Evenement;
 use Illuminate\Support\Facades\Auth;
 
-class EvenementController extends Controller
+class EvenementApiController extends Controller
 {
     /**
      * Retourne les événements à venir pour la paroisse de l'utilisateur

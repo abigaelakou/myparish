@@ -8,7 +8,7 @@ use App\Models\Nouvelle;
 use App\Models\Annonce;
 use Illuminate\Support\Facades\Auth;
 
-class AccueilController extends Controller
+class AccueilApiController extends Controller
 {
     /**
      * Retourne les dernières nouvelles et les annonces de la semaine
