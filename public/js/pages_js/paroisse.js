@@ -43,12 +43,12 @@ function table_paroisse(response) {
         switch (Number(paroisse_list.status)) {
             case 1:
 
-                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="icon-unlock"></i>' +
+                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="fas fa-unlock"></i>' +
                     '</button>'
                 break;
             case 0:
 
-                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',1);" class="btn btn-warning mr-3" title="Débloqué"> ' + '<i class="icon-lock"></i>' +
+                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',1);" class="btn btn-warning mr-3" title="Débloqué"> ' + '<i class="fas fa-lock"></i>' +
                     '</button>'
                 break;
             default:
@@ -60,10 +60,9 @@ function table_paroisse(response) {
             '<td>' + paroisse_list.adresse + '</td>' +
             '<td>' + paroisse_list.contact + '</td>' +
             '<td>' + paroisse_list.email + '</td>' +
-            '<td>' + paroisse_list.heure_debut + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_paroisse(' + paroisse_list.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             btn +
             '</td>' +

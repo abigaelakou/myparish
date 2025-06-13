@@ -127,7 +127,7 @@
                                     paroisse inscrite</span>
                                 <div class="project-details">
                                     <div class="project-counter">
-                                        <h2 class="f-w-600" id="nbre_doc_archive">0</h2><span class="f-12 f-w-400">
+                                        <h2 class="f-w-600" id="nbre_new_paroisse">0</h2><span class="f-12 f-w-400">
                                         </span>
                                     </div>
                                     <div class="product-sub bg-light-light">

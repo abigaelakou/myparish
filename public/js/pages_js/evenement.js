@@ -51,10 +51,10 @@ function tableau_evenement(response) {
             '<td>' + evenement.user.name + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_evenement(' + evenement.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             '<button type="button" onclick="supprimer_evenement(' + evenement.id + ');" class="btn btn-danger mr-1" title="Supprimer">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-trash"></i>' +
             '</button>' +
             '</td>' +
             '</tr>';

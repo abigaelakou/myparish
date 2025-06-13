@@ -45,10 +45,10 @@ function table_type_messe(response) {
             '<td>' + date_format_fr(type_messe.created_at) + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_type_messe(' + type_messe.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             '<button type="button" onclick="supprimer_type_messe(' + type_messe.id + ');" class="btn btn-danger mr-1" title="Supprimer">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-trash"></i>' +
             '</button>' +
             '</td>' +
             '</tr>';
@@ -149,10 +149,10 @@ function table_type_intention(response) {
             '<td>' + date_format_fr(type_intention.created_at) + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_type_intention(' + type_intention.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-pen"></i>' +
             '</button>' +
             '<button type="button" onclick="supprimer_type_intention(' + type_intention.id + ');" class="btn btn-danger mr-1" title="Supprimer">' +
-            '<i class="icon-pencil-alt2"></i>' +
+            '<i class="fas fa-trash"></i>' +
             '</button>' +
             '</td>' +
             '</tr>';

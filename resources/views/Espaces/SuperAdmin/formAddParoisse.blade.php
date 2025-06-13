@@ -81,16 +81,7 @@
                                     placeholder="0700000000" required="">
                                 <div class="valid-tooltip">Bon!</div>
                             </div>
-                            <div class="col-md-4 position-relative">
-                                <label class="form-label" for="inputPassword2">Mot de passe</label>
-                                <input class="form-control" name="admin_password" id="admin_password" type="password"
-                                    required="">
-                            </div>
-                            <div class="col-md-4 position-relative">
-                                <label class="form-label" for="inputPassword2">Confirmez le mot de passe</label>
-                                <input class="form-control" name="admin_password" id="admin_password" type="password"
-                                    required="">
-                            </div>
+                        
                             <div class="col-md-4 position-relative">
                                 <label class="form-label" for="exampleFormControlInput1">Adresse Email</label>
                                 <input class="form-control" name="admin_email" id="admin_email" type="email"
@@ -114,5 +105,5 @@
 
 @section('page-js')
 @section('scripts')
-<script src="{{asset('js/pages_js/users.js')}}"></script>
+
 @endsection
