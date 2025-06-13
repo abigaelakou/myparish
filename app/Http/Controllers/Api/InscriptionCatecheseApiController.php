@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class InscriptionCatecheseController extends Controller
+class InscriptionCatecheseApiController extends Controller
 {
     public function store(Request $request)
     {

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Don;
 use Carbon\Carbon;
 
-class DonController extends Controller
+class DonApiController extends Controller
 {
     /**
      * Récupérer les dons effectués par le paroissien connecté
