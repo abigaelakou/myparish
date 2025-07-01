@@ -16,13 +16,20 @@ class Evenement extends Model
         'lib_evenement',
         'date_evement',
         'heure_evenement',
-        'id_user'
+        'id_user',
+        'description',
+        'paroisse_id',
     ];
 
 
     // Relation avec les tables
-    public function Evenement()
+    public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

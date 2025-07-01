@@ -14,11 +14,12 @@ class Inscription extends Model
 
     protected $fillable = [
         'annee_catechetique',
-        'montant',
         'date_inscription',
         'id_catechumene',
         'id_user',
-        'id_classe'
+        'id_niveau',
+        'id_session',
+        'paroisse_id',
     ];
 
     // Relation avec les tables
@@ -27,13 +28,28 @@ class Inscription extends Model
         return $this->belongsTo(Catechumene::class, 'id_catechumene');
     }
 
-    public function User()
+    public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function ClasseCatechese()
+    public function sessionCatechese()
     {
-        return $this->belongsTo(ClasseCatechese::class, 'id_classe');
+        return $this->belongsTo(SessionCatechese::class, 'id_session');
+    }
+
+    public function niveauCatechetique()
+    {
+        return $this->belongsTo(NiveauCatechetique::class, 'id_niveau');
+    }
+
+    public function paiements()
+    {
+        return $this->hasMany(PaiementCatechese::class, 'id_inscription');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }

@@ -12,6 +12,7 @@ class Paroissien extends Model
     protected $table = 'paroissiens';
 
     protected $fillable = [
+        'user_id',
         'name',
         'contact',
         'email',
@@ -19,7 +20,8 @@ class Paroissien extends Model
         'situation_matrimoniale',
         'date_naiss',
         'date_inscription',
-        'sacrement_recu'
+        'sacrement_recu',
+        'paroisse_id',
     ];
     //Relation entre les tables
     public function demandeMesses()
@@ -30,5 +32,15 @@ class Paroissien extends Model
     public function Dons()
     {
         return $this->hasMany(Don::class, 'id_paroissien');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }
