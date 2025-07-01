@@ -38,13 +38,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/evenements', [EvenementApiController::class, 'evenementsAvenir']);
     Route::get('/dons', [DonApiController::class, 'mesDons']);
     Route::post('/dons', [DonApiController::class, 'faireUnDon']);
-    Route::get('/messes', [MesseApiController::class, 'mesDemandesDeMesse']);
+    Route::get('/mes-demandes', [MesseApiController::class, 'mesDemandesDeMesse']);
     Route::post('/messes', [MesseApiController::class, 'demanderMesse']);
     Route::get('/lecture-du-jour', [LectureApiController::class, 'lectureDuJour']);
     Route::get('/prochaines-lectures', [LectureApiController::class, 'prochainesLectures']);
     
     Route::get('/pain-du-jour', [PainJourApiController::class, 'painDuJourUtilisateur']);
     Route::get('/mes-pains', [PainJourApiController::class, 'historiqueUtilisateur']);
+    Route::get('/pains-du-jour/historique', [PainJourApiController::class, 'historiqueUtilisateur']);
 
     Route::post('inscriptions', [InscriptionCatecheseApiController::class, 'store']);
     Route::get('paiement-inscription/{id}', [InscriptionCatecheseApiController::class, 'getPaiementInfo']);
@@ -57,4 +58,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 });
-

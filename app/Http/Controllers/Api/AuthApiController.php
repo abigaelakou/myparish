@@ -43,13 +43,13 @@ class AuthApiController extends Controller
         $user = Auth::user();
 
         // Vérification si c'est bien un utilisateur paroissien
-        if ($user->lib_type_utilisateur !== 'paroissien') {
+        if ((int) $user->id_type_utilisateur !== 6) {
             return response()->json([
                 'status' => false,
                 'message' => 'Accès réservé aux paroissiens.'
             ], 403);
         }
-
+        
         // Génération d'un token pour l'authentification mobile
         $token = $user->createToken('token-paroissien')->plainTextToken;
 

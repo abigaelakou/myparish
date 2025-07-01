@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,5 +32,10 @@ class AppServiceProvider extends ServiceProvider
         //     Log::info("SQL Query: " . $query->sql);
         //     Log::info("Bindings: " . json_encode($query->bindings));
         // });
+        if (env('APP_ENV') !== 'production') {
+            URL::forceScheme('https');
+        }
     }
+
+
 }
