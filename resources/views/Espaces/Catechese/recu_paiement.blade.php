@@ -71,9 +71,9 @@
         <div class="footer">
             <p>Merci pour votre paiement.</p>
             <p>Veuillez envoyer ce reçu au secrétariat pour récupérer vos manuels.</p>
-            <a href="{{ route('download.recu', ['id_paiement' => $recu->id_paiement]) }}"
-                class="btn btn-secondary">Télécharger le
-                Reçu</a>
+                <a href="{{ route('download.recu', ['id_paiement' => $recu->id]) }}"
+                class="btn btn-secondary">Télécharger le Reçu</a>
+
             <a href="{{ route('accueil') }}" class="btn btn-primary">Retour à l'accueil? </a>
 
         </div>

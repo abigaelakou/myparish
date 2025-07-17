@@ -23,7 +23,7 @@ class Inscription extends Model
     ];
 
     // Relation avec les tables
-    public function Catechumene()
+    public function catechumene()
     {
         return $this->belongsTo(Catechumene::class, 'id_catechumene');
     }
@@ -52,4 +52,21 @@ class Inscription extends Model
     {
         return $this->belongsTo(Paroisse::class);
     }
+
+    public function niveau()
+    {
+        return $this->belongsTo(NiveauCatechetique::class, 'id_niveau');
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(SessionCatechese::class, 'id_session');
+    }
+
+    public function paiement()
+    {
+        return $this->hasOne(PaiementCatechese::class, 'id_inscription');
+    }
+
+
 }

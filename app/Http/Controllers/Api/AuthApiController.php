@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AuthApiController extends Controller
@@ -58,14 +60,97 @@ class AuthApiController extends Controller
             'status' => true,
             'message' => 'Connexion réussie.',
             'token' => $token,
-            'user' => $user
+            'user' => $user->load('paroisse'), // chargement de la paroisse
         ]);
     }
 
+    
+    public function registerParoissien(Request $request)
+{
+    // Validation des données
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'contact' => 'required|string|max:15|unique:users',
+        'password' => 'required|string|min:8|confirmed',
+        'paroisse_id' => 'required|exists:paroisses,id',
+
+        // Données profil paroissien
+        'sexe' => 'required|string|in:Masculin,Féminin',
+        'situation_matrimoniale' => 'required|string',
+        'date_naiss' => 'required|date_format:Y-m-d',
+        'sacrement_recu' => 'nullable|array',
+        'sacrement_recu.*' => 'string'
+    ]);
+
+    DB::beginTransaction();
+    try {
+        // Création de l'utilisateur
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'contact' => $validated['contact'],
+            'password' => Hash::make($validated['password']),
+            'id_type_utilisateur' => 6, // Paroissien
+            'paroisse_id' => $validated['paroisse_id'],
+        ]);
+
+        // Création du profil paroissien
+        $user->paroissien()->create([
+            'user_id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'contact' => $user->contact,
+            'sexe' => $validated['sexe'],
+            'situation_matrimoniale' => $validated['situation_matrimoniale'],
+            'date_naiss' => $validated['date_naiss'],
+            'sacrement_recu' => isset($validated['sacrement_recu'])
+                ? implode(',', $validated['sacrement_recu'])
+                : null,
+            'paroisse_id' => $validated['paroisse_id'],
+            'date_inscription' => now(),
+        ]);
+
+        // Génération d’un token de connexion
+        $token = $user->createToken('token-paroissien')->plainTextToken;
+
+        DB::commit();
+
+         // ✅ Vérification si l'email est déjà utilisé dans cette paroisse
+        $exists = User::where('email', $request->email)
+            ->whereHas('paroissien', function ($query) use ($request) {
+                $query->where('paroisse_id', $request->paroisse_id);
+            })
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'message' => 'Un compte existe déjà avec cet email dans cette paroisse.'
+            ], 409); // 409 = Conflit
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Inscription réussie.',
+            'token' => $token,
+            'user' => $user->load('paroisse')
+        ], 201);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'status' => false,
+            'message' => 'Erreur lors de l\'inscription : ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user()->load('paroisse');
+        return response()->json($user);
     }
+
 
     public function logout(Request $request)
     {
@@ -114,5 +199,18 @@ public function updateExpoToken(Request $request)
 
     return response()->json(['message' => 'Token enregistré avec succès']);
 }
+
+    public function forgot_password(Request $request)
+        {
+        $request->validate(['email' => 'required|email']);
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['message' => 'Aucun utilisateur trouvé avec cet email.'], 404);
+            }
+            // Utilise le système standard de reset de Laravel
+            Password::sendResetLink($request->only('email'));
+            return response()->json(['message' => 'Lien envoyé si l\'email est valide.']);
+
+        }
 
 }

@@ -48,4 +48,5 @@ class DemandeMesse extends Model
     {
         return $this->belongsTo(Paroisse::class);
     }
+    
 }

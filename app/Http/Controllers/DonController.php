@@ -1,18 +1,115 @@
 <?php
 
+// namespace App\Http\Controllers;
+
+// use App\Models\Don;
+// use App\Models\Transactions;
+// use App\Models\User;
+// use Illuminate\Http\Request;
+// use App\PaymentServices\MoovPaymentService;
+// use App\PaymentServices\OrangePaymentService;
+// use App\PaymentServices\MtnPaymentService;
+// use App\PaymentServices\WavePaymentService;
+// use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Log;
+
+// class DonController extends Controller
+// {
+//     public function showDonationForm()
+//     {
+//         return view('Espaces.Don.formDon');
+//     }
+
+//     public function processDonation(Request $request)
+//     {
+//         $request->validate([
+//             'montant' => 'required|numeric',
+//             'contact' => 'required|numeric',
+//             'mode_paiement' => 'required|string',
+//             'description' => 'nullable|string',
+//             'id_type_don' => 'required|exists:type_dons,id',
+//             'paroisse_id' => 'required|exists:paroisses,id',
+
+//         ]);
+
+//         $montant = $request->montant;
+//         $contact = $request->contact;
+//         $modePaiement = $request->mode_paiement;
+
+//         // Sélection du service de paiement
+//         $paymentService = null;
+//         switch ($modePaiement) {
+//             case 'moov':
+//                 $paymentService = new MoovPaymentService();
+//                 break;
+//             case 'orange':
+//                 $paymentService = new OrangePaymentService();
+//                 break;
+//             case 'mtn':
+//                 $paymentService = new MtnPaymentService();
+//                 break;
+//             case 'wave':
+//                 $paymentService = new WavePaymentService();
+//                 break;
+//             default:
+//                 return redirect()->back()->withErrors(['mode_paiement' => 'Mode de paiement non reconnu.']);
+//         }
+
+//         // Traitement du paiement
+//         $response = $paymentService->processPayment($montant, $contact);
+//         $paymentStatus = $response['status'] === 'success' ? 'Payé' : 'Echec';
+
+//         // Si l'utilisateur coche "anonyme", on assigne l'ID de l'utilisateur "Anonyme"
+//         $anonymousUserId = User::where('name', 'Anonyme')->first()->id;
+//         $donateurId = $request->has('anonymous_donation') && $request->anonymous_donation == 1
+//             ? $anonymousUserId
+//             : auth()->user()->id; // Sinon, c'est l'utilisateur connecté
+
+//         $don = new Don();
+//         $don->description = $request->description;
+//         $don->montant = $montant;
+//         $don->date_don = now();
+//         $don->mode_paiement = $modePaiement;
+//         $don->transaction_id = $response['transaction_id'];
+//         $don->payment_status = $paymentStatus;
+//         $don->donateur_id = $donateurId;
+//         $don->type_donateur = $request->has('anonymous_donation') && $request->anonymous_donation == 1 ? 'anonyme' : 'paroissien';
+//         $don->id_type_don = $request->id_type_don;
+//         $don->contact = $contact;
+//         $don->paroisse_id = $request->paroisse_id;
+//         $don->save();
+
+//         session(['transaction_details' => [
+//             'transaction_id' => $response['transaction_id'] ?? null,
+//             'amount' => $montant,
+//             'moyen_paiement' => $modePaiement,
+//             'date' => now(),
+//         ]]);
+
+
+//         // Redirection en fonction du statut du paiement
+//         if ($paymentStatus === 'Payé') {
+//             return redirect()->route('confirmation')->with('success', 'Don effectué avec succès.');
+//         } else {
+//             return redirect()->route('failed')->with('error', 'Le paiement a échoué. Veuillez réessayer.');
+//         }
+//     } 
+// }
+
 namespace App\Http\Controllers;
 
 use App\Models\Don;
-use App\Models\Transactions;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 use App\PaymentServices\MoovPaymentService;
 use App\PaymentServices\OrangePaymentService;
 use App\PaymentServices\MtnPaymentService;
 use App\PaymentServices\WavePaymentService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class DonController extends Controller
 {
@@ -25,20 +122,21 @@ class DonController extends Controller
     {
         $request->validate([
             'montant' => 'required|numeric',
-            'contact' => 'required|numeric',
+            'contact' => 'nullable|string', // nullable pour anonymes
             'mode_paiement' => 'required|string',
             'description' => 'nullable|string',
             'id_type_don' => 'required|exists:type_dons,id',
             'paroisse_id' => 'required|exists:paroisses,id',
-
+            'anonymous_donation' => 'nullable|boolean',
         ]);
 
         $montant = $request->montant;
         $contact = $request->contact;
         $modePaiement = $request->mode_paiement;
+        $paroisseId = $request->paroisse_id;
+        $anonymous = $request->boolean('anonymous_donation', false);
 
-        // Sélection du service de paiement
-        $paymentService = null;
+        // Choix du service de paiement (selon mode et, idéalement, paroisse)
         switch ($modePaiement) {
             case 'moov':
                 $paymentService = new MoovPaymentService();
@@ -56,30 +154,52 @@ class DonController extends Controller
                 return redirect()->back()->withErrors(['mode_paiement' => 'Mode de paiement non reconnu.']);
         }
 
-        // Traitement du paiement
+        // Appel au paiement via API externe (le service doit gérer le paiement et retourner un status)
         $response = $paymentService->processPayment($montant, $contact);
-        $paymentStatus = $response['status'] === 'success' ? 'Payé' : 'Echec';
+        $paymentStatus = ($response['status'] === 'success') ? 'validé' : 'échoué';
 
-        // Si l'utilisateur coche "anonyme", on assigne l'ID de l'utilisateur "Anonyme"
-        $anonymousUserId = User::where('name', 'Anonyme')->first()->id;
-        $donateurId = $request->has('anonymous_donation') && $request->anonymous_donation == 1
-            ? $anonymousUserId
-            : auth()->user()->id; // Sinon, c'est l'utilisateur connecté
+        // Gestion donateur
+        if ($anonymous) {
+            $donateurId = null;
+            $typeDonateur = 'anonyme';
+            $contact = null; // on masque le contact si anonyme
+        } else {
+            $donateurId = Auth::id();
+            $typeDonateur = 'utilisateur';
+            // si contact absent, on peut forcer le contact utilisateur
+            if (!$contact) {
+                $contact = Auth::user()->contact ?? null;
+            }
+        }
 
-        $don = new Don();
-        $don->description = $request->description;
-        $don->montant = $montant;
-        $don->date_don = now();
-        $don->mode_paiement = $modePaiement;
-        $don->transaction_id = $response['transaction_id'];
-        $don->payment_status = $paymentStatus;
-        $don->donateur_id = $donateurId;
-        $don->type_donateur = $request->has('anonymous_donation') && $request->anonymous_donation == 1 ? 'anonyme' : 'paroissien';
-        $don->id_type_don = $request->id_type_don;
-        $don->contact = $contact;
-        $don->paroisse_id = $request->paroisse_id;
-        $don->save();
+        // Création du don
+        $don = Don::create([
+            'description' => $request->description,
+            'montant' => $montant,
+            'date_don' => now()->toDateString(),
+            'mode_paiement' => $modePaiement,
+            'transaction_id' => $response['transaction_id'] ?? null,
+            'payment_status' => $paymentStatus,
+            'donateur_id' => $donateurId,
+            'type_donateur' => $typeDonateur,
+            'contact' => $contact,
+            'id_type_don' => $request->id_type_don,
+            'paroisse_id' => $paroisseId,
+            'anonyme' => $anonymous,
+        ]);
 
+        // Enregistrement dans transactions
+        Transaction::create([
+            'source_id' => $don->id,
+            'source_type' => 'don',
+            'transaction_id' => $response['transaction_id'] ?? null,
+            'paroisse_id' => $paroisseId,
+            'montant' => $montant,
+            'status' => $paymentStatus,
+            'date' => now(),
+        ]);
+
+        // Stockage session pour confirmation
         session(['transaction_details' => [
             'transaction_id' => $response['transaction_id'] ?? null,
             'amount' => $montant,
@@ -87,16 +207,14 @@ class DonController extends Controller
             'date' => now(),
         ]]);
 
-
-        // Redirection en fonction du statut du paiement
-        if ($paymentStatus === 'Payé') {
+        if ($paymentStatus === 'validé') {
             return redirect()->route('confirmation')->with('success', 'Don effectué avec succès.');
         } else {
             return redirect()->route('failed')->with('error', 'Le paiement a échoué. Veuillez réessayer.');
         }
     }
 
-    public function confirmationPage()
+      public function confirmationPage()
     {
         $transactionDetails = session('transaction_details');
 

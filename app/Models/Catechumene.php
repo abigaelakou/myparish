@@ -40,8 +40,6 @@ class Catechumene extends Model
         return $this->hasMany(Inscription::class, 'id_catechumene');
     }
 
-
-
     public function decisions()
     {
         return $this->hasMany(DecisionCatechese::class, 'id_catechumene');

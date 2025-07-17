@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         //     Log::info("Bindings: " . json_encode($query->bindings));
         // });
         if (env('APP_ENV') !== 'production') {
-            URL::forceScheme('https');
+            // URL::forceScheme('https');
         }
     }
 

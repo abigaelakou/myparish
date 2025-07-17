@@ -22,4 +22,9 @@ class Paroisse extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function paroisse()
+{
+    return $this->belongsTo(Paroisse::class, 'paroisse_id');
+}
 }

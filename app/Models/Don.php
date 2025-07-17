@@ -19,11 +19,11 @@ class Don extends Model
         'payment_status',
         'contact',
         'montant',
+        'anonyme',
         'type_donateur',
         'donateur_id',
         'id_type_don',
         'paroisse_id',
-
     ];
 
     // Relation avec les tables
@@ -48,5 +48,15 @@ class Don extends Model
     public function paroisse()
     {
         return $this->belongsTo(Paroisse::class);
+    }
+
+    public function donateur()
+    {
+        return $this->belongsTo(User::class, 'donateur_id');
+
+    }
+      public function transaction()
+    {
+        return $this->hasOne(Transaction::class, 'source_id')->where('source_type', 'don');
     }
 }

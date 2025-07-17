@@ -22,4 +22,11 @@ class paiement extends Model
     {
         return $this->belongsTo(Paroisse::class);
     }
+
+ 
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
+    }
+
 }
