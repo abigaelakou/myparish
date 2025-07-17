@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('valeur');
             $table->date('date_don');
             $table->foreignId('id_type_don')->constrained('type_dons')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('id_paroissien')->constrained('paroissiens')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('id_non_paroissien')->constrained('non_paroissiens')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

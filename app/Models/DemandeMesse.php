@@ -12,21 +12,41 @@ class DemandeMesse extends Model
     protected $table = 'demande_messes';
 
     protected $fillable = [
-        'intention',
-        'montant',
-        'id_messe',
-        'id_paroissien'
+        'id_user',
+        'id_type_messe',
+        'id_type_intention',
+        'date_messe',
+        'heure_messe',
+        'lieu_messe',
+        'intentions',
+        'paroisse_id',
     ];
 
 
     // Relation avec les tables
-    public function Messe()
+    public function messe()
     {
         return $this->belongsTo(Messe::class, 'id_messe');
     }
 
-    public function Paroissien()
+    public function user()
     {
-        return $this->belongsTo(Paroissien::class, 'id_paroissien');
+        return $this->belongsTo(User::class, 'id_user');
     }
+
+    public function typeIntention()
+    {
+        return $this->belongsTo(TypeIntention::class, 'id_type_intention');
+    }
+
+    public function typeMesse()
+    {
+        return $this->belongsTo(TypeMesse::class, 'id_type_messe');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
+    }
+    
 }

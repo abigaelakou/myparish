@@ -13,10 +13,21 @@ class TypeUtilisateur extends Model
 
     protected $fillable = [
         'lib_type_utilisateur',
+        'paroisse_id',
     ];
 
     public function users()
     {
         return $this->hasMany(user::class, 'id_type_utilisateur');
+    }
+
+    public function messe()
+    {
+        return $this->hasMany(messe::class, 'id_type_utilisateur');
+    }
+
+    public function paroisse()
+    {
+        return $this->belongsTo(Paroisse::class);
     }
 }
