@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\HistoriqueAction;
 use App\Models\Notification;
 use App\Models\Paroisse;
+use App\Models\ParoisseKycDocument;
 use App\Models\User;
 use App\Notifications\BienvenueAdminParoisse;
 use App\Notifications\ParoisseStatusChanged;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+
 class ParoisseController extends Controller
 {
     //
@@ -52,81 +54,122 @@ class ParoisseController extends Controller
 
 
   // CREATION DE PAROISSE
-public function createParoisse(Request $request)
-{
-    $validatedData = $request->validate([
-        'nom_paroisse' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:paroisses,email',
-        'contact' => 'string|max:15|unique:paroisses,contact',
-        'adresse' => 'required|string',
-        'admin_name' => 'required|string|max:255',
-        'admin_email' => 'required|string|email|max:255|unique:users,email',
-        'admin_contact' => 'required|string|max:15|unique:users,contact',
-    ]);
+    public function createParoisse(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nom_paroisse' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:paroisses,email',
+            'contact' => 'string|max:15|unique:paroisses,contact',
+            'adresse' => 'required|string',
+            'admin_name' => 'required|string|max:255',
+            'admin_email' => 'required|string|email|max:255|unique:users,email',
+            'admin_contact' => 'required|string|max:15|unique:users,contact',
+            'wallet_type' => 'required|string',
+            'wallet_contact' => 'required|string',
+            'api_key' => 'required|string',
+            'api_secret' => 'required|string',
+            'payment_provider_url' => 'required|string',
 
-    DB::beginTransaction();
-
-    try {
-        // Création de la paroisse
-        $paroisse = Paroisse::create([
-            'nom_paroisse' => $validatedData['nom_paroisse'],
-            'email' => $validatedData['email'],
-            'contact' => $validatedData['contact'],
-            'adresse' => $validatedData['adresse'],
+            // Validation des fichiers KYC
+            'document_rccm' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'document_identite' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-        // Génération d’un mot de passe par défaut aléatoire
-        $defaultPassword = Str::random(10);
+        DB::beginTransaction();
 
-        // Création de l'utilisateur admin
-        $adminUser = User::create([
-            'name' => $validatedData['admin_name'],
-            'email' => $validatedData['admin_email'],
-            'contact' => $validatedData['admin_contact'],
-            'password' => Hash::make($defaultPassword),
-            'id_type_utilisateur' => 2, // 2 = Admin
-            'paroisse_id' => $paroisse->id,
-            'must_change_password' => true, // l’admin devra changer son mot de passe à la première connexion
-        ]);
+        try {
+            $paroisse = Paroisse::create([
+                'nom_paroisse' => $validatedData['nom_paroisse'],
+                'email' => $validatedData['email'],
+                'contact' => $validatedData['contact'],
+                'adresse' => $validatedData['adresse'],
+                'wallet_type' => $validatedData['wallet_type'],
+                'wallet_contact' => $validatedData['wallet_contact'],
+                'api_key' => $validatedData['api_key'],
+                'api_secret' => $validatedData['api_secret'],
+                'payment_provider_url' => $validatedData['payment_provider_url'],
+            ]);
 
-        // Notification par mail avec le mot de passe
-        $adminUser->notify(new BienvenueAdminParoisse(
-            $adminUser->name,
-            $paroisse->nom_paroisse,
-            $adminUser->email,
-            $defaultPassword
-        ));
+            // Stockage des fichiers KYC
+            $rccmPath = $request->file('document_rccm')->store('kyc_docs');
+            $identitePath = $request->file('document_identite')->store('kyc_docs');
 
-        // Historique de l'action
-        HistoriqueAction::create([
-            'paroisse_id' => $paroisse->id,
-            'user_id' => auth()->id(),
-            'action' => 'Création de paroisse',
-            'details' => 'Paroisse ' . $paroisse->nom_paroisse . ' créée.',
-        ]);
+            // Enregistrement dans la table KYC
+            ParoisseKycDocument::insert([
+                [
+                    'paroisse_id' => $paroisse->id,
+                    'type_document' => 'rccm',
+                    'chemin_fichier' => $rccmPath,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'paroisse_id' => $paroisse->id,
+                    'type_document' => 'identite',
+                    'chemin_fichier' => $identitePath,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ]);
 
-        DB::commit();
+            // Création utilisateur admin, envoi mail, etc.
+            $defaultPassword = Str::random(10);
+            $adminUser = User::create([
+                'name' => $validatedData['admin_name'],
+                'email' => $validatedData['admin_email'],
+                'contact' => $validatedData['admin_contact'],
+                'password' => Hash::make($defaultPassword),
+                'id_type_utilisateur' => 2,
+                'paroisse_id' => $paroisse->id,
+                'must_change_password' => true,
+            ]);
+            $adminUser->notify(new BienvenueAdminParoisse(
+                $adminUser->name,
+                $paroisse->nom_paroisse,
+                $adminUser->email,
+                $defaultPassword
+            ));
 
-        return redirect()->route('formAddParoisse')->with('success', 'Paroisse et utilisateur admin créés avec succès.');
-    } catch (\Exception $e) {
-        DB::rollback();
-        return back()->withErrors(['error' => 'Erreur lors de la création : ' . $e->getMessage()]);
+            HistoriqueAction::create([
+                'paroisse_id' => $paroisse->id,
+                'user_id' => auth()->id(),
+                'action' => 'Création de paroisse',
+                'details' => 'Paroisse ' . $paroisse->nom_paroisse . ' créée.',
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('formAddParoisse')->with('success', 'Paroisse et utilisateur admin créés avec succès.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withErrors(['error' => 'Erreur lors de la création : ' . $e->getMessage()]);
+        }
     }
-}
+    public function liste_des_paroisses()
+        {
+            $liste_paroisse = DB::table('paroisses')->get();
+            return $liste_paroisse;
+        }
+
     // Changer le statut d'une paroisse
     public function update_status_paroisse($paroisse_id, $status_code)
     {
         try {
-            // Récupérer la paroisse par ID
-            $paroisse = Paroisse::find($paroisse_id);
+            if (!in_array($status_code, [0, 1])) {
+                return response()->json(['error' => 'Code de statut invalide.'], 400);
+            }
 
-            // Mettre à jour le statut de la paroisse
+            $paroisse = Paroisse::find($paroisse_id);
+            if (!$paroisse) {
+                return response()->json(['error' => 'Paroisse non trouvée.'], 404);
+            }
+
             $paroisse->update(['status' => $status_code]);
 
-            // Envoyer une notification par email à la paroisse
-            Notification::send($paroisse->users, new ParoisseStatusChanged($paroisse));
+            if ($paroisse->users && $paroisse->users->count()) {
+                Notification::send($paroisse->users, new ParoisseStatusChanged($paroisse));
+            }
 
-            // Enregistrer l'action dans l'historique
             HistoriqueAction::create([
                 'paroisse_id' => $paroisse->id,
                 'user_id' => auth()->id(),
@@ -136,37 +179,10 @@ public function createParoisse(Request $request)
 
             return response()->json(['success' => 'Statut mis à jour avec succès.']);
         } catch (\Throwable $th) {
-            return response()->json(['error' => 'Erreur lors de la mise à jour du statut.']);
+            Log::error('Erreur update_status_paroisse : ' . $th->getMessage());
+            return response()->json(['error' => 'Erreur lors de la mise à jour du statut.'], 500);
         }
     }
-
-    // public function update_status_paroisse($user_id, $status_code)
-    // {
-    //     try {
-    //         // Récupérer la paroisse par ID
-    //         $paroisse = Paroisse::find($user_id);
-
-    //         // Mettre à jour le statut de la paroisse
-    //         $paroisse->update(['status' => $status_code]);
-
-    //         $adminUser = $paroisse->users()->where('id_type_utilisateur', '2')->first();
-    //         // Envoyer une notification par email à la paroisse
-    //         if ($adminUser) {
-    //             Notification::send($adminUser, new ParoisseStatusChanged($paroisse));
-    //         }
-
-    //         return response()->json(['success' => 'Statut mis à jour avec succès.']);
-    //     } catch (\Throwable $th) {
-    //         return response()->json(['error' => 'Erreur lors de la mise à jour du statut.']);
-    //     }
-    // }
-
-    public function liste_des_paroisses()
-    {
-        $liste_paroisse = DB::table('paroisses')->get();
-        return $liste_paroisse;
-    }
-
 
     public function update_paroisse(Request $request)
     {

@@ -43,7 +43,7 @@
 
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="#hero" class="active">Acceuil</a></li>
+                    <li><a href="#hero" class="active">Accueil</a></li>
                     <li><a href="#about">Fonctionnalités</a></li>
                     <li><a href="#services">Processus d'utilisation</a></li>
                     <li><a href="#contact">Contact</a></li>
@@ -51,7 +51,7 @@
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
 
-            <a class="btn-getstarted" href="{{ route('login') }}">Tester </a>
+            <a class="btn-getstarted" href="{{ route('login') }}">Se connecter </a>
 
         </div>
     </header>
@@ -68,7 +68,7 @@
                     <div class="col-lg-8">
                         <h2>Paroisse Smart</h2>
                         <p>Est une application de gestion de paroisse qui vous facilitera la vie!</p>
-                        <a href="{{ route('login') }}" class="btn-get-started">Tester ?</a>
+                        <a href="{{ route('login') }}" class="btn-get-started">Se connecter ?</a>
                     </div>
                 </div>
             </div>
@@ -101,10 +101,10 @@
                                 <i class="bi bi-diagram-3"></i>
                                 <div>
                                     <h5>Gestion des utilisateurs</h5>
-                                    <p>Cet espace permet aux administreurs de créer le compte des paroissioens
+                                    <p>Cet espace permet aux administreurs de créer le compte des paroissiens
                                         en
                                         fonction de leur type (responsable de mouvement, paroissien, responsable
-                                        catechese). Ils pouront aussi bloquer les accès d'un paroissien qui n'est plus
+                                        catechese). Il y a aussi la possibilité de bloquer les accès d'un paroissien qui n'est plus
                                         sur la paroisse.
                                     </p>
                                 </div>
@@ -156,7 +156,7 @@
                         <p>Une application qui gère toutes vos questions.</p>
                     </div>
                     <div class="col-xl-3 cta-btn-container text-center">
-                        <a class="cta-btn align-middle" href="{{ route('login') }}">Tester</a>
+                        <a class="cta-btn align-middle" href="{{ route('login') }}">Se connecter</a>
                     </div>
                 </div>
 
@@ -185,7 +185,9 @@
                             <a href="#" class="stretched-link">
                                 <h3>Avoir un compte utilisateur</h3>
                             </a>
-                            <p>Demandez aux personnes ressources de votre paroisse de vous créer un compte !</p>
+                            <p>Demandez aux personnes ressources de votre paroisse de vous créer un compte ! Ou créer son compte paroissien à partir de 
+                                l'application mobile.
+                            </p>
                         </div>
                     </div><!-- End Service Item -->
 
@@ -197,9 +199,7 @@
                             <a href="#" class="stretched-link">
                                 <h3>Se connecter</h3>
                             </a>
-                            <p>Avoir la connection internet,avec les informations qu'ils auront donnés notamment le nom
-                                de domaine de la paroisse, votre email et mot de passe, connectez vous, accedez à votre
-                                espace et savourez!</p>
+                            <p>Avoir la connection internet,et entrer votre email et mot de passe.</p>
                         </div>
                     </div><!-- End Service Item -->
 
@@ -212,7 +212,7 @@
                             <a href="#" class="stretched-link">
                                 <h3>Autres aspects</h3>
                             </a>
-                            <p>Modifier son mot de passe, se deconnecter, faire tout ce que son accès te permet de faire
+                            <p>Modifier son mot de passe, se deconnecter, explorer, faire tout ce que son accès te permet de faire
                             </p>
                             <a href="#" class="stretched-link"></a>
                         </div>
@@ -251,7 +251,7 @@
                                 <i class="bi bi-telephone flex-shrink-0"></i>
                                 <div>
                                     <h3>Téléphone</h3>
-                                    <p>+225 49 17 43 34</p>
+                                    <p>+225 07 49 17 43 34</p>
                                 </div>
                             </div><!-- End Info Item -->
 
@@ -271,7 +271,7 @@
                     </div>
 
                     <div class="col-lg-7">
-                        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up"
+                        <form action="forms/contact.php" method="POST" class="php-email-form" data-aos="fade-up"
                             data-aos-delay="200">
                             <div class="row gy-4">
 
@@ -339,10 +339,10 @@
                 <div class="col-lg-2 col-6 footer-links">
                     <h4>Liens </h4>
                     <ul>
-                        <li><a href="#">Accueil</a></li>
-                        <li><a href="#">Fonctionnalité</a></li>
-                        <li><a href="#">Processus d'utilisation</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="#hero">Accueil</a></li>
+                        <li><a href="#about">Fonctionnalité</a></li>
+                        <li><a href="#services">Processus d'utilisation</a></li>
+                        <li><a href="#contact">Contact</a></li>
                         <li><a href="#">Terme d'utilisaton</a></li>
                         {{-- <li><a href="#">Privacy policy</a></li> --}}
                     </ul>
@@ -364,7 +364,7 @@
                     {{-- <p>A108 Adam Street</p> --}}
                     <p>Abidjan</p>
                     <p>Cote d'Ivoire</p>
-                    <p class="mt-4"><strong>Phone:</strong> <span>+225 49 17 43 34</span></p>
+                    <p class="mt-4"><strong>Phone:</strong> <span>+225 0749174334</span></p>
                     <p><strong>Email:</strong> <span>contact@paroissesmart.com</span></p>
                 </div>
 

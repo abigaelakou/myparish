@@ -26,7 +26,7 @@ function liste_paroisses() {
 }
 
 function table_paroisse(response) {
-    paroisses = response
+    paroisses = response;
     var tableau = '<table id="liste_tableau" class="display table table-striped table-bordered" style="width:100% !important">' +
         '<thead class="bg-white text-black">' +
         '<tr>' +
@@ -42,17 +42,13 @@ function table_paroisse(response) {
     paroisses.forEach(function(paroisse_list) {
         switch (Number(paroisse_list.status)) {
             case 1:
-
-                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',0);" class="btn btn-danger mr-3" title="Bloqué"> ' + '<i class="fas fa-unlock"></i>' +
-                    '</button>'
+                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',0);" class="btn btn-danger mr-2" title="Bloqué"><i class="fas fa-unlock"></i></button>';
                 break;
             case 0:
-
-                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',1);" class="btn btn-warning mr-3" title="Débloqué"> ' + '<i class="fas fa-lock"></i>' +
-                    '</button>'
+                btn = '<button type="button" onclick="update_paroisse(' + paroisse_list.id + ',1);" class="btn btn-warning mr-2" title="Débloqué"><i class="fas fa-lock"></i></button>';
                 break;
             default:
-                break;
+                btn = '';
         }
 
         tableau += '<tr>' +
@@ -62,8 +58,9 @@ function table_paroisse(response) {
             '<td>' + paroisse_list.email + '</td>' +
             '<td>' +
             '<button type="button" onclick="modal_modif_paroisse(' + paroisse_list.id + ');" class="btn btn-success mr-1" title="Modifier">' +
-            '<i class="fas fa-pen"></i>' +
-            '</button>' +
+            '<i class="fas fa-pen"></i></button>' +
+            '<button type="button" class="btn btn-info mr-1" onclick="afficher_portefeuille(' + encodeURIComponent(JSON.stringify(paroisse_list)) + ')">' +
+            '<i class="fas fa-wallet"></i> Détails</button>' +
             btn +
             '</td>' +
             '</tr>';
@@ -82,7 +79,7 @@ function modal_modif_paroisse(i) {
             $("#modif_nom_paroisse").val(element_modif.modif_nom_paroisse)
             $("#modif_adresse").val(element_modif.modif_adresse)
             $("#modif_contact").val(element_modif.modif_contact)
-            $("#modif_email").val(element_modif.heure_debut)
+            $("#modif_email").val(element_modif.modif_email)
         }
     });
     $("#modalModifParoisse").modal("show")
@@ -138,6 +135,25 @@ function update_paroisse(paroisse_id, status_code) {
         });
     });
 }
+
+
+function afficher_portefeuille(dataString) {
+    const paroisse = JSON.parse(decodeURIComponent(dataString));
+    let html = `
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Nom paroisse :</strong> ${paroisse.nom_paroisse}</li>
+            <li class="list-group-item"><strong>Wallet Type :</strong> ${paroisse.wallet_type ?? '—'}</li>
+            <li class="list-group-item"><strong>Wallet Contact :</strong> ${paroisse.wallet_contact ?? '—'}</li>
+            <li class="list-group-item"><strong>API Key :</strong> <code>${paroisse.api_key ?? '—'}</code></li>
+            <li class="list-group-item"><strong>API Secret :</strong> <code>${paroisse.api_secret ?? '—'}</code></li>
+            <li class="list-group-item"><strong>Provider URL :</strong> ${paroisse.payment_provider_url ?? '—'}</li>
+        </ul>
+    `;
+
+    document.getElementById("contenuPortefeuille").innerHTML = html;
+    new bootstrap.Modal(document.getElementById("modalPortefeuille")).show();
+}
+
 //******************************************************************************************************************
 function appel_data_table(id_tableau) {
     $('#' + id_tableau).dataTable({
