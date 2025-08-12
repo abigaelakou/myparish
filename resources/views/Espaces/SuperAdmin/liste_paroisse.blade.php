@@ -86,6 +86,22 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Portefeuille -->
+    <div class="modal fade" id="modalPortefeuille" tabindex="-1" aria-labelledby="modalPortefeuilleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalPortefeuilleLabel">Détails du Portefeuille</h5>
+            <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="contenuPortefeuille">
+            <!-- Les infos seront injectées ici -->
+        </div>
+        </div>
+    </div>
+    </div>
+
     <!-- Container-fluid Ends-->
 </div>
 
