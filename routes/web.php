@@ -36,6 +36,8 @@ use SebastianBergmann\Comparator\TypeComparator;
 |
 */
 
+
+
 Route::get('amd-clear-cache', function () {
     Artisan::call('config:cache');
     return Artisan::output();
@@ -54,6 +56,9 @@ Route::get('/Espaces', function () {
     return view('Espaces.template');
 })->middleware(['auth', 'verified'])->name('accueil');
 
+Route::view('/politique_confidentialite', 'politique_confidentialite')->name('politique_confidentialite');
+Route::view('/cgu', 'cgu')->name('cgu');
+Route::view('/supprimer-compte', 'supprimer-compte')->name('supprimer-compte');
 
 Route::middleware('auth')->group(function () {
     Route::view('Espaces/Admin/listeUser', 'Espaces.Admin.listeUser')->name('listeUser');

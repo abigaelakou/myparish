@@ -331,7 +331,7 @@
                     <div class="social-links d-flex mt-4">
                         {{-- <a href=""><i class="bi bi-twitter-x"></i></a> --}}
                         <a href=""><i class="bi bi-facebook"></i></a>
-                        <a href=""><i class="bi bi-instagram"></i></a>
+                        {{-- <a href=""><i class="bi bi-instagram"></i></a> --}}
                         <a href=""><i class="bi bi-linkedin"></i></a>
                     </div>
                 </div>
@@ -343,8 +343,9 @@
                         <li><a href="#about">Fonctionnalité</a></li>
                         <li><a href="#services">Processus d'utilisation</a></li>
                         <li><a href="#contact">Contact</a></li>
-                        <li><a href="#">Terme d'utilisaton</a></li>
-                        {{-- <li><a href="#">Privacy policy</a></li> --}}
+                        <li><a href="{{ route('politique_confidentialite') }}"  target="_blank">Politique Confidentialité</a></li>
+                        <li><a href="{{ route('cgu') }}"  target="_blank">Condition Général d'Utilisation</a></li>
+                        <li><a href="{{ route('supprimer-compte') }}"  target="_blank">Supprimer son compte</a></li>
                     </ul>
                 </div>
 
@@ -353,6 +354,7 @@
                     <ul>
                         <li><a href="#">Création de site internet</a></li>
                         <li><a href="#">Création d'application web</a></li>
+                        <li><a href="#">Création d'application mobile</a></li>
                         <li><a href="#">Grafique</a></li>
                         {{-- <li><a href="#">C</a></li>
                         <li><a href="#">Graphic Design</a></li> --}}

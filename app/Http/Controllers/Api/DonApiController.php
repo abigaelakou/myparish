@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Don;
-use App\Models\Transaction;
 use App\Models\TypeDon;
 use Carbon\Carbon;
 
@@ -27,54 +27,58 @@ class DonApiController extends Controller
         ]);
     }
 
-    public function faireUnDon(Request $request)
-    {
-        $request->validate([
-            'description' => 'nullable|string',
-            'mode_paiement' => 'required|string',
-            'montant' => 'required|numeric',
-            'contact' => 'nullable|string',
-            'id_type_don' => 'required|exists:type_dons,id',
-            'anonymous_donation' => 'nullable|boolean',
-        ]);
+public function faireUnDon(Request $request)
+{
+    $request->validate([
+        'description' => 'nullable|string',
+        'mode_paiement' => 'required|string|in:moov,orange,mtn,wave,especes',
+        'montant' => 'required|numeric|min:1',
+        'contact' => 'nullable|string',
+        'id_type_don' => 'required|exists:type_dons,id',
+        'anonymous_donation' => 'nullable|boolean',
+        'transaction_id' => 'nullable|string',
+    ]);
 
-        $user = Auth::user();
-        $anonymous = $request->boolean('anonymous_donation', false);
+    $user = Auth::user();
+    $anonymous = $request->boolean('anonymous_donation', false);
+    $modePaiement = strtolower($request->mode_paiement);
 
-        if ($anonymous) {
-            $donateurId = null;
-            $typeDonateur = 'anonyme';
-            $contact = null;
-        } else {
-            $donateurId = $user->id;
-            $typeDonateur = 'utilisateur';
-            $contact = $request->contact ?? $user->contact;
-        }
+    // Vérifier le contact pour Mobile Money
+    $mobileMoneyModes = ['moov', 'mtn', 'orange', 'wave'];
+    $contactPaiement = $request->contact;
 
-        $don = Don::create([
-            'description' => $request->description,
-            'date_don' => Carbon::now()->toDateString(),
-            'mode_paiement' => $request->mode_paiement,
-            // 'transaction_id' => null, 
-            'transaction_id' => $request->transaction_id ?? null,
-            'payment_status' => 'en attente',
-            'contact' => $contact,
-            'montant' => $request->montant,
-            'type_donateur' => $typeDonateur,
-            'donateur_id' => $donateurId,
-            'id_type_don' => $request->id_type_don,
-            'paroisse_id' => $user->paroisse_id,
-            'anonyme' => $anonymous,
-        ]);
-
-        // Tu peux aussi enregistrer la transaction après paiement réel
-
+    if (in_array($modePaiement, $mobileMoneyModes) && empty($contactPaiement)) {
         return response()->json([
-            'status' => true,
-            'message' => 'Don enregistré avec succès.',
-            'don' => $don
-        ]);
+            'status' => false,
+            'message' => 'Numéro de Mobile Money requis pour ce type de paiement.'
+        ], 422);
     }
+
+    // Forcer description non-null
+    $description = $request->description ?? '';
+
+    $don = Don::create([
+        'description' => $description,
+        'date_don' => Carbon::now()->toDateString(),
+        'mode_paiement' => $request->mode_paiement,
+        'transaction_id' => $request->transaction_id ?? null,
+        'payment_status' => 'en attente',
+        'contact' => $contactPaiement,
+        'montant' => $request->montant,
+        'type_donateur' => $anonymous ? null : $user->id,
+        'donateur_id' => $anonymous ? null : $user->id,
+        'id_type_don' => $request->id_type_don,
+        'paroisse_id' => $user->paroisse_id,
+        'anonyme' => $anonymous,
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Don enregistré avec succès.',
+        'don' => $don
+    ]);
+}
+
 
     public function getTypesDonParoisse()
     {
@@ -86,5 +90,4 @@ class DonApiController extends Controller
             'types' => $types
         ]);
     }
-
 }

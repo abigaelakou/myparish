@@ -77,6 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('inscriptions', [InscriptionCatecheseApiController::class, 'store']);
     Route::get('paiement-inscription/{id}', [InscriptionCatecheseApiController::class, 'getPaiementInfo']);
     Route::post('paiement-inscription', [InscriptionCatecheseApiController::class, 'payerInscription']);
+    Route::get('/recu/{id}/download', [InscriptionCatecheseApiController::class, 'downloadRecu'])->name('api.download.recu');
     Route::get('liste-paiements', [InscriptionCatecheseApiController::class, 'listePaiements']);
 
     Route::get('/catechumenes/{paroisseId}', [CatechumeneApiController::class, 'index']);
