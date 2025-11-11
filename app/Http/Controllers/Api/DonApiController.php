@@ -65,8 +65,8 @@ public function faireUnDon(Request $request)
         'payment_status' => 'en attente',
         'contact' => $contactPaiement,
         'montant' => $request->montant,
-        'type_donateur' => $anonymous ? null : $user->id,
-        'donateur_id' => $anonymous ? null : $user->id,
+        'type_donateur' => $anonymous ? 'autre' : 'utilisateur', // ✅ enum correct
+        'donateur_id'   => $anonymous ? null : $user->id,        // ✅ ID numérique
         'id_type_don' => $request->id_type_don,
         'paroisse_id' => $user->paroisse_id,
         'anonyme' => $anonymous,
