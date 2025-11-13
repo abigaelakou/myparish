@@ -7,7 +7,7 @@ use App\Models\DemandeMesse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Messe;
-use App\Models\paiement;
+use App\Models\Paiement;
 use App\Models\Transaction;
 
 class MesseApiController extends Controller
@@ -78,7 +78,7 @@ public function demanderMesse(Request $request)
     ]);
 
     // 2. Paiement lié à la demande — stocké dans $paiement
-    $paiement = paiement::create([
+    $paiement = Paiement::create([
         'id_demande' => $messe->id,
         'moyen_paiement' => $request->moyen_paiement,
         'montant' => $request->montant,
