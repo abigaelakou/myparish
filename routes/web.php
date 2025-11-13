@@ -43,10 +43,10 @@ Route::get('amd-clear-cache', function () {
     return Artisan::output();
 });
 
-Route::get('amd-migrate', function () {
-    Artisan::call('migrate');
-    return Artisan::output();
-});
+// Route::get('amd-migrate', function () {
+//     Artisan::call('migrate');
+//     return Artisan::output();
+// });
 Route::get('welcome', function () {
     return view('welcome');
 });

@@ -211,17 +211,88 @@ class AuthApiController extends Controller
     /**
      * Mot de passe oublié
      */
+    // public function forgot_password(Request $request)
+    // {
+    //     $request->validate(['email' => 'required|email']);
+
+    //     $user = User::where('email', $request->email)->first();
+    //     if (!$user) {
+    //         return response()->json(['message' => 'Aucun utilisateur trouvé avec cet email.'], 404);
+    //     }
+
+    //     Password::sendResetLink($request->only('email'));
+
+    //     return response()->json(['message' => 'Lien envoyé si l\'email est valide.']);
+    // }
     public function forgot_password(Request $request)
     {
         $request->validate(['email' => 'required|email']);
 
-        $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json(['message' => 'Aucun utilisateur trouvé avec cet email.'], 404);
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => '✅ Lien envoyé à votre adresse email.'], 200);
         }
 
-        Password::sendResetLink($request->only('email'));
-
-        return response()->json(['message' => 'Lien envoyé si l\'email est valide.']);
+        return response()->json(['message' => '❌ Erreur : impossible d’envoyer le lien.'], 400);
     }
+    /**
+ * Mise à jour des informations de l'utilisateur connecté
+ */
+public function updateProfile(Request $request)
+{
+    $user = $request->user();
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255',
+        'contact' => 'required|string|max:15',
+        'sexe' => 'required|string|in:Masculin,Féminin',
+        'situation_matrimoniale' => 'required|string',
+        'date_naiss' => 'required|date_format:Y-m-d',
+        'sacrement_recu' => 'nullable|array',
+        'sacrement_recu.*' => 'string',
+        'paroisse_id' => 'required|exists:paroisses,id',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        // Mise à jour des infos principales
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'contact' => $validated['contact'],
+            'paroisse_id' => $validated['paroisse_id'],
+        ]);
+
+        // Mise à jour des infos paroissien liées
+        $user->paroissien()->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'contact' => $validated['contact'],
+            'sexe' => $validated['sexe'],
+            'situation_matrimoniale' => $validated['situation_matrimoniale'],
+            'date_naiss' => $validated['date_naiss'],
+            'sacrement_recu' => isset($validated['sacrement_recu'])
+                ? implode(',', $validated['sacrement_recu'])
+                : null,
+            'paroisse_id' => $validated['paroisse_id'],
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profil mis à jour avec succès.',
+            'user' => $user->load('paroisse'),
+        ]);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'status' => false,
+            'message' => 'Erreur lors de la mise à jour : ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class paiement extends Model
+class Paiement extends Model
 {
     use HasFactory;
     protected $table = 'paiements';
@@ -15,6 +15,7 @@ class paiement extends Model
         'montant',
         'contact',
         'id_demande',
+        'id_don',
         'paroisse_id',
     ];
 

@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthApiController::class, 'logout']);
     Route::post('/changePassword', [AuthApiController::class, 'changePassword']);
     Route::post('/updateExpoToken', [AuthApiController::class, 'updateExpoToken']);
-    
+    Route::put('/update-profile', [AuthApiController::class, 'updateProfile']);
 
     Route::get('/accueil', [AccueilApiController::class, 'accueil']);
     Route::get('/evenements', [EvenementApiController::class, 'evenementsAvenir']);
