@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PainJour;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\Api\NotificationController;
 
 
 class PainDuJourController extends Controller
@@ -38,7 +38,9 @@ class PainDuJourController extends Controller
         $pain_jour->paroisse_id = Auth::user()->paroisse_id; // Paroisse de l'utilisateur connecté
         $pain_jour->est_auto = false; // bien préciser que ce n'est pas automatique
         $pain_jour->save();
-
+        // Envoyer la notification
+        app(NotificationController::class)->notifyNewPainDuJour($pain_jour->id);
+    
         return redirect()->route('formPainJour')->with('success', 'Pain Du jour créé et envoyé avec succès.');
     }
 

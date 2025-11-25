@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnonceController;
 use App\Http\Controllers\ArchivageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CatecheseController;
@@ -224,6 +225,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/liste_des_evements', [EvenementController::class, 'liste_des_evements'])->name('liste_des_evements');
     Route::get('/liste_des_evenements_non_realises', [EvenementController::class, 'liste_des_evenements_non_realises'])->name('liste_des_evenements_non_realises');
     Route::get('/supp_evenement/{id}', [EvenementController::class, 'supp_evenement'])->name('supp_evenement');
+
+    Route::post('/store_annonce', [AnnonceController::class, 'store_annonce'])->name('store_annonce');
+    Route::post('/update_annonce', [AnnonceController::class, 'update_annonce'])->name('update_annonce');
+    Route::get('/liste_des_annonces', [AnnonceController::class, 'liste_des_annonces'])->name('liste_des_annonces');
+    Route::get('/supp_annonce/{id}', [AnnonceController::class, 'supp_annonce'])->name('supp_annonce');
 
     Route::post('/store_archivage', [ArchivageController::class, 'store_archivage'])->name('store_archivage');
     Route::get('/listDocuments', [ArchivageController::class, 'listDocuments'])->name('listDocuments');
