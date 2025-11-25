@@ -48,6 +48,24 @@
                         @endif
                         <form class="row g-3" action="{{ route('create_paroisse') }}" method="POST"  enctype="multipart/form-data">
                             @csrf
+                        <div class="col-md-6">
+                            <label>Pays</label>
+                            <select id="pays_id" class="form-control" required>
+                                <option value="">-- Sélectionnez un pays --</option>
+                                @foreach($pays as $p)
+                                    <option value="{{ $p->id }}">{{ $p->nom }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Diocèse</label>
+                            <select id="diocese_id" name="diocese_id" class="form-control" required>
+                                <option value="">-- Sélectionnez un diocèse --</option>
+                            </select>
+                        </div>
+
+
                             <div class="col-md-6 position-relative">
                                 <label class="form-label" for="nom_paroisse">Nom Paroisse</label>
                                 <input class="form-control" name="nom_paroisse" type="text"
@@ -141,6 +159,22 @@
     <!-- Container-fluid Ends-->
 </div>
 
+<script>
+    document.getElementById('pays_id').addEventListener('change', function() {
+    let paysID = this.value;
+
+    fetch('/dioceses-by-pays/' + paysID)
+        .then(response => response.json())
+        .then(data => {
+            let select = document.getElementById('diocese_id');
+            select.innerHTML = '<option value="">-- Sélectionnez un diocèse --</option>';
+
+            data.forEach(function(diocese) {
+                select.innerHTML += `<option value="${diocese.id}">${diocese.nom}</option>`;
+            });
+        });
+});
+</script>
 
 @endsection
 

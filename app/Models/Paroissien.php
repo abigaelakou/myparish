@@ -19,6 +19,7 @@ class Paroissien extends Model
         'sexe',
         'situation_matrimoniale',
         'date_naiss',
+        'lieu_habitation',
         'date_inscription',
         'sacrement_recu',
         'paroisse_id',

@@ -52,7 +52,10 @@ class AuthApiController extends Controller
             'status' => true,
             'message' => 'Connexion réussie.',
             'token' => $token,
-            'user' => $user->load('paroisse'),
+            'user' => $user->load([
+                'paroisse.diocese.pays',
+                'paroissien'
+            ]),
         ]);
     }
 
@@ -71,6 +74,7 @@ class AuthApiController extends Controller
             'sexe' => 'required|string|in:Masculin,Féminin',
             'situation_matrimoniale' => 'required|string',
             'date_naiss' => 'required|date_format:Y-m-d',
+            'lieu_habitation' => 'required|string',
             'sacrement_recu' => 'nullable|array',
             'sacrement_recu.*' => 'string'
         ]);
@@ -122,6 +126,7 @@ class AuthApiController extends Controller
                 'sexe' => $validated['sexe'],
                 'situation_matrimoniale' => $validated['situation_matrimoniale'],
                 'date_naiss' => $validated['date_naiss'],
+                'lieu_habitation' => $validated['lieu_habitation'],
                 'sacrement_recu' => isset($validated['sacrement_recu'])
                     ? implode(',', $validated['sacrement_recu'])
                     : null,
@@ -137,7 +142,10 @@ class AuthApiController extends Controller
                 'status' => true,
                 'message' => 'Inscription réussie.',
                 'token' => $token,
-                'user' => $user->load('paroisse'),
+                'user' => $user->load([
+                    'paroisse.diocese.pays',
+                    'paroissien'
+                ]),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -151,9 +159,13 @@ class AuthApiController extends Controller
     /**
      * Récupération de l'utilisateur connecté
      */
-    public function user(Request $request)
+  
+     public function user(Request $request)
     {
-        $user = $request->user()->load('paroisse');
+        $user = $request->user()->load([
+            'paroisse.diocese.pays',
+            'paroissien'
+        ]);
         return response()->json($user);
     }
 
@@ -250,6 +262,7 @@ public function updateProfile(Request $request)
         'sexe' => 'required|string|in:Masculin,Féminin',
         'situation_matrimoniale' => 'required|string',
         'date_naiss' => 'required|date_format:Y-m-d',
+        'lieu_habitation' => 'required|string',
         'sacrement_recu' => 'nullable|array',
         'sacrement_recu.*' => 'string',
         'paroisse_id' => 'required|exists:paroisses,id',
@@ -273,6 +286,7 @@ public function updateProfile(Request $request)
             'sexe' => $validated['sexe'],
             'situation_matrimoniale' => $validated['situation_matrimoniale'],
             'date_naiss' => $validated['date_naiss'],
+            'lieu_habitation' => $validated['lieu_habitation'],
             'sacrement_recu' => isset($validated['sacrement_recu'])
                 ? implode(',', $validated['sacrement_recu'])
                 : null,
@@ -280,12 +294,16 @@ public function updateProfile(Request $request)
         ]);
 
         DB::commit();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Profil mis à jour avec succès.',
-            'user' => $user->load('paroisse'),
-        ]);
+          // Recharger avec les relations
+            $user->load([
+                'paroisse.diocese.pays',
+                'paroissien'
+            ]);
+    return response()->json([
+                'status' => true,
+                'message' => 'Profil mis à jour avec succès.',
+                'user' => $user,
+            ]);
     } catch (\Exception $e) {
         DB::rollBack();
         return response()->json([

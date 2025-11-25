@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\AccueilApiController;
 use App\Http\Controllers\Api\CatechumeneApiController;
+use App\Http\Controllers\Api\DioceseApiController;
 use App\Http\Controllers\Api\EvenementApiController;
 use App\Http\Controllers\Api\DonApiController;
 use App\Http\Controllers\Api\MesseApiController;
@@ -13,11 +14,12 @@ use App\Http\Controllers\Api\PainJourApiController;
 use App\Http\Controllers\Api\InscriptionCatecheseApiController;
 use App\Http\Controllers\Api\NiveauCatecheseApiController;
 use App\Http\Controllers\Api\ParoisseApiController;
+use App\Http\Controllers\Api\PaysApiController;
 use App\Http\Controllers\Api\SessionCatecheseApiController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Api\TypeMesseApiController;
 use App\Http\Controllers\Api\TypeIntentionApiController;
-
+use App\Models\Diocese;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,11 +39,18 @@ Route::get('/ping', function () {
 
 
 
+
 Route::post('/login', [AuthApiController::class, 'login']);
 Route::post('/forgot_password', [AuthApiController::class, 'forgot_password']);
 Route::post('/auth/register-paroissien', [AuthApiController::class, 'registerParoissien']);
 
 
+Route::get('/paroisses-actives', [ParoisseApiController::class, 'listeActives']);
+
+// Pays & Diocèses
+Route::get('/pays', [PaysApiController::class, 'index']);
+Route::get('/dioceses', [DioceseApiController::class, 'index']);
+Route::get('/dioceses/pays/{paysId}', [DioceseApiController::class, 'getByPays']);
 Route::get('/paroisses-actives', [ParoisseApiController::class, 'listeActives']);
 
 
