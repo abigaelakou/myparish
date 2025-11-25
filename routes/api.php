@@ -13,10 +13,10 @@ use App\Http\Controllers\Api\LectureApiController;
 use App\Http\Controllers\Api\PainJourApiController;
 use App\Http\Controllers\Api\InscriptionCatecheseApiController;
 use App\Http\Controllers\Api\NiveauCatecheseApiController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ParoisseApiController;
 use App\Http\Controllers\Api\PaysApiController;
 use App\Http\Controllers\Api\SessionCatecheseApiController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Api\TypeMesseApiController;
 use App\Http\Controllers\Api\TypeIntentionApiController;
 use App\Models\Diocese;
@@ -94,8 +94,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sessions-catechese', [SessionCatecheseApiController::class, 'index']);
 
 
-    Route::post('/send-notification', [NotificationController::class, 'sendNotification']);
+   
 
-
+// Notifications
+    Route::post('/notifications/send', [NotificationController::class, 'sendPushNotification']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount']);
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 
 });

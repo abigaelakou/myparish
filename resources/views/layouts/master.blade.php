@@ -369,6 +369,8 @@
                                         <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
                                     </svg><span>Archivages/Evenements</span></a>
                                 <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAnnonce') }}">Annonce</a></li>
+                                    <li><a href="{{ route('listAnnonce') }}">Liste des annonces</a></li>
                                     <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
                                     <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
                                     <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
@@ -538,6 +540,8 @@
                                         <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
                                     </svg><span>Archivages/Evenements</span></a>
                                 <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAnnonce') }}">Annonce</a></li>
+                                    <li><a href="{{ route('listAnnonce') }}">Liste des annonces</a></li>
                                     <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
                                     <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
                                     <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
@@ -816,6 +820,8 @@
                                         <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
                                     </svg><span>Archivages/Evenements</span></a>
                                 <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAnnonce') }}">Annonce</a></li>
+                                    <li><a href="{{ route('listAnnonce') }}">Liste des annonces</a></li>
                                     <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
                                     <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
                                     <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
@@ -1059,6 +1065,8 @@
                                         <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
                                     </svg><span>Archivages/Evenements</span></a>
                                 <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAnnonce') }}">Annonce</a></li>
+                                    <li><a href="{{ route('listAnnonce') }}">Liste des annonces</a></li>
                                     <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
                                     <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
                                     <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>
@@ -1383,6 +1391,8 @@
                                         <use href="{{ asset('assets/svg/icon-sprite.svg#fill-project') }}"></use>
                                     </svg><span>Archivages/Evenements</span></a>
                                 <ul class="sidebar-submenu">
+                                    <li><a href="{{ route('formAnnonce') }}">Annonce</a></li>
+                                    <li><a href="{{ route('listAnnonce') }}">Liste des annonces</a></li>
                                     <li><a href="{{ route('formEvenement') }}">Evènement</a></li>
                                     <li><a href="{{ route('listEvenement') }}">Liste des évènements</a></li>
                                     <li><a href="{{ route('formArchivage') }}">Archivage document</a></li>

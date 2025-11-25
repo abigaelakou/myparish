@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Http\Controllers\Api\NotificationController;
 
 class EvenementController extends Controller
 {
@@ -29,7 +30,9 @@ class EvenementController extends Controller
         $evenement->description = $request->description;
         $evenement->paroisse_id = Auth::user()->paroisse_id; // Paroisse de l'utilisateur connecté
         $evenement->save();
-
+        // Envoyer la notification
+        app(NotificationController::class)->notifyNewEvenement($evenement->id);
+    
         return redirect()->route('formEvenement')->with('success', 'Evenement créé avec succès.');
     }
 
