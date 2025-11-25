@@ -16,6 +16,12 @@ class Paroisse extends Model
         'contact',
         'email',
         'status',
+        'diocese_id',
+    ];
+
+       protected $casts = [
+        'status' => 'integer',
+        'diocese_id' => 'integer',
     ];
 
     public function users()
@@ -24,7 +30,29 @@ class Paroisse extends Model
     }
 
     public function paroisse()
-{
-    return $this->belongsTo(Paroisse::class, 'paroisse_id');
-}
+    {
+        return $this->belongsTo(Paroisse::class, 'paroisse_id');
+    }
+
+    
+    public function diocese()
+    {
+        return $this->belongsTo(Diocese::class);
+    }
+
+      /**
+     * Scope pour récupérer uniquement les paroisses actives
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    /**
+     * Accessor pour vérifier si la paroisse est active
+     */
+    public function getIsActiveAttribute()
+    {
+        return $this->status === 1;
+    }
 }

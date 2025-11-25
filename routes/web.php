@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CatecheseController;
 use App\Http\Controllers\DemandeMesseController;
 use App\Http\Controllers\DepensesController;
+use App\Http\Controllers\DioceseController;
 use App\Http\Controllers\DonController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\MesseController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\PainDuJourController;
 use App\Http\Controllers\ParoisseController;
 use App\Http\Controllers\PasswordChangeController;
+use App\Http\Controllers\PaysController;
 use App\Http\Controllers\PresentationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistiqueController;
@@ -120,6 +122,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/paroisses/{id}/historique', [ParoisseController::class, 'showHistorique'])->name('paroisses.historique');
         Route::get('/listUsersByParoisse', [ParoisseController::class, 'listUsersByParoisse'])->name('listUsersByParoisse');
         Route::get('/dashboardStats', [ParoisseController::class, 'dashboardStats'])->name('dashboardStats');
+        
+        // Pays
+        Route::get('/pays', [PaysController::class, 'index'])->name('pays.index');
+        Route::post('/pays/create', [PaysController::class, 'store'])->name('pays.store');
+        Route::post('/pays/{id}/update', [PaysController::class, 'update'])->name('pays.update');
+
+        // Diocèses
+        Route::get('/dioceses', [DioceseController::class, 'index'])->name('dioceses.index');
+        Route::get('/dioceses/pays/{id}', [DioceseController::class, 'byPays'])->name('dioceses.byPays');
+        Route::post('/dioceses/create', [DioceseController::class, 'store'])->name('dioceses.store');
+        Route::post('/dioceses/{id}/update', [DioceseController::class, 'update'])->name('dioceses.update');
+        
+        // API pour AJAX
+        Route::get('/api/dioceses/by-pays/{id}', [DioceseController::class, 'byPays']);
     });
     
         Route::get('/password/change', [PasswordChangeController::class, 'showChangeForm'])->name('password.change');

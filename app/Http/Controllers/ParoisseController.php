@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-
+use App\Models\Diocese;
 class ParoisseController extends Controller
 {
     //
@@ -61,6 +61,7 @@ class ParoisseController extends Controller
             'email' => 'required|string|email|max:255|unique:paroisses,email',
             'contact' => 'string|max:15|unique:paroisses,contact',
             'adresse' => 'required|string',
+            'diocese_id' => 'required|integer|exists:dioceses,id',
             'admin_name' => 'required|string|max:255',
             'admin_email' => 'required|string|email|max:255|unique:users,email',
             'admin_contact' => 'required|string|max:15|unique:users,contact',
@@ -83,6 +84,7 @@ class ParoisseController extends Controller
                 'email' => $validatedData['email'],
                 'contact' => $validatedData['contact'],
                 'adresse' => $validatedData['adresse'],
+                'diocese_id' => $validatedData['diocese_id'],
                 'wallet_type' => $validatedData['wallet_type'],
                 'wallet_contact' => $validatedData['wallet_contact'],
                 'api_key' => $validatedData['api_key'],
@@ -145,9 +147,11 @@ class ParoisseController extends Controller
             return back()->withErrors(['error' => 'Erreur lors de la création : ' . $e->getMessage()]);
         }
     }
+    
     public function liste_des_paroisses()
         {
-            $liste_paroisse = DB::table('paroisses')->get();
+            // $liste_paroisse = DB::table('paroisses')->get();
+            $liste_paroisse = Paroisse::with('diocese')->get();
             return $liste_paroisse;
         }
 
@@ -192,8 +196,10 @@ class ParoisseController extends Controller
             'id_paroisse' => 'required|integer|exists:paroisses,id',
             'modif_nom_paroisse' => 'required|string',
             'modif_adresse' => 'required|string',
-            'modif_contact' => 'required|',
+            'modif_contact' => 'required|string|max:15',
             'modif_email' => 'required|string',
+            'modif_diocese_id' => 'required|integer|exists:dioceses,id',
+
         ]);
 
         $modif_paroisse = Paroisse::where('id', $data['id_paroisse'])
@@ -205,6 +211,7 @@ class ParoisseController extends Controller
             'adresse' => $data['modif_adresse'],
             'contact' => $data['modif_contact'],
             'email' => $data['modif_email'],
+            'diocese_id' => $data['modif_diocese_id']
 
         ]);
 
